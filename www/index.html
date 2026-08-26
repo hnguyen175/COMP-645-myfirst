@@ -7,6 +7,15 @@
   <script src="cordova.js"></script>
   <script src="components/loader.js"></script>
   <script src="lib/onsenui/js/onsenui.min.js"></script>
+  <script>
+    const ipButton = document.getElementById('show-ip');
+    ipButton.addEventListener('click', () => {
+      fetch("https://api.ipify.org?format=json")
+        .then(response => response.json())
+        .then(data => alert(`Your IP address is: ${data.ip}`))
+        .catch(error => console.error('Error fetching IP address:', error));
+    }
+  </script>
 
   <link rel="stylesheet" href="components/loader.css">
   <link rel="stylesheet" href="lib/onsenui/css/onsenui.css">
@@ -29,5 +38,5 @@
   This is a template for Onsen UI app.
 </body>
 <p/>
-<input type="button" value="Show IP Addres!" onclick="alert('Hello, World!')">
+<input type="button" id="show-ip" value="Show IP Address!"/>
 </html>
