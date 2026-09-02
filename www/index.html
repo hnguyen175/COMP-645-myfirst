@@ -1,18 +1,53 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <meta http-equiv="Content-Security-Policy" content="default-src * data: gap: content: https://ssl.gstatic.com; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
-    <script src="cordova.js"></script>
-    <script src="components/loader.js"></script>
-    <link rel="stylesheet" href="components/loader.css">
-    <link rel="stylesheet" href="css/style.css">
-    <script>
-    </script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta http-equiv="Content-Security-Policy" content="default-src * data: gap: https://ssl.gstatic.com; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+  <script src="cordova.js"></script>
+  <script src="components/loader.js"></script>
+  <script src="lib/onsenui/js/onsenui.min.js"></script>
+  <script src="script/show-ip-button.js"></script>
+
+  <link rel="stylesheet" href="components/loader.css">
+  <link rel="stylesheet" href="lib/onsenui/css/onsenui.css">
+  <link rel="stylesheet" href="lib/onsenui/css/onsen-css-components.css">
+  <link rel="stylesheet" href="css/style.css">
+
+  <script>
+    ons.ready(function() {
+      console.log("Onsen UI is ready!");
+    });
+
+    if (ons.platform.isIPhoneX()) {
+      document.documentElement.setAttribute('onsflag-iphonex-portrait', '');
+      document.documentElement.setAttribute('onsflag-iphonex-landscape', '');
+    }
+  </script>
 </head>
 <body>
-	<br />
-    This is a template for Monaca app.
+  <br />
+  This is a template for Onsen UI app.
+
+  <p></p>
+  <input type="button" id="show-ip" class="btn js-show-ip" value="Show IP Address!"/>
+
+  <script>
+    const showIpButton = new ShowIpButton(document.querySelector('.js-show-ip'));
+  </script>
+
+  <section id="scWelcome" class="loader">
+    <div class="loader__spinner"></div>
+    <h1 class="loader__title">Loading...</h1>
+  </section> <!-- Welcome Section -->
+
+  <section id="scLoadGame" class="app">
+    <ons-navigator id="navigator" swipeable></ons-navigator>
+  </section> <!-- Load Game Section -->
+
+  <section id="scGame" class="app">
+    <ons-navigator id="game-navigator" swipeable></ons-navigator>
+  </section> <!-- Game Section -->
+
 </body>
 </html>
