@@ -9,6 +9,8 @@ class ShowIpButton {
             .then(response => response.json())
             .then(data => {
                 this.button.value = `${data.ip}`;
+                this.button.classList.remove('js-show-ip');
+                this.button.classList.add('ip-found');
             })
             .catch(error => console.error('Error fetching IP address:', error));
     }
