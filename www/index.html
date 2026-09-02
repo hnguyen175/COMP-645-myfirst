@@ -35,5 +35,19 @@
   <script>
     const showIpButton = new ShowIpButton(document.querySelector('.js-show-ip'));
   </script>
+
+  <section id="scWelcome" class="loader">
+    <div class="loader__spinner"></div>
+    <h1 class="loader__title">Loading...</h1>
+  </section> <!-- Welcome Section -->
+
+  <section id="scLoadGame" class="app">
+    <ons-navigator id="navigator" swipeable></ons-navigator>
+  </section> <!-- Load Game Section -->
+
+  <section id="scGame" class="app">
+    <ons-navigator id="game-navigator" swipeable></ons-navigator>
+  </section> <!-- Game Section -->
+
 </body>
 </html>
