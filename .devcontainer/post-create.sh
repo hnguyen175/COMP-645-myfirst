@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euxo pipefail
+set -exo pipefail
 
 # Add the myfirst remote if it doesn't exist
 git remote get-url myfirst >/dev/null 2>&1 || git remote add myfirst https://github.com/hnguyen175/COMP-645-myfirst.git
