@@ -7,7 +7,7 @@ git remote get-url myfirst >/dev/null 2>&1 || git remote add myfirst https://git
 # Install Bash-it if not present
 if [ ! -d ~/.bash_it ]; then
   git clone --depth=1 https://github.com/Bash-it/bash-it.git ~/.bash_it
-  ~/.bash_it/install.sh
+  ~/.bash_it/install.sh --silent --apend-to-config
 fi
 
 # Enable git plugin & alias
