@@ -10,12 +10,9 @@ if [ ! -d ~/.bash_it ]; then
   bash ~/.bash_it/install.sh -s -a
 fi
 
-# Enable git plugin & alias
-bash-it enable plugin git
-bash-it enable alias git
-
-# Enable a prompt theme
-bash-it enable theme powerline
+"$HOME/.bash_it/bin/bash-it" enable plugin git
+"$HOME/.bash_it/bin/bash-it" enable alias git
+"$HOME/.bash_it/bin/bash-it" enable theme powerline
 
 # Vi mode
 if ! grep -q 'set -o vi' ~/.bashrc; then
