@@ -23,7 +23,7 @@ bash -ic '
 
 # Select Bash-it's Modern theme.
 sed -i \
-  's/^export BASH_IT_THEME=.*/export BASH_IT_THEME="modern"/' \
+  's/^export BASH_IT_THEME=.*/export BASH_IT_THEME="pure"/' \
   "$HOME/.bashrc"
 
 # Native Bash vi command-line editing.
