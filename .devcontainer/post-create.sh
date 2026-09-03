@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e
+set -euxo pipefail
 
 # Add the myfirst remote if it doesn't exist
 git remote get-url myfirst >/dev/null 2>&1 || git remote add myfirst https://github.com/hnguyen175/COMP-645-myfirst.git
@@ -13,9 +13,11 @@ fi
 export BASH_IT="$HOME/.bash_it"
 source "$BASH_IT/bash_it.sh"
 
-bash-it enable plugin git
-bash-it enable alias git
-bash-it enable theme powerline
+type bash-it
+
+bash-it enable plugin git || true
+bash-it enable alias git || true
+bash-it enable theme powerline || true
 
 # Vi mode
 if ! grep -q 'set -o vi' ~/.bashrc; then
