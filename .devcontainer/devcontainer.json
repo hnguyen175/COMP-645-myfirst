@@ -10,14 +10,5 @@
       }
     }
   },
-  "features": {
-    "ghcr.io/devcontainers/features/common-utils:2": {
-      "installZsh": true,
-      "configureZshAsDefaultShell": true,
-      "installOhMyZsh": true,
-      "installOhMyZshConfig": true,
-      "upgradePackages": true
-    }
-  },
-  "postCreateCommand": "git remote get-url myfirst >/dev/null 2>&1 || git remote add myfirst https://github.com/hnguyen175/COMP-645-myfirst.git && sed -i 's/^plugins=(git)/plugins=(git vi-mode)/' ~/.zshrc && echo 'VI_MODE_SET_CURSOR=true' >> ~/.zshrc"
+  "postCreateCommand": "bash .devcontainer/post-create.sh"
 }
