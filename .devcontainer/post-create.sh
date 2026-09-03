@@ -14,17 +14,13 @@ fi
 # Use Bash-it's default theme (normally bobby) or replace with desired theme
 # later from an interactive terminal.
 
+# Run an interactive Bash so ~/.bashrc loads Bash-it and defines `bash-it`.
+bash -ic '
+  bash-it enable plugin git history
+  bash-it enable alias git general
+  bash-it enable completion git
+'
+
 # Native Bash vi command-line editing.
 grep -qxF 'set -o vi' "$HOME/.bashrc" || \
   echo 'set -o vi' >> "$HOME/.bashrc"
-
-# Readline vi mode settings; add once.
-if ! grep -qxF 'set editing-mode vi' "$HOME/.inputrc" 2>/dev/null; then
-  cat >> "$HOME/.inputrc" <<'EOF'
-
-set editing-mode vi
-set show-mode-in-prompt on
-set vi-ins-mode-string \1\e[6 q\2
-set vi-cmd-mode-string \1\e[2 q\2
-EOF
-fi
