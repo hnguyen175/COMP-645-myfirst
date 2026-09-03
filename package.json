@@ -1,21 +1,17 @@
 {
-  "name": "monaca-template-minimum",
+  "name": "monaca-template-onsenui-v2-js-minimum",
   "version": "4.1.4",
-  "displayName": "Monaca Template Minimum",
-  "engines": {
-    "node": ">=18.16"
-  },
   "dependencies": {
     "monaca-plugin-monaca-core": "3.3.1"
-  },
-  "scripts": {
-    "monaca:preview": "npm run dev",
-    "dev": "browser-sync start -s www/ --watch --port 8080 --ui-port 8081"
   },
   "cordova": {
     "plugins": {
       "monaca-plugin-monaca-core": {}
     }
+  },
+  "scripts": {
+    "monaca:preview": "npm run dev",
+    "dev": "browser-sync start -s www/ --watch --port 8080 --ui-port 8081"
   },
   "devDependencies": {
     "browser-sync": "~2.27.7",
