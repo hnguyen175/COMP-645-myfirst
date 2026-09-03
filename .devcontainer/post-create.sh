@@ -21,6 +21,11 @@ bash -ic '
   bash-it enable completion git
 '
 
+# Select Bash-it's Modern theme.
+sed -i \
+  's/^export BASH_IT_THEME=.*/export BASH_IT_THEME="modern"/' \
+  "$HOME/.bashrc"
+
 # Native Bash vi command-line editing.
 grep -qxF 'set -o vi' "$HOME/.bashrc" || \
   echo 'set -o vi' >> "$HOME/.bashrc"
