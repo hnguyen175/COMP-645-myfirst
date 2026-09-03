@@ -10,6 +10,10 @@
       }
     }
   },
-
+  "features": {
+    "installZsh": true,
+    "installOhMyZsh": true,
+    "configureZshAsDefaultShell": true
+  },
   "postCreateCommand": "git remote get-url myfirst >/dev/null 2>&1 || git remote add myfirst https://github.com/hnguyen175/COMP-645-myfirst.git"
 }
