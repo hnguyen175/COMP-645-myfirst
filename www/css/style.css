@@ -19,7 +19,10 @@
     background: green;
 }
 
-section{display: none;}
+body {background-color:coral;color:white;font-size: 110%;text-align:center;}
+section {background-color: brown;margin-bottom:100px;display: none;}
+header {background-color: yellow;color:brown}
+footer {background-color: red;padding: 2px}
 
 #scWelcome {
     display: block;
