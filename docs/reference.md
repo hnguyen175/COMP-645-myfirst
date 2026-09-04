@@ -4,13 +4,10 @@ From: [zoom](https://sdccd-edu.zoom.us/rec/share/uN9qQyL_b1fDLC2Jiyf-jaToTJShPHC
 
  ![Welcome screen](images/welcome.png)
 
+* New Game
 
+![new-game](images\new-game.png)
 
 * New Game
 
-![new-game](image/reference/1788547454765.png)
-
-
-* New Game
-
-![New Game 2](image/reference/1788547775700.png)
+![New Game 2](images\new-game2.png)

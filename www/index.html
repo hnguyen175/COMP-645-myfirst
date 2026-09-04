@@ -8,6 +8,7 @@
   <script src="components/loader.js"></script>
   <script src="lib/onsenui/js/onsenui.min.js"></script>
   <script src="js/show-ip-button.js" defer></script>
+  <script src="js/NavController.js"></script>
 
   <link rel="stylesheet" href="components/loader.css">
   <link rel="stylesheet" href="lib/onsenui/css/onsenui.css">
@@ -29,19 +30,22 @@
   <br />
 
   <p></p>
-  <input type="ons-button " id="show-ip" class="btn js-show-ip" value="Show IP Address!"/>
+  <!--input type="ons-button " id="btnShowIp" class="btn js-show-ip" value="Show IP Address!"/-->
 
-  <section id="scWelcome" class="loader">
-    <div class="loader__spinner"></div>
-    <h1 class="loader__title">Loading...</h1>
+  <section id="scWelcome">
+  <header><h1>Welcome to my first Cordova App!!</h1></header>
+  <main>
+    <p>Click the button below to load the game!</p>
+    <ons-button class="btn js-load-game" id="btnLoadGame" onclick="NavController.showSection('scLoadGame')">Load Game</ons-button>
   </section> <!-- Welcome Section -->
 
-  <section id="scLoadGame" class="app">
-    <ons-navigator id="navigator" swipeable></ons-navigator>
+  <section id="scLoadGame">
+    <header><h1>Load Game</h1></header>
+    <ons-button class="btn js-load-game" id="btnBack" onclick="NavController.showSection('scWelcome')">Back to Welcome</ons-button> 
   </section> <!-- Load Game Section -->
 
-  <section id="scGame" class="app">
-    <ons-navigator id="game-navigator" swipeable></ons-navigator>
+  <section id="scGame">
+    <header><h1>Game</h1></header>    
   </section> <!-- Game Section -->
 
 </body>

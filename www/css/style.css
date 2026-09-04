@@ -19,9 +19,9 @@
     background: green;
 }
 
-body {background-color:coral;color:white;font-size: 110%;text-align:center;}
-section {background-color: brown;margin-bottom:100px;display: none;}
-header {background-color: yellow;color:brown}
+section {background-color: brown;margin-bottom:100px;display: none; color: white; padding: 10px; border-radius: 8px;}
+body {font-size: 110%;text-align:center;}
+
 footer {background-color: red;padding: 2px}
 
 #scWelcome {
