@@ -7,7 +7,7 @@
   <script src="cordova.js"></script>
   <script src="components/loader.js"></script>
   <script src="lib/onsenui/js/onsenui.min.js"></script>
-  <script src="script/show-ip-button.js"></script>
+  <script src="js/show-ip-button.js" defer></script>
 
   <link rel="stylesheet" href="components/loader.css">
   <link rel="stylesheet" href="lib/onsenui/css/onsenui.css">
@@ -31,10 +31,6 @@
 
   <p></p>
   <input type="button" id="show-ip" class="btn js-show-ip" value="Show IP Address!"/>
-
-  <script>
-    const showIpButton = new ShowIpButton(document.querySelector('.js-show-ip'));
-  </script>
 
   <section id="scWelcome" class="loader">
     <div class="loader__spinner"></div>

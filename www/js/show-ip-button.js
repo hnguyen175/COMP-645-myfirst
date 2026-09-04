@@ -1,4 +1,12 @@
 class ShowIpButton {
+
+    static init() {
+        let button = document.querySelector('.js-show-ip');
+        if (button) {
+            new ShowIpButton(button);
+        }
+    }
+
     constructor(button) {
         this.button = button;
         this.button.addEventListener('click', () => this.showIp());
@@ -22,3 +30,5 @@ class ShowIpButton {
         }
     }
 };
+
+ShowIpButton.init();
