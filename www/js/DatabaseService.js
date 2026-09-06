@@ -1,6 +1,6 @@
 import sqlite3InitModule from "./sqlite/index.mjs";
 
-console.log("db-worker.js started");
+console.log("DatabaseService.js started");
 
 let db;
 
