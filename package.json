@@ -2,6 +2,7 @@
   "name": "monaca-template-onsenui-v2-js-minimum",
   "version": "4.1.4",
   "dependencies": {
+    "@sqlite.org/sqlite-wasm": "^3.53.0-build1",
     "monaca-plugin-monaca-core": "3.3.1"
   },
   "cordova": {
@@ -11,7 +12,8 @@
   },
   "scripts": {
     "monaca:preview": "npm run dev",
-    "dev": "browser-sync start -s www/ --watch --port 8080 --ui-port 8081"
+    "dev": "browser-sync start -s www/ --watch --port 8080 --ui-port 8081",
+    "sqlite:build": "node ./scripts/copy-sqlite.js"
   },
   "devDependencies": {
     "browser-sync": "~2.27.7",
