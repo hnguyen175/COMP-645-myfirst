@@ -1,26 +1,51 @@
 import sqlite3InitModule from "./sqlite/index.mjs";
 
-console.log("DatabaseService.js started");
+class DatabaseService {
+    static db;
 
-let db;
+    static async initDatabase() {
+        console.log("Initializing SQLite...");
 
-async function initDatabase() {
-    console.log("Initializing SQLite...");
+        const sqlite3 = await sqlite3InitModule();
 
-    const sqlite3 = await sqlite3InitModule();
+        console.log("SQLite WASM loaded");
 
-    console.log("SQLite WASM loaded");
+        const poolUtil =
+            await sqlite3.installOpfsSAHPoolVfs();
 
-    const poolUtil =
-        await sqlite3.installOpfsSAHPoolVfs();
+        console.log("OPFS SAH pool initialized");
+        DatabaseService.db = new poolUtil.OpfsSAHPoolDb("/myapp.db");
 
-    console.log("OPFS SAH pool initialized");
+        console.log("Database opened");
 
-    db = new poolUtil.OpfsSAHPoolDb("/myapp.db");
+        DatabaseService.createTables();
+        DatabaseService.insertTest();
+        const rows = DatabaseService.dumpTestData();
 
-    console.log("Database opened");
+        console.log(rows);
 
-    db.exec(`
+        console.log("cards table created/verified");
+
+        DatabaseService.clearData();
+
+        postMessage({
+            type: "ready"
+        });
+    }
+
+    static dumpTestData() {
+        const rows = [];
+        DatabaseService.db.exec({
+            sql: "SELECT * FROM test",
+            rowMode: "object",
+            callback: row => rows.push(row)
+        });
+        return rows;
+    }
+
+    static createTables() {
+
+        DatabaseService.db.exec(`
         CREATE TABLE IF NOT EXISTS cards (
             id INTEGER PRIMARY KEY,
             title TEXT,
@@ -31,31 +56,27 @@ async function initDatabase() {
             id INTEGER PRIMARY KEY,
             value TEXT
         );
+        `);
+    }
 
-        INSERT INTO test(value)
-        VALUES ('persistent test');
-    `);
+    static insertTest() {
+        DatabaseService.db.exec(`
+            INSERT INTO test(value)
+            VALUES ('persistent test');
+        `);
+    }
 
-    const rows = [];
+    static clearData(){
+        DatabaseService.db.exec(`
+            DELETE FROM cards;
+            DELETE FROM test;
+        `);
+    }
 
-    db.exec({
-        sql: "SELECT * FROM test",
-        rowMode: "object",
-        callback: row => rows.push(row)
-    });
+};
 
-    console.log(rows);
-
-    console.log("cards table created/verified");
-
-    postMessage({
-        type: "ready"
-    });
-}
-
-initDatabase().catch(error => {
+DatabaseService.initDatabase().catch(error => {
     console.error("DB worker error:", error);
-
     postMessage({
         type: "error",
         message: error.message
