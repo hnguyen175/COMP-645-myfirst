@@ -2,6 +2,7 @@
   "name": "monaca-template-onsenui-v2-js-minimum",
   "version": "4.1.4",
   "dependencies": {
+    "@sqlite.org/sqlite-wasm": "^3.53.0-build1",
     "monaca-plugin-monaca-core": "3.3.1"
   },
   "cordova": {
