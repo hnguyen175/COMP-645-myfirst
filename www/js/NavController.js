@@ -14,4 +14,22 @@ class NavController{
             }
         }
     }
+
+    static navigateCarousel(event){
+        const carousel =
+            document.getElementById("carouselNewGame");
+        
+        if (!carousel){
+            console.error("Carousel element not found.");
+            return;
+        }
+
+        if (event.key === "ArrowRight") {
+            carousel.next();
+        }
+
+        if (event.key === "ArrowLeft") {
+            carousel.prev();
+        }
+    }
 };

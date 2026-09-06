@@ -1,4 +1,8 @@
 class App {
+    static{
+        document.addEventListener("DOMContentLoaded", App.DeviceReady);
+    }
+
     static async DeviceReady() {
         console.log("Device is ready");
 
@@ -19,7 +23,9 @@ class App {
             }
         };
 
+        document.addEventListener(
+            "keydown",
+            NavController.navigateCarousel
+        );
     }
 };
-
-document.addEventListener("DOMContentLoaded", App.DeviceReady, false);

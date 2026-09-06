@@ -9,7 +9,7 @@
   <script src="lib/onsenui/js/onsenui.min.js"></script>
   <script src="js/show-ip-button.js" defer></script>
   <script src="js/NavController.js"></script>
-  <script src="js/App.js"></script>
+  <script src="js/App.js" defer></script>
 
   <link rel="stylesheet" href="components/loader.css">
   <link rel="stylesheet" href="lib/onsenui/css/onsenui.css">
@@ -33,18 +33,54 @@
   <p></p>
   <!--input type="ons-button " id="btnShowIp" class="btn js-show-ip" value="Show IP Address!"/-->
 
+  <!--
   <section id="scWelcome">
   <header><h1>Welcome to my first Cordova App!!</h1></header>
   <main>
-    <p>Click the button below to load the game!</p>
-    <ons-button class="btn js-load-game" id="btnLoadGame" onclick="NavController.showSection('scLoadGame')">Load Game</ons-button>
+    <p>Click the button below to start the game!</p>
+    <ons-button class="btn js-load-game" id="btnLoadGame" onclick="NavController.showSection('scNewGame')">Load Game</ons-button>
   </section> <!-- Welcome Section -->
 
-  <section id="scLoadGame">
-    <header><h1>Load Game</h1></header>
+  <!--
+  <section id="scNewGame">
+    <header><h1>New Game</h1></header>
     <ons-button class="btn js-load-game" id="btnBack" onclick="NavController.showSection('scWelcome')">Back to Welcome</ons-button> 
   </section> <!-- Load Game Section -->
 
+  <ons-carousel id="carouselNewGame" swipeable auto-scroll>
+    <ons-carousel-item>
+      <ons-card>
+        <header><h1>Welcome</h1></header>
+        <ons-button class="btn js-load-game" id="btnBack" onclick="NavController.showSection('scWelcome')">Back to Welcome</ons-button>
+      </ons-card>
+    </ons-carousel-item>
+    <ons-carousel-item>
+      <ons-card>
+        <header><h1>New Game</h1></header>
+
+        <table>
+          <tr>
+            <td><ons-label>Player Name:</ons-label></td>
+            <td><ons-input id="inputPlayerName" placeholder="Enter Player Name"></ons-input></td>
+          </tr>
+          <tr>
+            <td><ons-label>Email:</ons-label></td>
+            <td><ons-input id="inputPlayerEmail" placeholder="Enter Player Email"></ons-input></td>
+          </tr>
+        </table>
+
+      </ons-card>
+    </ons-carousel-item>
+  </ons-carousel>
+
+  <!--
+  <ons-card id="cardNewGame">
+    <header><h1>New Game Card</h1></header>
+    <ons-list id="listGames"></ons-list>
+    <ons-button class="btn js-load-game" id="btnBack" onclick="NavController.showSection('scWelcome')">Back to Welcome</ons-button>
+  </ons-card> <!-- Load Game Section -->
+
+  <!--
   <section id="scGame">
     <header><h1>Game</h1></header>    
   </section> <!-- Game Section -->
