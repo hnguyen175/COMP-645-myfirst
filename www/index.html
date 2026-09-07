@@ -8,6 +8,7 @@
   <script src="components/loader.js"></script>
   <script src="lib/onsenui/js/onsenui.min.js"></script>
   <script src="js/show-ip-button.js" defer></script>
+  <script src="js/Player.js"></script>
   <script src="js/NavController.js"></script>
   <script src="js/App.js" defer></script>
 
@@ -48,30 +49,39 @@
   </section> <!-- Load Game Section -->
 
   <ons-carousel id="carouselNewGame" swipeable auto-scroll>
-    <ons-carousel-item>
+    <ons-carousel-item id="caiWelcome">
       <ons-card>
         <header><h1>Welcome</h1></header>
-        <ons-button class="btn js-load-game" id="btnBack" onclick="NavController.showSection('scWelcome')">Back to Welcome</ons-button>
+        <ons-button class="btn js-load-game" id="btnBack" disabled >Reload</ons-button>
+        <ons-button class="btn js-load-game" id="btnBack" onclick="NavController.navigateCarousel()">New Game</ons-button>
       </ons-card>
     </ons-carousel-item>
-    <ons-carousel-item>
+    <ons-carousel-item id="caiNewGame">
       <ons-card>
         <header><h1>New Game</h1></header>
 
         <table>
           <tr>
             <td><ons-label for="inputPlayerName">Player Name:</ons-label></td>
-            <td><ons-input id="inputPlayerName" placeholder="Enter Player Name"></ons-input></td>
+            <td><ons-input input-id="inputPlayerName" placeholder="Enter Player Name"></ons-input></td>
           </tr>
           <tr>
             <td><ons-label for="inputPlayerEmail">Email:</ons-label></td>
-            <td><ons-input id="inputPlayerEmail" placeholder="Enter Player Email"></ons-input></td>
+            <td><ons-input input-id="inputPlayerEmail" placeholder="Enter Player Email"></ons-input></td>
           </tr>
         </table>
 
       </ons-card>
     </ons-carousel-item>
-  </ons-carousel>
+
+    <ons-carousel-item id="caiPlayers">
+      <ons-card>
+        <header>
+          <h1>Players In My Game</h1>
+        </header>
+      </ons-card>
+      </ons-carousel>
+    </ons-carousel-item>
 
   <!--
   <ons-card id="cardNewGame">

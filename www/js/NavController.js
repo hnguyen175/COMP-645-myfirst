@@ -24,12 +24,38 @@ class NavController{
             return;
         }
 
-        if (event.key === "ArrowRight") {
+        if (!event || event.key === "ArrowRight") {
             carousel.next();
         }
-
-        if (event.key === "ArrowLeft") {
+        else if (event.key === "ArrowLeft") {
             carousel.prev();
+        }
+    }
+
+    static onCarouselPlayersPreChange(event) {
+        const items = event.carousel.querySelectorAll("ons-carousel-item");
+        const activeItem = items[event.activeIndex];
+
+        if (activeItem?.id === "caiPlayers") {
+            const name = document.getElementById("inputPlayerName").value;
+            const email = document.getElementById("inputPlayerEmail").value;
+            console.log(name, email);
+            Player.save(name, email);
+        } 
+
+        // Use these values to query your data.
+    }
+
+    static onCarouselNewGamePostChange(event) {
+        const items = event.carousel.querySelectorAll("ons-carousel-item");
+        const activeItem = items[event.activeIndex];
+
+        if (activeItem?.id === "caiNewGame") {
+            const player = Player.load();
+            if (player) {
+                document.getElementById("inputPlayerName").value = player.name;
+                document.getElementById("inputPlayerEmail").value = player.email;
+            }
         }
     }
 };

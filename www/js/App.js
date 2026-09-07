@@ -27,5 +27,15 @@ class App {
             "keydown",
             NavController.navigateCarousel
         );
+
+        document.getElementById("carouselNewGame").addEventListener(
+            "prechange",
+            NavController.onCarouselPlayersPreChange
+        );
+
+        document.getElementById("carouselNewGame").addEventListener(
+            "postchange",
+            NavController.onCarouselNewGamePostChange
+        );
     }
 };
