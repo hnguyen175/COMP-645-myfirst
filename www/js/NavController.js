@@ -1,4 +1,6 @@
-class NavController{
+import Player from './Player.js';
+
+export default class NavController{
     static showSection(sectionId){
         let sections = document.querySelectorAll("section");
         if (!sections || sections.length == 0){
@@ -24,12 +26,24 @@ class NavController{
             return;
         }
 
-        if (!event || event.key === "ArrowRight") {
+        if (event.type === "keydown") {
+            if (event.key === "ArrowRight") {
+                carousel.next();
+                return;
+            }
+            else if (event.key === "ArrowLeft") {
+                carousel.prev();
+                return;
+            }
+        }
+
+        if (event.type === "click" &&
+            event.currentTarget?.id === "btnNewGame") {
             carousel.next();
+            return;
         }
-        else if (event.key === "ArrowLeft") {
-            carousel.prev();
-        }
+
+        console.log("unexpected navigation event", event.currentTarget);
     }
 
     static onCarouselPlayersPreChange(event) {
