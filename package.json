@@ -11,8 +11,8 @@
     }
   },
   "scripts": {
-    "monaca:transpile": "tsc --listEmittedFiles",
-    "monaca:preview": "tsc && npm run dev",
+    "monaca:transpile": "tsc --version && tsc --listEmittedFiles",
+    "monaca:preview": "tsc --version && tsc && npm run dev",
     "dev": "tsc && eslint . && browser-sync start -s www/ --watch --port 8080 --ui-port 8081",
     "sqlite:build": "node ./scripts/copy-sqlite.js"
   },
