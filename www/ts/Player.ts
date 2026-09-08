@@ -1,5 +1,8 @@
 export default class Player {
-    constructor(name, email) {
+    name: string;
+    email: string;
+
+    constructor(name: string, email: string) {
         this.name = name;
         this.email = email;
     }
@@ -13,7 +16,7 @@ export default class Player {
         }
     }
 
-    static save(name, email){
+    static save(name: string, email: string){
         const player = new Player(name, email);
         sessionStorage.setItem("player", JSON.stringify(player));
         return player;
