@@ -1,7 +1,7 @@
-import sqlite3InitModule from "./sqlite/index.mjs";
+import sqlite3InitModule, { OpfsSAHPoolDatabase } from "../js/sqlite/index.mjs";
 
 class DatabaseService {
-    static db;
+    static db : OpfsSAHPoolDatabase;
 
     static async initDatabase() {
         console.log("Initializing SQLite...");
@@ -11,7 +11,7 @@ class DatabaseService {
         console.log("SQLite WASM loaded");
 
         const poolUtil =
-            await sqlite3.installOpfsSAHPoolVfs();
+            await sqlite3.installOpfsSAHPoolVfs({});
 
         console.log("OPFS SAH pool initialized");
         DatabaseService.db = new poolUtil.OpfsSAHPoolDb("/myapp.db");
@@ -34,11 +34,13 @@ class DatabaseService {
     }
 
     static dumpTestData() {
-        const rows = [];
+        const rows : any[] = [];
         DatabaseService.db.exec({
             sql: "SELECT * FROM test",
             rowMode: "object",
-            callback: row => rows.push(row)
+            callback: row => {
+                rows.push(row);
+            }
         });
         return rows;
     }

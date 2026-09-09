@@ -38,20 +38,19 @@ export default class App {
             NavController.navigateCarousel
         );
 
-        document.getElementById("carouselNewGame").addEventListener(
+        document.getElementById("carouselNewGame")?.addEventListener(
             "prechange",
             NavController.onCarouselPlayersPreChange
         );
 
-        document.getElementById("carouselNewGame").addEventListener(
+        document.getElementById("carouselNewGame")?.addEventListener(
             "postchange",
             NavController.onCarouselNewGamePostChange
         );
 
-        document.getElementById("btnNewGame").addEventListener(
+        document.getElementById("btnNewGame")?.addEventListener(
             "click",
             NavController.navigateCarousel
         );
     }
-
 };

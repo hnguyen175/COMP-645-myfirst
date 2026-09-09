@@ -1,13 +1,14 @@
 class ShowIpButton {
+    private button: HTMLInputElement;
 
     static init() {
-        let button = document.querySelector('.js-show-ip');
+        let button = document.querySelector('.js-show-ip') as HTMLInputElement;
         if (button) {
             new ShowIpButton(button);
         }
     }
 
-    constructor(button) {
+    constructor(button: HTMLInputElement) {
         this.button = button;
         this.button.addEventListener('click', () => this.showIp());
     }

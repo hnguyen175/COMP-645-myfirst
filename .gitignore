@@ -8,7 +8,5 @@ typings/
 node_modules
 
 # TypeScript output (handwritten JavaScript remains tracked)
-/www/js/NavController.js
-/www/js/NavController.js.map
-/www/js/Player.js
-/www/js/Player.js.map
+/www/js/*.js
+/www/js/*.js.map
