@@ -74,10 +74,18 @@ export default class NavController{
                 return;
             }
 
+            const player = Player.load();
+
             const name = playerNameInput.value;
             const email = playerEmailInput.value;
+
+            if (player && Player.samePlayer(name, email, player)) {
+                console.log("Player already saved, no need to save again.");
+                return;
+            }
+
             console.log(name, email);
-            Player.save(name, email);
+            Player.save(new Player(name, email));
         } 
 
         // Use these values to query your data.
