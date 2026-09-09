@@ -10,3 +10,5 @@ node_modules
 # TypeScript output (handwritten JavaScript remains tracked)
 /www/js/*.js
 /www/js/*.js.map
+*.tsbuildinfo
+coverage/**
