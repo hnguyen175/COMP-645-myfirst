@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import * as Vitest from 'vitest';
-import Player from '../../www/ts/Player';
+import Player from '../www/ts/Player';
 
 Vitest.beforeEach(() => {
     sessionStorage.clear();
