@@ -52,5 +52,27 @@ export default class App {
             "click",
             NavController.navigateCarousel
         );
+
+        document.getElementById("btnClearName")?.addEventListener(
+            "click",
+            () => {
+                App.emptyInput("inputPlayerName");
+            }
+        );
+
+        document.getElementById("btnClearEmail")?.addEventListener(
+            "click",
+            () => {
+                App.emptyInput("inputPlayerEmail");
+            }
+        );
+    }
+
+    private static emptyInput(inputId: string) : void {
+        const input = document.getElementById(inputId) as HTMLInputElement || null;
+        if (input) {
+            input.value = "";
+            input.focus();
+        }
     }
 };
