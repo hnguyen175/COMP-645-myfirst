@@ -50,3 +50,9 @@ Vitest.test("loadPlayersFromSessionStorage loads players from session storage", 
     Vitest.expect(newPlayers.players[0]).toEqual(player1);
     Vitest.expect(newPlayers.players[1]).toEqual(player2);
 });
+
+Vitest.test("loadPlayersFromSessionStorage does not throw error when no players are saved", () => {
+    const players = new Players();
+    Vitest.expect(() => players.loadPlayersFromSessionStorage()).not.toThrow();
+    Vitest.expect(players.players.length).toBe(0);
+});
