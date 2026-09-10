@@ -37,3 +37,16 @@ Vitest.test("showSection logs an error if no sections are found", () => {
 
     consoleErrorSpy.mockRestore();
 });
+
+Vitest.test("navigateCarousel handles ArrowRight keydown event", () => {
+    // Create a mock carousel element
+    // Use a regular element so jsdom does not try to construct an
+    // unregistered custom element.
+    const carousel = document.createElement('CarouselElement');
+    carousel.id = 'carouselNewGame';
+    document.body.appendChild(carousel);
+
+    const nextSpy = Vitest.vi.spyOn(carousel, 'next').mockImplementation(() => {});
+
+    NavController.navigateCarousel(new KeyboardEvent('keydown', { key: 'ArrowRight' }));
+});

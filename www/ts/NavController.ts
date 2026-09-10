@@ -32,15 +32,6 @@ export default class NavController{
 
             const target = event.target;
 
-            // Preserve typing and cursor movement in editable fields.
-            // if (
-            //     target instanceof HTMLElement &&
-            //     (target.matches("input, textarea, select") ||
-            //         target.isContentEditable)
-            // ) {
-            //     return;
-            // }
-
             if (event.key === "ArrowRight") {
                 event.preventDefault();
                 carousel.next();
