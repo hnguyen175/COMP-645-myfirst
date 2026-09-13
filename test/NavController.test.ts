@@ -345,7 +345,7 @@ Vitest.test("onCarouselNewGame navigates to next carousel item", () => {
         value: Vitest.vi.fn(),
     });
 
-    const btnNewGame = document.getElementById("btnNewGame") as unknown as CarouselElement;
+    const btnNewGame = document.getElementById("btnNewGame") as unknown as HTMLElement;
     btnNewGame.addEventListener(
         "click",
         (event) => navController.onCarouselNewGame(event)
@@ -362,7 +362,7 @@ Vitest.test("onCarouselNewGame logs an error if carousel element is not found", 
             <ons-button class="btn js-load-game" id="btnNewGame">New Game</ons-button>
         </ons-card>
         `;
-    const btnNewGame = document.getElementById("btnNewGame") as unknown as CarouselElement;
+    const btnNewGame = document.getElementById("btnNewGame") as unknown as HTMLElement;
     btnNewGame.addEventListener(
         "click",
         (event) => navController.onCarouselNewGame(event)
