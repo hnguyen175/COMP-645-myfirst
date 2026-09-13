@@ -58,6 +58,15 @@ export default class NavController{
 
     //     console.log("unexpected navigation event", event.currentTarget);
     // }
+    onCarouselNewGame(event: Event) {
+        const carousel = document.getElementById("carouselNewGame") as CarouselElement | null;
+        if (!carousel) {
+            console.error("Carousel element not found.");
+            return;
+        }
+
+        carousel.next();
+    }
 
     onCarouselPlayersPreChange(event: Event) {
         const activeItem = NavController.getActiveCarouselItem(event);
