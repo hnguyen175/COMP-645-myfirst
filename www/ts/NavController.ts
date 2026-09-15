@@ -1,5 +1,5 @@
-import PlayerService from './PlayerService.js';
-import PlayerView from './PlayerView.js';
+import PlayerService from './PlayerService.ts';
+import PlayerView from './PlayerView.ts';
 
 import type { OnsCarouselElement as CarouselElement } from '../lib/onsenui';
 

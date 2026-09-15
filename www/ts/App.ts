@@ -1,4 +1,4 @@
-import NavController from './NavController.js';
+import NavController from './NavController.ts';
 
 export default class App {
     private navController: NavController;
