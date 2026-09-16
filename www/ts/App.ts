@@ -5,6 +5,8 @@ export default class App {
 
     constructor() {
         this.navController = new NavController();
+        this.navController.init();
+
         document.addEventListener("DOMContentLoaded",
             () => this.DeviceReady());
     }
@@ -65,6 +67,15 @@ export default class App {
             "click",
             (event) => {
                 this.navController.onCarouselNewGame(event);
+            }
+        );
+
+        document.getElementById("btnRoll")?.addEventListener(
+            "click",
+            (event) => {
+                console.log("Roll button clicked");
+                // Implement the roll functionality here
+                this.navController.onRollButtonClick(event);
             }
         );
     }
