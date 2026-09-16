@@ -1,5 +1,3 @@
-// @vitest-environment jsdom
-
 import * as Vitest from 'vitest';
 import NavController from '../www/ts/NavController';
 import PlayerService from '../www/ts/PlayerService';
