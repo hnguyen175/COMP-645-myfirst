@@ -1,6 +1,9 @@
 import Player from "./Player.ts";
 
 export default class Players {
+    // private key: string;
+    // private currentScreen: string;
+    questCompleted: boolean = false;
     players: Player[];
 
     constructor() {
@@ -17,16 +20,17 @@ export default class Players {
     }
 
     savePlayersToSessionStorage() {
-        const json = JSON.stringify(this.players);
+        const json = JSON.stringify(this);
         console.log("Saving players to session storage:", json);
-        sessionStorage.setItem("players", json);
+        sessionStorage.setItem(this.players[0]?.email, json);
     }
 
-    loadPlayersFromSessionStorage() {
-        const savedPlayers = sessionStorage.getItem("players");
+    static loadPlayersFromSessionStorage(email: string) : Players | null {
+        const savedPlayers = sessionStorage.getItem(email);
         if (savedPlayers) {
-            const playersData = JSON.parse(savedPlayers) as Array<Player>;
-            this.players = playersData;
+            const playersData = JSON.parse(savedPlayers) as Players;
+            return playersData;
         }
+        return null;
     }
 };

@@ -232,88 +232,88 @@ Vitest.test("onCarouselPlayersPreChange for caiNewGame sets carousel swipeable t
 });
 
 
-Vitest.test("onCarouselNewGamePostChange retrieves the active carousel item and loads main player", () => {
-    document.body.innerHTML = `
-        <ons-carousel id="carouselNewGame" swipeable auto-scroll>
-        <ons-carousel-item id="caiWelcome"></ons-carousel-item>
-        <ons-carousel-item id="caiPlayers"></ons-carousel-item>
-        <ons-carousel-item id="caiNewGame"></ons-carousel-item>
-        </ons-carousel>
-        <input type="text" id="inputPlayerName" />
-        <input type="text" id="inputPlayerEmail" />
-    `;
-    const carousel = document.getElementById("carouselNewGame") as unknown as HTMLElement;
+// Vitest.test("onCarouselNewGamePostChange retrieves the active carousel item and loads main player", () => {
+//     document.body.innerHTML = `
+//         <ons-carousel id="carouselNewGame" swipeable auto-scroll>
+//         <ons-carousel-item id="caiWelcome"></ons-carousel-item>
+//         <ons-carousel-item id="caiPlayers"></ons-carousel-item>
+//         <ons-carousel-item id="caiNewGame"></ons-carousel-item>
+//         </ons-carousel>
+//         <input type="text" id="inputPlayerName" />
+//         <input type="text" id="inputPlayerEmail" />
+//     `;
+//     const carousel = document.getElementById("carouselNewGame") as unknown as HTMLElement;
 
-    const event = new Event('postchange');
-    Object.assign(event, {
-        carousel,
-        activeIndex: 2,
-    });
+//     const event = new Event('postchange');
+//     Object.assign(event, {
+//         carousel,
+//         activeIndex: 2,
+//     });
 
-    Vitest.vi.spyOn(playerService, 'loadMainPlayer').mockReturnValue({
-        name: "John Doe",
-        email: "john.doe@example.com"
-    } as any);
+//     Vitest.vi.spyOn(playerService, 'loadMainPlayer').mockReturnValue({
+//         name: "John Doe",
+//         email: "john.doe@example.com"
+//     } as any);
 
-    navController.onCarouselNewGamePostChange(event);
+//     navController.onCarouselNewGamePostChange(event);
 
-    Vitest.expect((document.getElementById("inputPlayerName") as HTMLInputElement).value).toBe("John Doe");
-    Vitest.expect((document.getElementById("inputPlayerEmail") as HTMLInputElement).value).toBe("john.doe@example.com");
-});
+//     Vitest.expect((document.getElementById("inputPlayerName") as HTMLInputElement).value).toBe("John Doe");
+//     Vitest.expect((document.getElementById("inputPlayerEmail") as HTMLInputElement).value).toBe("john.doe@example.com");
+// });
 
-Vitest.test("onCarouselNewGamePostChange log error if no input fields found", () => {
-    document.body.innerHTML = `
-        <ons-carousel id="carouselNewGame" swipeable auto-scroll>
-        <ons-carousel-item id="caiWelcome"></ons-carousel-item>
-        <ons-carousel-item id="caiPlayers"></ons-carousel-item>
-        <ons-carousel-item id="caiNewGame"></ons-carousel-item>
-        </ons-carousel>
-    `;
+// Vitest.test("onCarouselNewGamePostChange log error if no input fields found", () => {
+//     document.body.innerHTML = `
+//         <ons-carousel id="carouselNewGame" swipeable auto-scroll>
+//         <ons-carousel-item id="caiWelcome"></ons-carousel-item>
+//         <ons-carousel-item id="caiPlayers"></ons-carousel-item>
+//         <ons-carousel-item id="caiNewGame"></ons-carousel-item>
+//         </ons-carousel>
+//     `;
 
-    const carousel = document.getElementById("carouselNewGame") as unknown as HTMLElement;
+//     const carousel = document.getElementById("carouselNewGame") as unknown as HTMLElement;
 
-    const event = new Event('postchange');
-    Object.assign(event, {
-        carousel,
-        activeIndex: 2,
-    });
+//     const event = new Event('postchange');
+//     Object.assign(event, {
+//         carousel,
+//         activeIndex: 2,
+//     });
 
-    Vitest.vi.spyOn(playerService, 'loadMainPlayer').mockReturnValue({
-        name: "John Doe",
-        email: "john.doe@example.com"
-    } as any);
+//     Vitest.vi.spyOn(playerService, 'loadMainPlayer').mockReturnValue({
+//         name: "John Doe",
+//         email: "john.doe@example.com"
+//     } as any);
 
-    const consoleErrorSpy = Vitest.vi.spyOn(console, 'error').mockImplementation(() => {});
+//     const consoleErrorSpy = Vitest.vi.spyOn(console, 'error').mockImplementation(() => {});
 
-    navController.onCarouselNewGamePostChange(event);
+//     navController.onCarouselNewGamePostChange(event);
 
-    Vitest.expect(consoleErrorSpy).toHaveBeenCalled();
-});
+//     Vitest.expect(consoleErrorSpy).toHaveBeenCalled();
+// });
 
-Vitest.test("onCarouselNewGamePostChange does nothing if no main player is found", () => {
-    document.body.innerHTML = `
-        <ons-carousel id="carouselNewGame" swipeable auto-scroll>
-        <ons-carousel-item id="caiWelcome"></ons-carousel-item>
-        <ons-carousel-item id="caiPlayers"></ons-carousel-item>
-        <ons-carousel-item id="caiNewGame"></ons-carousel-item>
-        </ons-carousel>
-        <input type="text" id="inputPlayerName" />
-        <input type="text" id="inputPlayerEmail" />
-    `;
-    const carousel = document.getElementById("carouselNewGame") as unknown as HTMLElement;
+// Vitest.test("onCarouselNewGamePostChange does nothing if no main player is found", () => {
+//     document.body.innerHTML = `
+//         <ons-carousel id="carouselNewGame" swipeable auto-scroll>
+//         <ons-carousel-item id="caiWelcome"></ons-carousel-item>
+//         <ons-carousel-item id="caiPlayers"></ons-carousel-item>
+//         <ons-carousel-item id="caiNewGame"></ons-carousel-item>
+//         </ons-carousel>
+//         <input type="text" id="inputPlayerName" />
+//         <input type="text" id="inputPlayerEmail" />
+//     `;
+//     const carousel = document.getElementById("carouselNewGame") as unknown as HTMLElement;
 
-    const event = new Event('postchange');
-    Object.assign(event, {
-        carousel,
-        activeIndex: 2,
-    });
+//     const event = new Event('postchange');
+//     Object.assign(event, {
+//         carousel,
+//         activeIndex: 2,
+//     });
 
-    Vitest.vi.spyOn(playerService, 'loadMainPlayer').mockReturnValue(null);
-    navController.onCarouselNewGamePostChange(event);
+//     Vitest.vi.spyOn(playerService, 'loadMainPlayer').mockReturnValue(null);
+//     navController.onCarouselNewGamePostChange(event);
 
-    Vitest.expect((document.getElementById("inputPlayerName") as HTMLInputElement).value).toBe("");
-    Vitest.expect((document.getElementById("inputPlayerEmail") as HTMLInputElement).value).toBe("");
-});
+//     Vitest.expect((document.getElementById("inputPlayerName") as HTMLInputElement).value).toBe("");
+//     Vitest.expect((document.getElementById("inputPlayerEmail") as HTMLInputElement).value).toBe("");
+// });
 
 Vitest.test("onCarouselNewGamePostChange does nothing if active item is not caiNewGame", () => {
     document.body.innerHTML = `

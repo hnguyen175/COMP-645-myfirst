@@ -75,17 +75,17 @@ export default class NavController{
             return;
         }
 
-        const player = this.playerService.loadMainPlayer();
-        if (!player) {
-            console.error("Failed to load main player.");
-            return;
-        }
+        // const player = this.playerService.loadMainPlayer();
+        // if (!player) {
+        //     console.error("Failed to load main player.");
+        //     return;
+        // }
 
-        const playerInputs = NavController.playerInputs();
-        if (playerInputs) {
-            playerInputs.name.value = player.name;
-            playerInputs.email.value = player.email;
-        }
+        // const playerInputs = NavController.playerInputs();
+        // if (playerInputs) {
+        //     playerInputs.name.value = player.name;
+        //     playerInputs.email.value = player.email;
+        // }
     }
 
     private static getActiveCarouselItem(event: Event) {
@@ -119,6 +119,8 @@ export default class NavController{
         if (!isValid.name && !isValid.email) {
             this.carousel.swipeable = true;
             await this.carousel.next();
+
+            // this.playerService.loadPlayer(playerInputs.email.value);
 
             return;
         }

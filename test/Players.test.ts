@@ -2,6 +2,7 @@ import * as Vitest from 'vitest';
 
 import Players from '../www/ts/Players';
 import Player from '../www/ts/Player';
+import PlayerService from '../www/ts/PlayerService';
 
 Vitest.beforeEach(() => {
     sessionStorage.clear();
@@ -28,12 +29,12 @@ Vitest.test("savePlayersToSessionStorage saves players to session storage", () =
     players.addPlayer(player1);
     players.addPlayer(player2);
     players.savePlayersToSessionStorage();
-    const savedPlayers = sessionStorage.getItem("players");
+    // const savedPlayers = sessionStorage.getItem("players");
+    const savedPlayers = PlayerService.loadPlayers(player1.email);
     Vitest.expect(savedPlayers).not.toBeNull();
-    const playersData = JSON.parse(savedPlayers as string);
-    Vitest.expect(playersData.length).toBe(2);
-    Vitest.expect(playersData[0]).toEqual(player1);
-    Vitest.expect(playersData[1]).toEqual(player2);
+    Vitest.expect(savedPlayers!.players.length).toBe(2);
+    Vitest.expect(savedPlayers!.players[0]).toEqual(player1);
+    Vitest.expect(savedPlayers!.players[1]).toEqual(player2);
 });
 
 Vitest.test("loadPlayersFromSessionStorage loads players from session storage", () => {
@@ -43,15 +44,14 @@ Vitest.test("loadPlayersFromSessionStorage loads players from session storage", 
     players.addPlayer(player1);
     players.addPlayer(player2);
     players.savePlayersToSessionStorage();
-    const newPlayers = new Players();
-    newPlayers.loadPlayersFromSessionStorage();
+    const newPlayers = PlayerService.loadPlayers(player1.email) as Players;
     Vitest.expect(newPlayers.players.length).toBe(2);
     Vitest.expect(newPlayers.players[0]).toEqual(player1);
     Vitest.expect(newPlayers.players[1]).toEqual(player2);
 });
 
 Vitest.test("loadPlayersFromSessionStorage does not throw error when no players are saved", () => {
-    const players = new Players();
-    Vitest.expect(() => players.loadPlayersFromSessionStorage()).not.toThrow();
-    Vitest.expect(players.players.length).toBe(0);
+    Vitest.expect(() => PlayerService.loadPlayers("nonexistent@example.com")).not.toThrow();
+    const players = PlayerService.loadPlayers("nonexistent@example.com");
+    Vitest.expect(players).toBeNull();
 });

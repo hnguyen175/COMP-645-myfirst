@@ -15,18 +15,31 @@ export default class PlayerService {
         players.addDefaultPlayers();
 
         players.savePlayersToSessionStorage();
-        player.save();
+        // player.save();
 
         return players;
     }
 
-    loadMainPlayer(): Player | null {
-        const player = Player.load();
-        if (!player) {
-            console.error("Main player not found.");
-            return null;
-        }
-        return player;
+    // loadMainPlayer(): Player | null {
+    //     const player = Player.load();
+    //     if (!player) {
+    //         console.error("Main player not found.");
+    //         return null;
+    //     }
+    //     return player;
+    // }
+
+    // loadPlayer(email: string): Player | null {
+    //     const player = Player.load(email);
+    //     if (!player) {
+    //         console.error("Player not found.");
+    //         return null;
+    //     }
+    //     return player;
+    // }
+
+    static loadPlayers(email: string): Players | null {
+        return Players.loadPlayersFromSessionStorage(email);
     }
 
     isPlayerInfoValid(name: string, email: string): PlayerInfoResult {

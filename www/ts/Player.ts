@@ -86,16 +86,16 @@ export default class Player {
         return new Player(Player.randomName(), `${Player.randomName().toLowerCase()}@comp645.com`);
     }
 
-    static load() : Player | null {
-        const saved = sessionStorage.getItem("player");
-        if(saved){
-            const player = JSON.parse(saved);
-            return player;
-        }
-        return null;
-    }
+    // static load(email: string) : Player | null {
+    //     const saved = sessionStorage.getItem(email);
+    //     if(saved){
+    //         const player = JSON.parse(saved);
+    //         return player;
+    //     }
+    //     return null;
+    // }
 
-    save() {
-        sessionStorage.setItem("player", JSON.stringify(this));
-    }
+    // save() {
+    //     sessionStorage.setItem(this.email, JSON.stringify(this));
+    // }
 }
