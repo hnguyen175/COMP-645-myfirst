@@ -55,3 +55,8 @@ Vitest.test("loadPlayersFromSessionStorage does not throw error when no players 
     const players = PlayerService.loadPlayers("nonexistent@example.com");
     Vitest.expect(players).toBeNull();
 });
+
+Vitest.test("loadPlayersFromSessionStorage from invalid JSON does not throw error", () => {
+    localStorage.setItem("nonexistent@example.com", "[]");
+    Vitest.expect(() => Players.loadPlayersFromSessionStorage("nonexistent@example.com")).not.toThrow();
+});
