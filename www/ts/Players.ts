@@ -19,13 +19,13 @@ export default class Players {
         this.players.push(Player.getDefaultPlayer());
     }
 
-    savePlayersToSessionStorage() {
+    savePlayersToStorage() {
         const json = JSON.stringify(this);
-        console.log("Saving players to session storage:", json);
+        console.log("Saving players to storage:", json);
         localStorage.setItem(this.players[0]?.email, json);
     }
 
-    static loadPlayersFromSessionStorage(email: string) : Players | null {
+    static loadPlayersFromStorage(email: string) : Players | null {
         const savedPlayers = localStorage.getItem(email);
         if (savedPlayers) {
             return Players.fromJSON(JSON.parse(savedPlayers));

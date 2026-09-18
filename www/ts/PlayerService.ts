@@ -15,7 +15,7 @@ export default class PlayerService {
         players.addPlayer(player);
         players.addDefaultPlayers();
 
-        players.savePlayersToSessionStorage();
+        players.savePlayersToStorage();
 
         allPlayers.addPlayer(email);
 
@@ -23,7 +23,7 @@ export default class PlayerService {
     }
 
     static loadPlayers(email: string): Players | null {
-        return Players.loadPlayersFromSessionStorage(email);
+        return Players.loadPlayersFromStorage(email);
     }
 
     isPlayerInfoValid(name: string, email: string): PlayerInfoResult {
