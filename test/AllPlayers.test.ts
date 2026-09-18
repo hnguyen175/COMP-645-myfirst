@@ -22,18 +22,24 @@ Vitest.describe('AllPlayers', () => {
         Vitest.expect(setItemSpy).toHaveBeenCalledWith('lsAllPlayers', JSON.stringify([email]));
     });
 
-    Vitest.test('addPlayer does not add a duplicate player email to the set', async () => {
+    Vitest.test('addPlayer moves a player email to the end of the set if it already exists', async () => {
         const email = 'b@c.d';
-        localStorage.setItem('lsAllPlayers', JSON.stringify(['do@not.repeat', email]));
+        localStorage.setItem('lsAllPlayers', JSON.stringify([email, 'do@not.repeat']));
         const module = await import('../www/ts/AllPlayers');
         const allPlayers = module.default;
 
         const setItemSpy = Vitest.vi.spyOn(Storage.prototype, 'setItem');
 
-        allPlayers.addPlayer(email);
-        Vitest.expect(setItemSpy).not.toHaveBeenCalled();
+        let allPlayersList = allPlayers.getAllPlayers();
+        Vitest.expect(allPlayersList.length).toBe(2);
+        Vitest.expect(allPlayersList.indexOf(email)).toBe(0);
 
-        const allPlayersList = allPlayers.getAllPlayers();
-        Vitest.expect(allPlayersList.filter(e => e === email).length).toBe(1);
+        allPlayers.addPlayer(email);
+
+        Vitest.expect(setItemSpy).toHaveBeenCalledOnce();
+
+        allPlayersList = allPlayers.getAllPlayers();
+        Vitest.expect(allPlayersList.length).toBe(2);
+        Vitest.expect(allPlayersList.indexOf(email)).toBe(1);
     });
 });

@@ -18,7 +18,7 @@ class AllPlayers {
 
     addPlayer(email: string) {
         if (this.lsAllPlayers.has(email)) {
-            return;
+            this.lsAllPlayers.delete(email);
         }
         this.lsAllPlayers.add(email);
         this.saveAllPlayersToStorage();
