@@ -5,7 +5,7 @@ import Player from '../www/ts/Player';
 let playerService: PlayerService;
 Vitest.beforeEach(() => {
     playerService = new PlayerService();
-    sessionStorage.clear();
+    localStorage.clear();
 });
 
 Vitest.test("savePlayers saves a player to session storage", () => {

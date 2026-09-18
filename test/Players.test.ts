@@ -5,7 +5,7 @@ import Player from '../www/ts/Player';
 import PlayerService from '../www/ts/PlayerService';
 
 Vitest.beforeEach(() => {
-    sessionStorage.clear();
+    localStorage.clear();
 });
 
 Vitest.test("addPlayer adds a player to the players array", () => {
@@ -29,7 +29,7 @@ Vitest.test("savePlayersToSessionStorage saves players to session storage", () =
     players.addPlayer(player1);
     players.addPlayer(player2);
     players.savePlayersToSessionStorage();
-    // const savedPlayers = sessionStorage.getItem("players");
+    // const savedPlayers = localStorage.getItem("players");
     const savedPlayers = PlayerService.loadPlayers(player1.email);
     Vitest.expect(savedPlayers).not.toBeNull();
     Vitest.expect(savedPlayers!.players.length).toBe(2);

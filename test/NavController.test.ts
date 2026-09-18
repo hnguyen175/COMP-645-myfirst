@@ -24,7 +24,7 @@ Vitest.beforeEach(() => {
 
     // Clear the document body before each test
     document.body.innerHTML = '';
-    sessionStorage.clear();
+    localStorage.clear();
 });
 
 Vitest.test("showSection displays the correct section and hides others", () => {

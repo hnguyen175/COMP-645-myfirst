@@ -22,15 +22,22 @@ export default class Players {
     savePlayersToSessionStorage() {
         const json = JSON.stringify(this);
         console.log("Saving players to session storage:", json);
-        sessionStorage.setItem(this.players[0]?.email, json);
+        localStorage.setItem(this.players[0]?.email, json);
     }
 
     static loadPlayersFromSessionStorage(email: string) : Players | null {
-        const savedPlayers = sessionStorage.getItem(email);
+        const savedPlayers = localStorage.getItem(email);
         if (savedPlayers) {
-            const playersData = JSON.parse(savedPlayers) as Players;
-            return playersData;
+            return Players.fromJSON(JSON.parse(savedPlayers));
         }
         return null;
+    }
+
+    private static fromJSON(data: Partial<Players>) : Players {
+        const players = Object.assign(new Players(), data);
+
+        players.players = data.players?.map(
+            playerData => Player.fromJSON(playerData)) || [];
+        return players;
     }
 };
