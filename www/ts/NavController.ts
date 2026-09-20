@@ -5,12 +5,13 @@ import AllPlayersList from './rendering/AllPlayersList.ts';
 declare const ons: any;
 
 import type { OnsCarouselElement as CarouselElement } from '../lib/onsenui';
+import logginProxy from './utilities/LoggingProxy.ts';
 
 export default class NavController{
     private carousel!: CarouselElement;
 
-    constructor(private playerService: PlayerService = new PlayerService(),
-                private playerView: PlayerView = new PlayerView()) {
+    constructor(private playerService: PlayerService = logginProxy(new PlayerService()),
+                private playerView: PlayerView = logginProxy(new PlayerView())) {
     }
 
     init() : void {

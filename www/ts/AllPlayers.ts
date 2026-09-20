@@ -1,3 +1,5 @@
+import loggingProxy from './utilities/LoggingProxy.ts';
+
 class AllPlayers {
     private lsAllPlayers: Set<string>;
 
@@ -13,7 +15,7 @@ class AllPlayers {
     static fromStorage(): AllPlayers {
         const json = localStorage.getItem("lsAllPlayers");
         const playersArray: string[] = json ? JSON.parse(json) : [];
-        return new AllPlayers(playersArray);
+        return loggingProxy(new AllPlayers(playersArray));
     }
 
     addPlayer(email: string) {

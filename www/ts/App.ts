@@ -1,4 +1,5 @@
 import NavController from './NavController.ts';
+import loggingProxy from './utilities/LoggingProxy.ts';
 
 declare const ons: any;
 
@@ -6,7 +7,7 @@ export default class App {
     private navController: NavController;
 
     constructor() {
-        this.navController = new NavController();
+        this.navController = loggingProxy(new NavController());
         this.navController.init();
 
         ons.ready(() => this.DeviceReady());
@@ -136,4 +137,4 @@ export default class App {
     }
 };
 
-const app = new App();
+const app = loggingProxy(new App());
