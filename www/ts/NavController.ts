@@ -39,7 +39,37 @@ export default class NavController{
         }
     }
 
-    onCarouselNewGame(event: Event) {
+    async onCarouselNewGame(event: Event) {
+        if (this.carousel.activeIndex + 1 >= this.carousel.itemCount) {
+            console.log("Welcome section is active. No action needed.");
+            return;
+        }
+        console.log("activeIndex:", this.carousel.activeIndex, "itemCount:", this.carousel.itemCount);
+        const items = (this.carousel as HTMLElement).querySelectorAll("ons-carousel-item");
+        let foundNewGameItem = false;
+        items.forEach((item, index) => {
+            if (item.id === "caiNewGame") {
+                foundNewGameItem = true;
+            }
+        });
+
+        if (!foundNewGameItem) {
+            console.log("New Game section not found. Loading it.");
+            await this.loadCarouselItems(
+                [
+                    "views/new-game.html",
+                ]);
+
+            document.getElementById("btnRoll")?.addEventListener(
+                "click",
+                (event) => {
+                    console.log("Roll button clicked");
+                    // Implement the roll functionality here
+                    this.onRollButtonClick(event);
+                }
+            );
+        }
+
         this.carousel.next();
     }
 
@@ -47,7 +77,7 @@ export default class NavController{
         const activeItem = NavController.getActiveCarouselItem(event);
         switch (activeItem?.id) {
             case "caiNewGame":
-                this.carousel.swipeable = false;
+                // this.carousel.swipeable = false;
                 break;
             case "caiPlayers":
                 this.priorDisplayingPlayers();
@@ -73,9 +103,14 @@ export default class NavController{
             return;
         }
 
+        if (selectElement.selectedIndex > 0) {
+            console.log("Selected player:", selectElement.options[selectElement.selectedIndex].value);
+            return;
+        }
+
         AllPlayersList.renderAllPlayersList(selectElement, this.playerService.listPlayersFromStorage());
 
-        this.carousel.swipeable = false; // Allow swiping after loading players
+        // this.carousel.swipeable = false; // Allow swiping after loading players
     }
 
     private priorDisplayingPlayers() {
@@ -115,11 +150,11 @@ export default class NavController{
         }
         const isValid = this.playerService.isPlayerInfoValid(playerInputs.name.value, playerInputs.email.value);
         if (!isValid.name && !isValid.email) {
-
-
             this.playerService.savePlayers(playerInputs.name.value, playerInputs.email.value);
+            // TODO add logic to add Players carousel item if not already present
+            await this.addCarouselItem("views/players.html");
 
-            this.carousel.swipeable = true;
+            // this.carousel.swipeable = true;
             await this.carousel.next();
 
             return;
@@ -149,7 +184,9 @@ export default class NavController{
         // Implement the load game functionality here
         const players = this.playerService.loadPlayers(selectedEmail);
         console.log("Load Game button clicked: ", selectedEmail, players);
-        this.carousel.swipeable = true;
+        // this.carousel.swipeable = true;
+        await this.addCarouselItem("views/players.html");
+
         await this.carousel.next();
     }
 
@@ -169,6 +206,10 @@ export default class NavController{
         for (const file of files) {
             await this.loadFile(file, this.carousel);
         }
+    }
+
+    async addCarouselItem(file: string) {
+        await this.loadFile(file, this.carousel);
     }
 
     private async loadFile(file: string, carousel: any) {

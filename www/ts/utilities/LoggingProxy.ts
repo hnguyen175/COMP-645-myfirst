@@ -79,7 +79,7 @@ function getCallerLocation(): string {
         .split("\n")
         .find(line =>
             line.includes("http") &&
-            !line.includes("loggingProxy")
+            !line.includes("LoggingProxy")
         );
 
     if (!caller) {

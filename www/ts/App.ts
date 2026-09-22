@@ -28,7 +28,7 @@ export default class App {
             [
                 "views/welcome.html",
                 "views/new-game.html",
-                "views/players.html"
+                // "views/players.html"
             ]
         );
     }
@@ -94,7 +94,7 @@ export default class App {
                 await this.navController.loadCarouselItems(
                     [
                         "views/load-game.html",
-                        "views/players.html"
+                        // "views/players.html"
                     ]
                 );
                 this.navController.onReloadButtonClick(event);
