@@ -1,26 +1,35 @@
 import PlayerService from './PlayerService.ts';
 import PlayerView from './rendering/PlayerView.ts';
 import AllPlayersList from './rendering/AllPlayersList.ts';
+import NewGame from './carousel-items/NewGame.ts';
+import CarouselItem from './carousel-items/CarouselItem.ts';
 
 declare const ons: any;
 
 import type { OnsCarouselElement as CarouselElement } from '../lib/onsenui';
 import logginProxy from './utilities/LoggingProxy.ts';
+import LoadGame from './carousel-items/LoadGame.ts';
 
 export default class NavController{
     private carousel!: CarouselElement;
+    newGame!: NewGame;
+    loadGame!: LoadGame;
 
     constructor(private playerService: PlayerService = logginProxy(new PlayerService()),
-                private playerView: PlayerView = logginProxy(new PlayerView())) {
+                private playerView: PlayerView = logginProxy(new PlayerView())
+                ) {
     }
 
-    init() : void {
+    async init() : Promise<void> {
         const carousel = document.getElementById("carouselNewGame") as CarouselElement | null;
         if (!carousel) {
             throw new Error("Carousel element not found.");
         }
 
         this.carousel = carousel;
+
+        this.newGame = await NewGame.create(this);
+        this.loadGame= await LoadGame.create(this);
     }
 
     static showSection(sectionId: string){
@@ -40,40 +49,21 @@ export default class NavController{
     }
 
     async onCarouselNewGame(event: Event) {
-        if (this.carousel.activeIndex + 1 >= this.carousel.itemCount) {
-            console.log("Welcome section is active. No action needed.");
-            return;
-        }
-        console.log("activeIndex:", this.carousel.activeIndex, "itemCount:", this.carousel.itemCount);
-        const items = (this.carousel as HTMLElement).querySelectorAll("ons-carousel-item");
-        let foundNewGameItem = false;
-        items.forEach((item, index) => {
-            if (item.id === "caiNewGame") {
-                foundNewGameItem = true;
-            }
-        });
-
-        if (!foundNewGameItem) {
-            console.log("New Game section not found. Loading it.");
-            await this.loadCarouselItems(
-                [
-                    "views/new-game.html",
-                ]);
-
-            document.getElementById("btnRoll")?.addEventListener(
-                "click",
-                (event) => {
-                    console.log("Roll button clicked");
-                    // Implement the roll functionality here
-                    this.onRollButtonClick(event);
-                }
-            );
-        }
-
-        this.carousel.next();
+        // if (this.carousel.activeIndex + 1 >= this.carousel.itemCount) {
+        //     console.log("Welcome section is active. No action needed.");
+        //     return;
+        // }
+        await this.loadCarouselItem([this.newGame]);
+        await this.carousel.next();
     }
 
-    onCarouselPriorDisplayingItem(event: Event) {
+    onCarouselPriorDisplayingItem(event: any) {
+        let needToReset = false;
+        if (event.activeIndex > event.lastActiveIndex) {
+            // go forward, we need to reset data
+            needToReset = true;
+        }
+
         const activeItem = NavController.getActiveCarouselItem(event);
         switch (activeItem?.id) {
             case "caiNewGame":
@@ -83,14 +73,14 @@ export default class NavController{
                 this.priorDisplayingPlayers();
                 break;
             case "caiLoadGame":
-                this.priorDisplayingLoadGame();
+                this.priorDisplayingLoadGame(needToReset);
                 break;
         }; 
     }
 
-    private priorDisplayingLoadGame() {
+    private priorDisplayingLoadGame(needToReset : boolean) {
         // Implement any logic needed before displaying the load game section
-        const listPlayers = document.getElementById("lstPlayers");
+        const listPlayers = document.getElementById("lstPlayers") as any;
         if (!listPlayers) {
             console.error("Player list element not found.");
             return;
@@ -103,10 +93,12 @@ export default class NavController{
             return;
         }
 
-        if (selectElement.selectedIndex > 0) {
+        if (!needToReset && selectElement.selectedIndex > 0) {
             console.log("Selected player:", selectElement.options[selectElement.selectedIndex].value);
             return;
         }
+        selectElement.selectedIndex = 0;
+        selectElement.dispatchEvent(new Event("change", {bubbles: true}));
 
         AllPlayersList.renderAllPlayersList(selectElement, this.playerService.listPlayersFromStorage());
 
@@ -191,7 +183,8 @@ export default class NavController{
     }
 
     async onReloadButtonClick(event: Event) {
-        await this.carousel.next(); // Move to the first item after reloading all items
+        await this.loadCarouselItem([this.loadGame]);
+        await this.carousel.next();
     }
 
     async loadCarouselItems(files: string[]) {
@@ -218,5 +211,19 @@ export default class NavController{
         const item = ons.createElement(html.trim());
 
         carousel.appendChild(item);
+    }
+
+    async loadCarouselItem(carouselItems: CarouselItem[]){
+        const allCarouselItems = this.carousel.querySelectorAll("ons-carousel-item") as NodeListOf<HTMLElement>;
+
+        for (const item of allCarouselItems) {
+            if (item.id !== "caiWelcome") { // Keep the welcome item
+                item.remove();
+            }
+        }
+
+        for (const carouselItem of carouselItems) {
+            this.carousel.appendChild(carouselItem.getCarouselItem());
+        }
     }
 };

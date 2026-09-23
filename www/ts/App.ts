@@ -8,13 +8,13 @@ export default class App {
 
     constructor() {
         this.navController = loggingProxy(new NavController());
-        this.navController.init();
 
         ons.ready(() => this.DeviceReady());
     }
 
     private async DeviceReady() {
         console.log("Device is ready");
+        await this.navController.init();
 
         await this.initialize();
 
@@ -79,54 +79,38 @@ export default class App {
             }
         );
 
-        document.getElementById("btnRoll")?.addEventListener(
-            "click",
-            (event) => {
-                console.log("Roll button clicked");
-                // Implement the roll functionality here
-                this.navController.onRollButtonClick(event);
-            }
-        );
         document.getElementById("btnReload")?.addEventListener(
             "click",
             async (event) => {
                 console.log("Reload button clicked");
-                await this.navController.loadCarouselItems(
-                    [
-                        "views/load-game.html",
-                        // "views/players.html"
-                    ]
-                );
                 this.navController.onReloadButtonClick(event);
-
-                this.registerLoadGameEvents();
             }
         );
     }
 
-    private registerLoadGameEvents() {
-        const lstPlayers = document.getElementById("lstPlayers");
-        const btnLoadGame = document.getElementById("btnLoadGame");
+    // private registerLoadGameEvents() {
+    //     const lstPlayers = document.getElementById("lstPlayers");
+    //     const btnLoadGame = document.getElementById("btnLoadGame");
 
-        if (!lstPlayers || !btnLoadGame) {
-            console.error("Load game elements not found.");
-            return;
-        }
+    //     if (!lstPlayers || !btnLoadGame) {
+    //         console.error("Load game elements not found.");
+    //         return;
+    //     }
 
-        lstPlayers.addEventListener(
-            "change",
-            (event) => {
-                btnLoadGame.removeAttribute("disabled");
-            }
-        );
+    //     lstPlayers.addEventListener(
+    //         "change",
+    //         (event) => {
+    //             btnLoadGame.removeAttribute("disabled");
+    //         }
+    //     );
 
-        btnLoadGame.addEventListener(
-            "click",
-            (event) => {
-                this.navController.onLoadGameButtonClick(event);
-            }
-        );
-    }
+    //     btnLoadGame.addEventListener(
+    //         "click",
+    //         (event) => {
+    //             this.navController.onLoadGameButtonClick(event);
+    //         }
+    //     );
+    // }
 
     private emptyInput(inputId: string) : void {
         const input = document.getElementById(inputId) as HTMLInputElement || null;
