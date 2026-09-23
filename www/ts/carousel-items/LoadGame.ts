@@ -15,12 +15,11 @@ export default class LoadGame extends CarouselItem{
     }
 
     private registerEvents(): void{
-        this.getCarouselItem().addEventListener("click", (event) => {
+        const carouselItem = this.getCarouselItem();
+        carouselItem.addEventListener("click", (event) => {
             if ((event.target as HTMLElement).closest("#btnLoadGame"))
                 this.navController.onLoadGameButtonClick(event);
-        });
 
-        this.getCarouselItem().addEventListener("change", (event) => {
             const btnLoadGame = must(document.getElementById("btnLoadGame")) as any;
             if ((event.target as HTMLElement & {
                 selectedIndex: number;
@@ -29,6 +28,6 @@ export default class LoadGame extends CarouselItem{
             else{
                 btnLoadGame.setAttribute("disabled");
             }
-        })
+        });
     }
 }

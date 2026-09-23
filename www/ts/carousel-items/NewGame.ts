@@ -18,6 +18,20 @@ export default class NewGame extends CarouselItem {
         this.getCarouselItem().addEventListener("click", (event) => {
             if ((event.target as HTMLElement).closest("#btnRoll"))
                 this.navController.onRollButtonClick(event);
+
+            if ((event.target as HTMLElement).closest("#btnClearName"))
+                this.emptyInput("inputPlayerName");
+
+            if ((event.target as HTMLElement).closest("#btnClearEmail"))
+                this.emptyInput("inputPlayerEmail");
         });
+    }
+
+    private emptyInput(inputField: string) : void {
+        const input = document.getElementById(inputField) as HTMLInputElement;
+        if (input) {
+            input.value = "";
+            input.focus();
+        }
     }
 }

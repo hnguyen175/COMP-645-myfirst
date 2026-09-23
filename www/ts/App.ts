@@ -58,20 +58,6 @@ export default class App {
             (event) => this.navController.onCarouselPriorDisplayingItem(event)
         );
 
-        document.getElementById("btnClearName")?.addEventListener(
-            "click",
-            (event) => {
-                this.emptyInput("inputPlayerName");
-            }
-        );
-
-        document.getElementById("btnClearEmail")?.addEventListener(
-            "click",
-            (event) => {
-                this.emptyInput("inputPlayerEmail");
-            }
-        );
-
         document.getElementById("btnNewGame")?.addEventListener(
             "click",
             (event) => {
@@ -87,30 +73,6 @@ export default class App {
             }
         );
     }
-
-    // private registerLoadGameEvents() {
-    //     const lstPlayers = document.getElementById("lstPlayers");
-    //     const btnLoadGame = document.getElementById("btnLoadGame");
-
-    //     if (!lstPlayers || !btnLoadGame) {
-    //         console.error("Load game elements not found.");
-    //         return;
-    //     }
-
-    //     lstPlayers.addEventListener(
-    //         "change",
-    //         (event) => {
-    //             btnLoadGame.removeAttribute("disabled");
-    //         }
-    //     );
-
-    //     btnLoadGame.addEventListener(
-    //         "click",
-    //         (event) => {
-    //             this.navController.onLoadGameButtonClick(event);
-    //         }
-    //     );
-    // }
 
     private emptyInput(inputId: string) : void {
         const input = document.getElementById(inputId) as HTMLInputElement || null;
