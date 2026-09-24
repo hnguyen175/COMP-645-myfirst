@@ -20,6 +20,12 @@ export default class LoadGame extends CarouselItem{
     loadPlayers(){
         const listPlayers = must(this.getCarouselItem().querySelector<ons.OnsSelectElement>("#selPlayers"));
         AllPlayersList.renderAllPlayersList(listPlayers, this.playerService.listPlayersFromStorage());
+
+        // loadPlayder is called at the start up or when new player is added
+        // need to reset the selected to the disable item and set the load button to disabled
+        listPlayers.selectedIndex = 0;
+        const btnLoadGame = must(this.getCarouselItem().querySelector<ons.OnsButtonElement>("#btnLoadGame"));
+        btnLoadGame.disabled = true;
     }
 
     private registerEvents(): void{
