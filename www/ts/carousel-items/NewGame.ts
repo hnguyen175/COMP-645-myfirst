@@ -16,13 +16,14 @@ export default class NewGame extends CarouselItem {
 
     private registerEvents(): void {
         this.getCarouselItem().addEventListener("click", (event) => {
-            if ((event.target as HTMLElement).closest("#btnRoll"))
-                this.navController.onRollButtonClick(event);
+            const target = event.target as HTMLElement;
+            if (target.id === "btnRoll")
+                this.navController.onRollButtonClick();
 
-            if ((event.target as HTMLElement).closest("#btnClearName"))
+            if (target.id === "btnClearName")
                 this.emptyInput("inputPlayerName");
 
-            if ((event.target as HTMLElement).closest("#btnClearEmail"))
+            if (target.id === "btnClearEmail")
                 this.emptyInput("inputPlayerEmail");
         });
     }

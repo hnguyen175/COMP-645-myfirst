@@ -1,8 +1,6 @@
 import NavController from './NavController.ts';
 import loggingProxy from './utilities/LoggingProxy.ts';
 
-declare const ons: any;
-
 export default class App {
     private navController: NavController;
 
@@ -60,16 +58,16 @@ export default class App {
 
         document.getElementById("btnNewGame")?.addEventListener(
             "click",
-            (event) => {
-                this.navController.onCarouselNewGame(event);
+            () => {
+                this.navController.onCarouselNewGame();
             }
         );
 
         document.getElementById("btnReload")?.addEventListener(
             "click",
-            async (event) => {
+            async () => {
                 console.log("Reload button clicked");
-                this.navController.onReloadButtonClick(event);
+                this.navController.onReloadButtonClick();
             }
         );
     }
@@ -83,4 +81,4 @@ export default class App {
     }
 };
 
-const app = loggingProxy(new App());
+loggingProxy(new App());

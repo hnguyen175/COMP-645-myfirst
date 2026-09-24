@@ -1,5 +1,3 @@
-declare const ons: any;
-
 export default abstract class CarouselItem {
     constructor (private readonly carouselItem : HTMLElement) {
     }

@@ -18,7 +18,7 @@ export default class LoadGame extends CarouselItem{
     }
 
     loadPlayers(){
-        const listPlayers = must(this.getCarouselItem().querySelector("#selPlayers") as any);
+        const listPlayers = must(this.getCarouselItem().querySelector<ons.OnsSelectElement>("#selPlayers"));
         AllPlayersList.renderAllPlayersList(listPlayers, this.playerService.listPlayersFromStorage());
     }
 
@@ -26,12 +26,13 @@ export default class LoadGame extends CarouselItem{
         const carouselItem = this.getCarouselItem();
         carouselItem.addEventListener("click", (event) => {
             if ((event.target as HTMLElement).closest("#btnLoadGame"))
-                this.navController.onLoadGameButtonClick(event);
+                this.navController.onLoadGameButtonClick();
         });
 
         carouselItem.addEventListener("change", (event) => {
-            if ((event.target as HTMLElement).closest("#lstPlayers")){
-                const btnLoadGame = must(document.getElementById("btnLoadGame")) as any;
+            const target = event.target as HTMLElement;
+            if (target.id === "selPlayers") {
+                const btnLoadGame = must(document.getElementById("btnLoadGame")) as HTMLButtonElement;
                 btnLoadGame.removeAttribute("disabled");
             }
         });

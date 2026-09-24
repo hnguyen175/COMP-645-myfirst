@@ -1,22 +1,25 @@
 import PlayerService from './PlayerService.ts';
 import PlayerView from './rendering/PlayerView.ts';
-import AllPlayersList from './rendering/AllPlayersList.ts';
 import NewGame from './carousel-items/NewGame.ts';
 import CarouselItem from './carousel-items/CarouselItem.ts';
-
-declare const ons: any;
+import must from './utilities/RequiredField.ts';
 
 import type { OnsCarouselElement as CarouselElement } from '../lib/onsenui';
-import logginProxy from './utilities/LoggingProxy.ts';
+import loggingProxy from './utilities/LoggingProxy.ts';
 import LoadGame from './carousel-items/LoadGame.ts';
 
+interface CarouselChangeEvent extends Event {
+    carousel: ons.OnsCarouselElement;
+    activeIndex: number;
+}
+
 export default class NavController{
-    private carousel!: CarouselElement;
+    private carousel!: ons.OnsCarouselElement;
     newGame!: NewGame;
     loadGame!: LoadGame;
 
-    constructor(private playerService: PlayerService = logginProxy(new PlayerService()),
-                private playerView: PlayerView = logginProxy(new PlayerView())
+    constructor(private playerService: PlayerService = loggingProxy(new PlayerService()),
+                private playerView: PlayerView = loggingProxy(new PlayerView())
                 ) {
     }
 
@@ -33,13 +36,13 @@ export default class NavController{
     }
 
     static showSection(sectionId: string){
-        let sections = document.querySelectorAll("section");
+        const sections = document.querySelectorAll("section");
         if (!sections || sections.length == 0){
             console.error("No sections found in the document.");
             return;
         }
 
-        for (let section of sections){
+        for (const section of sections){
             if (section.id == sectionId){
                 section.style.display = "block";
             } else {
@@ -48,12 +51,12 @@ export default class NavController{
         }
     }
 
-    async onCarouselNewGame(event: Event) {
+    async onCarouselNewGame() {
         await this.loadCarouselItem([this.newGame]);
         await this.carousel.next();
     }
 
-    onCarouselPriorDisplayingItem(event: any) {
+    onCarouselPriorDisplayingItem(event: Event) {
         const activeItem = NavController.getActiveCarouselItem(event);
         switch (activeItem?.id) {
             case "caiNewGame":
@@ -75,8 +78,8 @@ export default class NavController{
     }
 
     private static getActiveCarouselItem(event: Event) {
-        const items = ((event as any).carousel as HTMLElement).querySelectorAll("ons-carousel-item");
-        const activeItem = items[(event as any).activeIndex];
+        const items = ((event as CarouselChangeEvent).carousel as HTMLElement).querySelectorAll("ons-carousel-item");
+        const activeItem = items[(event as CarouselChangeEvent).activeIndex];
         return activeItem;
     }
 
@@ -95,17 +98,17 @@ export default class NavController{
         };
     }
 
-    async onRollButtonClick(event: Event) {
+    async onRollButtonClick() {
         const playerInputs = NavController.playerInputs();
         if (!playerInputs) {
             console.error("Player form fields not found.");
             return;
         }
         const isValid = this.playerService.isPlayerInfoValid(playerInputs.name.value, playerInputs.email.value);
+
         if (!isValid.name && !isValid.email) {
             this.playerService.savePlayers(playerInputs.name.value, playerInputs.email.value);
             this.loadGame.loadPlayers();
-            // TODO add logic to add Players carousel item if not already present
             await this.addCarouselItem("views/players.html");
 
             await this.carousel.next();
@@ -121,12 +124,8 @@ export default class NavController{
         }
     }
 
-    async onLoadGameButtonClick(event: Event) {
-        const listPlayers = document.getElementById("lstPlayers") as any;
-        if (!listPlayers) {
-            console.error("Player list element not found.");
-            return;
-        }
+    async onLoadGameButtonClick() {
+        const listPlayers = must(document.getElementById("lstPlayers") as HTMLSelectElement | null);
         
         const selectedEmail = listPlayers.value;
         if (!selectedEmail) {
@@ -142,9 +141,10 @@ export default class NavController{
         await this.carousel.next();
     }
 
-    async onReloadButtonClick(event: Event) {
+    async onReloadButtonClick() {
+        // add load-game html page
         await this.loadCarouselItem([this.loadGame]);
-        // this.loadGame.loadPlayers();
+
         await this.carousel.next();
     }
 
@@ -166,10 +166,10 @@ export default class NavController{
         await this.loadFile(file, this.carousel);
     }
 
-    private async loadFile(file: string, carousel: any) {
+    private async loadFile(file: string, carousel: CarouselElement) {
         const response = await fetch(file);
         const html = await response.text();
-        const item = ons.createElement(html.trim());
+        const item = ons.createElement(html.trim()) as Node;
 
         carousel.appendChild(item);
     }
