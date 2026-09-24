@@ -4,7 +4,6 @@ import NewGame from './carousel-items/NewGame.ts';
 import CarouselItem from './carousel-items/CarouselItem.ts';
 import must from './utilities/RequiredField.ts';
 
-import type { OnsCarouselElement as CarouselElement } from '../lib/onsenui';
 import loggingProxy from './utilities/LoggingProxy.ts';
 import LoadGame from './carousel-items/LoadGame.ts';
 
@@ -24,7 +23,7 @@ export default class NavController{
     }
 
     async init() : Promise<void> {
-        const carousel = document.getElementById("carouselNewGame") as CarouselElement | null;
+        const carousel = document.getElementById("carouselNewGame") as ons.OnsCarouselElement | null;
         if (!carousel) {
             throw new Error("Carousel element not found.");
         }
@@ -166,7 +165,7 @@ export default class NavController{
         await this.loadFile(file, this.carousel);
     }
 
-    private async loadFile(file: string, carousel: CarouselElement) {
+    private async loadFile(file: string, carousel: ons.OnsCarouselElement) {
         const response = await fetch(file);
         const html = await response.text();
         const item = ons.createElement(html.trim()) as Node;
