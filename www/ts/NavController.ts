@@ -29,7 +29,7 @@ export default class NavController{
         this.carousel = carousel;
 
         this.newGame = await NewGame.create(this);
-        this.loadGame= await LoadGame.create(this);
+        this.loadGame= await LoadGame.create(this, this.playerService);
     }
 
     static showSection(sectionId: string){
@@ -49,60 +49,21 @@ export default class NavController{
     }
 
     async onCarouselNewGame(event: Event) {
-        // if (this.carousel.activeIndex + 1 >= this.carousel.itemCount) {
-        //     console.log("Welcome section is active. No action needed.");
-        //     return;
-        // }
         await this.loadCarouselItem([this.newGame]);
         await this.carousel.next();
     }
 
     onCarouselPriorDisplayingItem(event: any) {
-        let needToReset = false;
-        if (event.activeIndex > event.lastActiveIndex) {
-            // go forward, we need to reset data
-            needToReset = true;
-        }
-
         const activeItem = NavController.getActiveCarouselItem(event);
         switch (activeItem?.id) {
             case "caiNewGame":
-                // this.carousel.swipeable = false;
                 break;
             case "caiPlayers":
                 this.priorDisplayingPlayers();
                 break;
             case "caiLoadGame":
-                this.priorDisplayingLoadGame(needToReset);
                 break;
         }; 
-    }
-
-    private priorDisplayingLoadGame(needToReset : boolean) {
-        // Implement any logic needed before displaying the load game section
-        const listPlayers = document.getElementById("lstPlayers") as any;
-        if (!listPlayers) {
-            console.error("Player list element not found.");
-            return;
-        }
-
-        // ons-select expands to a select element, so we need to access the underlying select element
-        const selectElement = listPlayers.querySelector("select");
-        if (!selectElement) {
-            console.error("Player select element not found.");
-            return;
-        }
-
-        if (!needToReset && selectElement.selectedIndex > 0) {
-            console.log("Selected player:", selectElement.options[selectElement.selectedIndex].value);
-            return;
-        }
-        selectElement.selectedIndex = 0;
-        selectElement.dispatchEvent(new Event("change", {bubbles: true}));
-
-        AllPlayersList.renderAllPlayersList(selectElement, this.playerService.listPlayersFromStorage());
-
-        // this.carousel.swipeable = false; // Allow swiping after loading players
     }
 
     private priorDisplayingPlayers() {
@@ -143,10 +104,10 @@ export default class NavController{
         const isValid = this.playerService.isPlayerInfoValid(playerInputs.name.value, playerInputs.email.value);
         if (!isValid.name && !isValid.email) {
             this.playerService.savePlayers(playerInputs.name.value, playerInputs.email.value);
+            this.loadGame.loadPlayers();
             // TODO add logic to add Players carousel item if not already present
             await this.addCarouselItem("views/players.html");
 
-            // this.carousel.swipeable = true;
             await this.carousel.next();
 
             return;
@@ -176,7 +137,6 @@ export default class NavController{
         // Implement the load game functionality here
         const players = this.playerService.loadPlayers(selectedEmail);
         console.log("Load Game button clicked: ", selectedEmail, players);
-        // this.carousel.swipeable = true;
         await this.addCarouselItem("views/players.html");
 
         await this.carousel.next();
@@ -184,6 +144,7 @@ export default class NavController{
 
     async onReloadButtonClick(event: Event) {
         await this.loadCarouselItem([this.loadGame]);
+        // this.loadGame.loadPlayers();
         await this.carousel.next();
     }
 
