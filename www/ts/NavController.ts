@@ -58,13 +58,13 @@ export default class NavController{
     onCarouselPriorDisplayingItem(event: Event) {
         const activeItem = NavController.getActiveCarouselItem(event);
         switch (activeItem?.id) {
-            case "caiNewGame":
-                break;
+            // case "caiNewGame":
+            //     break;
             case "caiPlayers":
                 this.priorDisplayingPlayers();
                 break;
-            case "caiLoadGame":
-                break;
+            // case "caiLoadGame":
+            //     break;
         }; 
     }
 
