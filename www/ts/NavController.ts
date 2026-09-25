@@ -7,6 +7,7 @@ import must from './utilities/RequiredField.ts';
 import loggingProxy from './utilities/LoggingProxy.ts';
 import LoadGame from './carousel-items/LoadGame.ts';
 import Welcome from './carousel-items/Welcome.ts';
+import Comrades from './carousel-items/Comrades.ts';
 
 interface CarouselChangeEvent extends Event {
     carousel: ons.OnsCarouselElement;
@@ -18,6 +19,7 @@ export default class NavController{
     newGame!: NewGame;
     loadGame!: LoadGame;
     welcome!: Welcome;
+    comrades!: Comrades;
 
     constructor(private playerService: PlayerService = loggingProxy(new PlayerService()),
                 private playerView: PlayerView = loggingProxy(new PlayerView())
@@ -35,6 +37,7 @@ export default class NavController{
         this.newGame = await NewGame.create(this);
         this.loadGame= await LoadGame.create(this, this.playerService);
         this.welcome = await Welcome.create(this);
+        this.comrades = await Comrades.create();
     }
 
     static showSection(sectionId: string){
@@ -111,7 +114,7 @@ export default class NavController{
         if (!isValid.name && !isValid.email) {
             this.playerService.savePlayers(playerInputs.name.value, playerInputs.email.value);
             this.loadGame.loadPlayers();
-            await this.addCarouselItem("views/players.html");
+            await this.addCarouselItem(this.comrades);
 
             await this.carousel.next();
 
@@ -138,7 +141,7 @@ export default class NavController{
         // Implement the load game functionality here
         const players = this.playerService.loadPlayers(selectedEmail);
         console.log("Load Game button clicked: ", selectedEmail, players);
-        await this.addCarouselItem("views/players.html");
+        await this.addCarouselItem(this.comrades);
 
         await this.carousel.next();
     }
@@ -150,16 +153,8 @@ export default class NavController{
         await this.carousel.next();
     }
 
-    async addCarouselItem(file: string) {
-        await this.loadFile(file, this.carousel);
-    }
-
-    private async loadFile(file: string, carousel: ons.OnsCarouselElement) {
-        const response = await fetch(file);
-        const html = await response.text();
-        const item = ons.createElement(html.trim()) as Node;
-
-        carousel.appendChild(item);
+    async addCarouselItem(carouselItem: CarouselItem) {
+        await this.carousel.appendChild(carouselItem.getCarouselItem());
     }
 
     async loadCarouselItem(carouselItems: CarouselItem[]){
