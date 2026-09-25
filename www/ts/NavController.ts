@@ -6,6 +6,7 @@ import must from './utilities/RequiredField.ts';
 
 import loggingProxy from './utilities/LoggingProxy.ts';
 import LoadGame from './carousel-items/LoadGame.ts';
+import Welcome from './carousel-items/Welcome.ts';
 
 interface CarouselChangeEvent extends Event {
     carousel: ons.OnsCarouselElement;
@@ -16,6 +17,7 @@ export default class NavController{
     private carousel!: ons.OnsCarouselElement;
     newGame!: NewGame;
     loadGame!: LoadGame;
+    welcome!: Welcome;
 
     constructor(private playerService: PlayerService = loggingProxy(new PlayerService()),
                 private playerView: PlayerView = loggingProxy(new PlayerView())
@@ -32,6 +34,7 @@ export default class NavController{
 
         this.newGame = await NewGame.create(this);
         this.loadGame= await LoadGame.create(this, this.playerService);
+        this.welcome = await Welcome.create(this);
     }
 
     static showSection(sectionId: string){
@@ -145,20 +148,6 @@ export default class NavController{
         await this.loadCarouselItem([this.loadGame]);
 
         await this.carousel.next();
-    }
-
-    async loadCarouselItems(files: string[]) {
-        const allCarouselItems = this.carousel.querySelectorAll("ons-carousel-item") as NodeListOf<HTMLElement>;
-
-        for (const item of allCarouselItems) {
-            if (item.id !== "caiWelcome") { // Keep the welcome item
-                item.remove();
-            }
-        }
-
-        for (const file of files) {
-            await this.loadFile(file, this.carousel);
-        }
     }
 
     async addCarouselItem(file: string) {

@@ -22,11 +22,10 @@ export default class App {
     }
 
     private async initialize(){
-        await this.navController.loadCarouselItems(
+        await this.navController.loadCarouselItem(
             [
-                "views/welcome.html",
-                "views/new-game.html",
-                // "views/players.html"
+                this.navController.welcome,
+                this.navController.newGame,
             ]
         );
     }
@@ -55,29 +54,6 @@ export default class App {
             "prechange",
             (event) => this.navController.onCarouselPriorDisplayingItem(event)
         );
-
-        document.getElementById("btnNewGame")?.addEventListener(
-            "click",
-            () => {
-                this.navController.onCarouselNewGame();
-            }
-        );
-
-        document.getElementById("btnReload")?.addEventListener(
-            "click",
-            async () => {
-                console.log("Reload button clicked");
-                this.navController.onReloadButtonClick();
-            }
-        );
-    }
-
-    private emptyInput(inputId: string) : void {
-        const input = document.getElementById(inputId) as HTMLInputElement || null;
-        if (input) {
-            input.value = "";
-            input.focus();
-        }
     }
 };
 
