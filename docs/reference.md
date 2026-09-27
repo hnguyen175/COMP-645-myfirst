@@ -17,4 +17,4 @@ From: [zoom](https://sdccd-edu.zoom.us/rec/share/uN9qQyL_b1fDLC2Jiyf-jaToTJShPHC
 ![Save Players](images\save-players.png)
 
 * Load Game
-![Load Game](images\load-game.png)
+![Load Game](images\load-game2.png)
