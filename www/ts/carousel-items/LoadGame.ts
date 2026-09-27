@@ -38,7 +38,7 @@ export default class LoadGame extends CarouselItem{
         carouselItem.addEventListener("change", (event) => {
             const target = event.target as HTMLElement;
             if (target.id === "selPlayers") {
-                const btnLoadGame = must(document.getElementById("btnLoadGame")) as HTMLButtonElement;
+                const btnLoadGame = must(this.getCarouselItem().querySelector("#btnLoadGame")) as HTMLButtonElement;
                 btnLoadGame.removeAttribute("disabled");
             }
         });

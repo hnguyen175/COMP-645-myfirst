@@ -21,15 +21,15 @@ export default class NewGame extends CarouselItem {
                 this.navController.onRollButtonClick();
 
             if (target.id === "btnClearName")
-                this.emptyInput("inputPlayerName");
+                this.emptyInput("onsPlayerName");
 
             if (target.id === "btnClearEmail")
-                this.emptyInput("inputPlayerEmail");
+                this.emptyInput("onsPlayerEmail");
         });
     }
 
     private emptyInput(inputField: string) : void {
-        const input = document.getElementById(inputField) as HTMLInputElement;
+        const input = this.getCarouselItem().querySelector(`#${inputField}`) as HTMLInputElement;
         if (input) {
             input.value = "";
             input.focus();

@@ -78,9 +78,11 @@ function getCallerLocation(): string {
     const caller = stack
         .split("\n")
         .find(line =>
-            line.includes("http") &&
-            !line.includes("LoggingProxy")
+            line.search(/\/[^/]+:\d+:\d+\)?$/) >= 0 &&
+            !(line.includes("LoggingProxy.js")
+            )
         );
+            // /\/[^/]+:\d+:\d+\)?$/.test(line) &&
 
     if (!caller) {
         return "";
@@ -89,7 +91,7 @@ function getCallerLocation(): string {
     // Extract:
     // NavController.js:51
     // instead of:
-    // http://localhost:8080/js/NavController.js:51:24
+    // (http://localhost:8080/js/NavController.js:51:24)
     const match = caller.match(/\/([^/]+):(\d+):\d+\)?$/);
 
     if (!match) {
@@ -97,4 +99,5 @@ function getCallerLocation(): string {
     }
 
     return `${match[1]}:${match[2]}`;
+    // return caller;
 }
