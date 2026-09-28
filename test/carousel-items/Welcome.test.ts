@@ -1,8 +1,10 @@
 import * as Vitest from "vitest";
 import Welcome from "../../www/ts/carousel-items/Welcome";
+import must from "../../www/ts/utilities/RequiredField";
 
 import welcomeHtml from "../../www/views/welcome.html?raw";
 let navControllerMock: any;
+let playerServiceMock: any;
 
 Vitest.beforeAll(async () => {
     // Set up the DOM environment for testing
@@ -25,11 +27,24 @@ Vitest.beforeAll(async () => {
             return template.content.firstElementChild as HTMLElement;
         }
     });
+
+    playerServiceMock = {
+        listPlayersFromStorage: Vitest.vi.fn(() => ["a", "b", "c"]),
+    }
 });
 
 Vitest.test("Welcome should be properly initialized", async () => {
-    const welcome = await Welcome.create(navControllerMock);
+    const welcome = await Welcome.create(navControllerMock, playerServiceMock);
+
+    //setup
+    const carousselItem = welcome.getCarouselItem();
+    const reloadButton = must(carousselItem.querySelector("#btnReload") as HTMLButtonElement);
+
+    // there are list of player setup in playerServiceMock, so the reload button should be enabled
+    Vitest.expect(reloadButton.getAttribute("disabled")).toBeNull();
+
     Vitest.expect(welcome).not.toBeNull();
+    Vitest.expect(welcome.getCarouselItem()).not.toBeNull();
 
     (welcome.getCarouselItem().querySelector("#btnNewGame") as HTMLButtonElement).click();
     Vitest.expect(navControllerMock.onCarouselNewGame).toHaveBeenCalled();
@@ -40,4 +55,17 @@ Vitest.test("Welcome should be properly initialized", async () => {
     (welcome.getCarouselItem()).click();
     Vitest.expect(navControllerMock.onCarouselNewGame).not.toHaveBeenCalledTimes(2);
     Vitest.expect(navControllerMock.onReloadButtonClick).not.toHaveBeenCalledTimes(2);
+});
+
+Vitest.test("Welcome should disable reload button when no players in storage", async () => {
+    // Mock the playerService to return an empty list of players
+    playerServiceMock.listPlayersFromStorage = Vitest.vi.fn(() => []);
+    const welcome = await Welcome.create(navControllerMock, playerServiceMock);
+
+    //setup
+    const carousselItem = welcome.getCarouselItem();
+    const reloadButton = must(carousselItem.querySelector("#btnReload") as HTMLButtonElement);
+
+    // there are no players in storage, so the reload button should be disabled
+    Vitest.expect(reloadButton.getAttribute("disabled")).toBe("true");
 });

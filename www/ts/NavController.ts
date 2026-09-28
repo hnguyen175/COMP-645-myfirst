@@ -20,8 +20,8 @@ export default class NavController{
     welcome!: Welcome;
     comrades!: Comrades;
 
-    constructor(private playerService: PlayerService = loggingProxy(new PlayerService()),
-                private playerView: PlayerView = loggingProxy(new PlayerView())
+    constructor(private playerService: PlayerService = new PlayerService(),
+                private playerView: PlayerView = new PlayerView()
                 ) {
     }
 
@@ -34,7 +34,7 @@ export default class NavController{
         this.carousel = carousel;
 
         this.newGame = await NewGame.create(this);
-        this.welcome = await Welcome.create(this);
+        this.welcome = await Welcome.create(this, this.playerService);
         this.comrades = await Comrades.create();
         this.loadGame2 = await LoadGame2.create(this, this.playerService);
     }
@@ -60,20 +60,27 @@ export default class NavController{
         await this.carousel.next();
     }
 
-    onCarouselPriorDisplayingItem(event: Event) {
+    async onCarouselPriorDisplayingItem(event: Event) {
         const activeItem = NavController.getActiveCarouselItem(event);
         switch (activeItem?.id) {
             // case "caiNewGame":
             //     break;
+            case "caiWelcome":
+                await this.priorWelcome();
+                break;
             case "caiPlayers":
-                this.priorDisplayingPlayers();
+                await this.priorDisplayingPlayers();
                 break;
             // case "caiLoadGame":
             //     break;
         }; 
     }
 
-    private priorDisplayingPlayers() {
+    private async priorWelcome() {
+        await this.welcome.updateLoadGameButtonState();
+    }
+
+    private async priorDisplayingPlayers() {
         console.log("Preparing to display players section.");
 
         if (this.playerService.activePlayers !== null) {
