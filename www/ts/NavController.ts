@@ -1,36 +1,52 @@
 import PlayerService from './PlayerService.ts';
 import PlayerView from './rendering/PlayerView.ts';
-import AllPlayersList from './rendering/AllPlayersList.ts';
+import NewGame from './carousel-items/NewGame.ts';
+import CarouselItem from './carousel-items/CarouselItem.ts';
 
-declare const ons: any;
+import loggingProxy from './utilities/LoggingProxy.ts';
+import LoadGame2 from './carousel-items/LoadGame2.ts';
+import Welcome from './carousel-items/Welcome.ts';
+import Comrades from './carousel-items/Comrades.ts';
 
-import type { OnsCarouselElement as CarouselElement } from '../lib/onsenui';
-import logginProxy from './utilities/LoggingProxy.ts';
+interface CarouselChangeEvent extends Event {
+    carousel: ons.OnsCarouselElement;
+    activeIndex: number;
+}
 
 export default class NavController{
-    private carousel!: CarouselElement;
+    private carousel!: ons.OnsCarouselElement;
+    newGame!: NewGame;
+    loadGame2!: LoadGame2;
+    welcome!: Welcome;
+    comrades!: Comrades;
 
-    constructor(private playerService: PlayerService = logginProxy(new PlayerService()),
-                private playerView: PlayerView = logginProxy(new PlayerView())) {
+    constructor(private playerService: PlayerService = new PlayerService(),
+                private playerView: PlayerView = new PlayerView()
+                ) {
     }
 
-    init() : void {
-        const carousel = document.getElementById("carouselNewGame") as CarouselElement | null;
+    async init() : Promise<void> {
+        const carousel = document.getElementById("carouselNewGame") as ons.OnsCarouselElement | null;
         if (!carousel) {
             throw new Error("Carousel element not found.");
         }
 
         this.carousel = carousel;
+
+        this.newGame = await NewGame.create(this);
+        this.welcome = await Welcome.create(this, this.playerService);
+        this.comrades = await Comrades.create();
+        this.loadGame2 = await LoadGame2.create(this, this.playerService);
     }
 
     static showSection(sectionId: string){
-        let sections = document.querySelectorAll("section");
+        const sections = document.querySelectorAll("section");
         if (!sections || sections.length == 0){
             console.error("No sections found in the document.");
             return;
         }
 
-        for (let section of sections){
+        for (const section of sections){
             if (section.id == sectionId){
                 section.style.display = "block";
             } else {
@@ -39,46 +55,32 @@ export default class NavController{
         }
     }
 
-    onCarouselNewGame(event: Event) {
-        this.carousel.next();
+    async onCarouselNewGame() {
+        await this.loadCarouselItem([this.newGame]);
+        await this.carousel.next();
     }
 
-    onCarouselPriorDisplayingItem(event: Event) {
+    async onCarouselPriorDisplayingItem(event: Event) {
         const activeItem = NavController.getActiveCarouselItem(event);
         switch (activeItem?.id) {
-            case "caiNewGame":
-                this.carousel.swipeable = false;
+            // case "caiNewGame":
+            //     break;
+            case "caiWelcome":
+                await this.priorWelcome();
                 break;
             case "caiPlayers":
-                this.priorDisplayingPlayers();
+                await this.priorDisplayingPlayers();
                 break;
-            case "caiLoadGame":
-                this.priorDisplayingLoadGame();
-                break;
+            // case "caiLoadGame":
+            //     break;
         }; 
     }
 
-    private priorDisplayingLoadGame() {
-        // Implement any logic needed before displaying the load game section
-        const listPlayers = document.getElementById("lstPlayers");
-        if (!listPlayers) {
-            console.error("Player list element not found.");
-            return;
-        }
-
-        // ons-select expands to a select element, so we need to access the underlying select element
-        const selectElement = listPlayers.querySelector("select");
-        if (!selectElement) {
-            console.error("Player select element not found.");
-            return;
-        }
-
-        AllPlayersList.renderAllPlayersList(selectElement, this.playerService.listPlayersFromStorage());
-
-        this.carousel.swipeable = false; // Allow swiping after loading players
+    private async priorWelcome() {
+        await this.welcome.updateLoadGameButtonState();
     }
 
-    private priorDisplayingPlayers() {
+    private async priorDisplayingPlayers() {
         console.log("Preparing to display players section.");
 
         if (this.playerService.activePlayers !== null) {
@@ -87,8 +89,8 @@ export default class NavController{
     }
 
     private static getActiveCarouselItem(event: Event) {
-        const items = ((event as any).carousel as HTMLElement).querySelectorAll("ons-carousel-item");
-        const activeItem = items[(event as any).activeIndex];
+        const items = ((event as CarouselChangeEvent).carousel as HTMLElement).querySelectorAll("ons-carousel-item");
+        const activeItem = items[(event as CarouselChangeEvent).activeIndex];
         return activeItem;
     }
 
@@ -107,19 +109,19 @@ export default class NavController{
         };
     }
 
-    async onRollButtonClick(event: Event) {
+    async onRollButtonClick() {
         const playerInputs = NavController.playerInputs();
         if (!playerInputs) {
             console.error("Player form fields not found.");
             return;
         }
         const isValid = this.playerService.isPlayerInfoValid(playerInputs.name.value, playerInputs.email.value);
+
         if (!isValid.name && !isValid.email) {
-
-
             this.playerService.savePlayers(playerInputs.name.value, playerInputs.email.value);
+            this.loadGame2.loadPlayers();
+            await this.addCarouselItem(this.comrades);
 
-            this.carousel.swipeable = true;
             await this.carousel.next();
 
             return;
@@ -133,31 +135,25 @@ export default class NavController{
         }
     }
 
-    async onLoadGameButtonClick(event: Event) {
-        const listPlayers = document.getElementById("lstPlayers") as any;
-        if (!listPlayers) {
-            console.error("Player list element not found.");
-            return;
-        }
-        
-        const selectedEmail = listPlayers.value;
-        if (!selectedEmail) {
-            console.error("No player selected for loading.");
-            return;
-        }
+    async onLoadGame2ButtonClick(email: string) : Promise<void> {
+        this.playerService.loadPlayers(email);
+        await this.addCarouselItem(this.comrades);
 
-        // Implement the load game functionality here
-        const players = this.playerService.loadPlayers(selectedEmail);
-        console.log("Load Game button clicked: ", selectedEmail, players);
-        this.carousel.swipeable = true;
         await this.carousel.next();
     }
 
-    async onReloadButtonClick(event: Event) {
-        await this.carousel.next(); // Move to the first item after reloading all items
+    async onReloadButtonClick() {
+        // add load-game html page
+        await this.loadCarouselItem([this.loadGame2]);
+
+        await this.carousel.next();
     }
 
-    async loadCarouselItems(files: string[]) {
+    async addCarouselItem(carouselItem: CarouselItem) {
+        await this.carousel.appendChild(carouselItem.getCarouselItem());
+    }
+
+    async loadCarouselItem(carouselItems: CarouselItem[]){
         const allCarouselItems = this.carousel.querySelectorAll("ons-carousel-item") as NodeListOf<HTMLElement>;
 
         for (const item of allCarouselItems) {
@@ -166,16 +162,8 @@ export default class NavController{
             }
         }
 
-        for (const file of files) {
-            await this.loadFile(file, this.carousel);
+        for (const carouselItem of carouselItems) {
+            this.carousel.appendChild(carouselItem.getCarouselItem());
         }
-    }
-
-    private async loadFile(file: string, carousel: any) {
-        const response = await fetch(file);
-        const html = await response.text();
-        const item = ons.createElement(html.trim());
-
-        carousel.appendChild(item);
     }
 };

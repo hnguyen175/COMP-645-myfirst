@@ -1,7 +1,7 @@
-declare const ons: any;
+import PlayerService from "../PlayerService.ts";
 
 export default class AllPlayersList {
-    static renderAllPlayersList(playerListElement: HTMLSelectElement, players: string[]): void {
+    static renderAllPlayersList(playerListElement: ons.OnsSelectElement, players: string[]): void {
         // Remove old player options, but keep the first placeholder option
         while (playerListElement.length > 1) {
             playerListElement.removeChild(playerListElement.lastElementChild!);
@@ -13,6 +13,42 @@ export default class AllPlayersList {
             optionElement.textContent = playerEmail;
 
             playerListElement?.appendChild(optionElement);
+        });
+    }
+
+    static renderAllPlayersList2(playerListElement: HTMLElement, players: string[], playerService: PlayerService): void {
+        // Remove old player options, but keep the first placeholder option
+        while (playerListElement.children.length > 1) {
+            playerListElement.removeChild(playerListElement.lastElementChild!);
+        }
+
+        players.forEach(playerEmail => {
+            const player = playerService.loadPlayers(playerEmail);
+            if (!player) {
+                console.error(`Player with email ${playerEmail} not found.`);
+                return;
+            }
+
+            const playerName = player.players[0].name;
+            const currentScreen = player.currentScreen;
+
+            const onsListItem = document.createElement("ons-list-item");
+            onsListItem.setAttribute("tappable", "");
+            onsListItem.setAttribute("data-email", playerEmail);
+
+            const rowDiv = onsListItem.appendChild(document.createElement("div"));
+            rowDiv.classList.add("player-row");
+
+            const nameDiv = rowDiv.appendChild(document.createElement("div"));
+            nameDiv.textContent = playerName;
+
+            const emailDiv = rowDiv.appendChild(document.createElement("div"));
+            emailDiv.textContent = playerEmail;
+
+            const levelDiv = rowDiv.appendChild(document.createElement("div"));
+            levelDiv.textContent = currentScreen; // Placeholder for level info
+
+            playerListElement?.appendChild(onsListItem);
         });
     }
 };
