@@ -6,6 +6,7 @@ import must from './utilities/RequiredField.ts';
 
 import loggingProxy from './utilities/LoggingProxy.ts';
 import LoadGame from './carousel-items/LoadGame.ts';
+import LoadGame2 from './carousel-items/LoadGame2.ts';
 import Welcome from './carousel-items/Welcome.ts';
 import Comrades from './carousel-items/Comrades.ts';
 
@@ -18,6 +19,7 @@ export default class NavController{
     private carousel!: ons.OnsCarouselElement;
     newGame!: NewGame;
     loadGame!: LoadGame;
+    loadGame2!: LoadGame2;
     welcome!: Welcome;
     comrades!: Comrades;
 
@@ -38,6 +40,7 @@ export default class NavController{
         this.loadGame= await LoadGame.create(this, this.playerService);
         this.welcome = await Welcome.create(this);
         this.comrades = await Comrades.create();
+        this.loadGame2 = await LoadGame2.create(this.playerService);
     }
 
     static showSection(sectionId: string){
@@ -148,7 +151,7 @@ export default class NavController{
 
     async onReloadButtonClick() {
         // add load-game html page
-        await this.loadCarouselItem([this.loadGame]);
+        await this.loadCarouselItem([this.loadGame2]);
 
         await this.carousel.next();
     }

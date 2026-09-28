@@ -3,7 +3,7 @@ import loggingProxy from './utilities/LoggingProxy.ts';
 
 export default class Players {
     // private key: string;
-    // private currentScreen: string;
+    currentScreen: string = "Drunken Dragon Inn";
     questCompleted: boolean = false;
     players: Player[];
 
