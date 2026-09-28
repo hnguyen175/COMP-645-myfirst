@@ -2,10 +2,8 @@ import PlayerService from './PlayerService.ts';
 import PlayerView from './rendering/PlayerView.ts';
 import NewGame from './carousel-items/NewGame.ts';
 import CarouselItem from './carousel-items/CarouselItem.ts';
-import must from './utilities/RequiredField.ts';
 
 import loggingProxy from './utilities/LoggingProxy.ts';
-import LoadGame from './carousel-items/LoadGame.ts';
 import LoadGame2 from './carousel-items/LoadGame2.ts';
 import Welcome from './carousel-items/Welcome.ts';
 import Comrades from './carousel-items/Comrades.ts';
@@ -18,7 +16,6 @@ interface CarouselChangeEvent extends Event {
 export default class NavController{
     private carousel!: ons.OnsCarouselElement;
     newGame!: NewGame;
-    loadGame!: LoadGame;
     loadGame2!: LoadGame2;
     welcome!: Welcome;
     comrades!: Comrades;
@@ -37,10 +34,9 @@ export default class NavController{
         this.carousel = carousel;
 
         this.newGame = await NewGame.create(this);
-        this.loadGame= await LoadGame.create(this, this.playerService);
         this.welcome = await Welcome.create(this);
         this.comrades = await Comrades.create();
-        this.loadGame2 = await LoadGame2.create(this.playerService);
+        this.loadGame2 = await LoadGame2.create(this, this.playerService);
     }
 
     static showSection(sectionId: string){
@@ -116,7 +112,7 @@ export default class NavController{
 
         if (!isValid.name && !isValid.email) {
             this.playerService.savePlayers(playerInputs.name.value, playerInputs.email.value);
-            this.loadGame.loadPlayers();
+            this.loadGame2.loadPlayers();
             await this.addCarouselItem(this.comrades);
 
             await this.carousel.next();
@@ -132,18 +128,8 @@ export default class NavController{
         }
     }
 
-    async onLoadGameButtonClick() {
-        const listPlayers = must(document.getElementById("lstPlayers") as HTMLSelectElement | null);
-        
-        const selectedEmail = listPlayers.value;
-        if (!selectedEmail) {
-            console.error("No player selected for loading.");
-            return;
-        }
-
-        // Implement the load game functionality here
-        const players = this.playerService.loadPlayers(selectedEmail);
-        console.log("Load Game button clicked: ", selectedEmail, players);
+    async onLoadGame2ButtonClick(email: string) : Promise<void> {
+        this.playerService.loadPlayers(email);
         await this.addCarouselItem(this.comrades);
 
         await this.carousel.next();

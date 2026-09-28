@@ -24,8 +24,13 @@ export default class AllPlayersList {
 
         players.forEach(playerEmail => {
             const player = playerService.loadPlayers(playerEmail);
-            const playerName = player ? player.players[0].name : "Unknown"; // Assuming the first player is the one we want
-            const currentScreen = player ? player.currentScreen : "Unknown"; // Assuming the first player is the one we want
+            if (!player) {
+                console.error(`Player with email ${playerEmail} not found.`);
+                return;
+            }
+
+            const playerName = player.players[0].name;
+            const currentScreen = player.currentScreen;
 
             const onsListItem = document.createElement("ons-list-item");
             onsListItem.setAttribute("tappable", "");

@@ -2,42 +2,46 @@ import PlayerService from "../PlayerService.ts";
 import CarouselItem from "./CarouselItem.ts";
 import must from "../utilities/RequiredField.ts";
 import AllPlayersList from "../rendering/AllPlayersList.ts";
+import NavController from "../NavController.ts";
 
 export default class LoadGame2 extends CarouselItem {
   constructor(
     carouselItem: HTMLElement,
+    private readonly navController: NavController,
     private readonly playerService: PlayerService,
   ) {
     super(carouselItem);
   }
 
-  static async create(playerService: PlayerService): Promise<LoadGame2> {
+  static async create(
+    navController: NavController,
+    playerService: PlayerService,
+  ): Promise<LoadGame2> {
     const element = await this.loadElement("../views/load-game2.html");
-    const loadGame2 = new LoadGame2(element, playerService);
+    const loadGame2 = new LoadGame2(element, navController, playerService);
     loadGame2.loadPlayers();
 
     loadGame2.registerEvents();
     return loadGame2;
   }
 
-  private registerEvents(): void {
+  private async registerEvents(): Promise<void> {
     const carouselItem = must(this.getCarouselItem());
     const list = must(carouselItem.querySelector<HTMLElement>("#onslPlayers"));
 
-    list.addEventListener("click", (event) => {
+    list.addEventListener("click", async (event) => {
       const target = event.target as HTMLElement;
       const listItem = target.closest("ons-list-item");
       if (listItem) {
-        const email = listItem.getAttribute("data-email");
-        if (email) {
-          console.log(`Selected player email: ${email}`);
-        }
-      }
+        const email = must(listItem.getAttribute("data-email"));
+        console.log(`Selected player email: ${email}`);
+        await this.navController.onLoadGame2ButtonClick(email);
 
-      list.querySelectorAll("ons-list-item").forEach((item) => {
-        item.classList.remove("selected");
-      });
-      listItem?.classList.add("selected");
+        list.querySelectorAll("ons-list-item").forEach((item) => {
+          item.classList.remove("selected");
+        });
+        listItem?.classList.add("selected");
+      }
     });
   }
 
