@@ -177,4 +177,17 @@ export default class NavController{
         await this.addCarouselItem(this.drunkenTavern);
         await this.carousel.next();
     }
+
+    deleteCarouselItems(carouselItems: CarouselItem[]) {
+        for (const carouselItem of carouselItems) {
+            carouselItem.getCarouselItem().remove();
+        }
+    }
+
+    onDeleteGame(email: string) {
+        this.playerService.deletePlayers(email);
+        this.loadGame2.loadPlayers();
+
+        this.deleteCarouselItems([this.comrades, this.drunkenTavern]);
+    }
 };
