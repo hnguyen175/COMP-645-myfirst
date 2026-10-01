@@ -3,7 +3,6 @@ import PlayerView from './rendering/PlayerView.ts';
 import NewGame from './carousel-items/NewGame.ts';
 import CarouselItem from './carousel-items/CarouselItem.ts';
 
-import loggingProxy from './utilities/LoggingProxy.ts';
 import LoadGame2 from './carousel-items/LoadGame2.ts';
 import Welcome from './carousel-items/Welcome.ts';
 import Comrades from './carousel-items/Comrades.ts';
@@ -14,7 +13,7 @@ interface CarouselChangeEvent extends Event {
     activeIndex: number;
 }
 
-export default class NavController{
+export default class NavController {
     private carousel!: ons.OnsCarouselElement;
     newGame!: NewGame;
     loadGame2!: LoadGame2;
@@ -23,11 +22,11 @@ export default class NavController{
     drunkenTavern!: DrunkenTavern;
 
     constructor(private playerService: PlayerService = new PlayerService(),
-                private playerView: PlayerView = new PlayerView()
-                ) {
+        private playerView: PlayerView = new PlayerView()
+    ) {
     }
 
-    async init() : Promise<void> {
+    async init(): Promise<void> {
         const carousel = document.getElementById("carouselNewGame") as ons.OnsCarouselElement | null;
         if (!carousel) {
             throw new Error("Carousel element not found.");
@@ -42,15 +41,15 @@ export default class NavController{
         this.drunkenTavern = await DrunkenTavern.create(this, this.playerService);
     }
 
-    static showSection(sectionId: string){
+    static showSection(sectionId: string) {
         const sections = document.querySelectorAll("section");
-        if (!sections || sections.length == 0){
+        if (!sections || sections.length == 0) {
             console.error("No sections found in the document.");
             return;
         }
 
-        for (const section of sections){
-            if (section.id == sectionId){
+        for (const section of sections) {
+            if (section.id == sectionId) {
                 section.style.display = "block";
             } else {
                 section.style.display = "none";
@@ -65,6 +64,7 @@ export default class NavController{
 
     async onCarouselPriorDisplayingItem(event: Event) {
         const activeItem = NavController.getActiveCarouselItem(event);
+
         switch (activeItem?.id) {
             // case "caiNewGame":
             //     break;
@@ -76,7 +76,7 @@ export default class NavController{
                 break;
             // case "caiLoadGame":
             //     break;
-        }; 
+        };
     }
 
     private async priorWelcome() {
@@ -97,7 +97,7 @@ export default class NavController{
         return activeItem;
     }
 
-    private static playerInputs() : { name: HTMLInputElement; email: HTMLInputElement } | null {
+    private static playerInputs(): { name: HTMLInputElement; email: HTMLInputElement } | null {
         const playerNameInput = document.getElementById("inputPlayerName") as HTMLInputElement | null;
         const playerEmailInput = document.getElementById("inputPlayerEmail") as HTMLInputElement | null;
 
@@ -138,7 +138,7 @@ export default class NavController{
         }
     }
 
-    async onLoadGame2ButtonClick(email: string) : Promise<void> {
+    async onLoadGame2ButtonClick(email: string): Promise<void> {
         this.playerService.loadPlayers(email);
         await this.addCarouselItem(this.comrades);
 
@@ -159,35 +159,55 @@ export default class NavController{
         }
     }
 
-    async loadCarouselItem(carouselItems: CarouselItem[]){
-        const allCarouselItems = this.carousel.querySelectorAll("ons-carousel-item") as NodeListOf<HTMLElement>;
-
-        for (const item of allCarouselItems) {
-            if (item.id !== "caiWelcome") { // Keep the welcome item
-                item.remove();
-            }
-        }
+    async loadCarouselItem(carouselItems: CarouselItem[]) {
+        this.cleanupCarouselItems();
 
         for (const carouselItem of carouselItems) {
             this.carousel.appendChild(carouselItem.getCarouselItem());
         }
     }
 
-    async onGameStart(){
+    async onGameStart() {
         await this.addCarouselItem(this.drunkenTavern);
         await this.carousel.next();
     }
 
-    deleteCarouselItems(carouselItems: CarouselItem[]) {
-        for (const carouselItem of carouselItems) {
-            carouselItem.getCarouselItem().remove();
-        }
-    }
-
-    onDeleteGame(email: string) {
+    async onDeleteGame(email: string) {
         this.playerService.deletePlayers(email);
         this.loadGame2.loadPlayers();
 
-        this.deleteCarouselItems([this.comrades, this.drunkenTavern]);
+        // if there are still players left, do not navigate back to the welcome screen
+        if (this.playerService.listPlayersFromStorage().length > 0) {
+            this.cleanupCarouselItems();
+            return;
+        }
+
+        // if there are no players left, go back to the welcome screen
+        // for preventing to swipe back, delete all items except for the welcome item
+        await this.resetCarouselToWelcome();
+    }
+
+    private async resetCarouselToWelcome() {
+        await this.carousel.prev();
+
+        this.cleanupCarouselItems();
+    }
+
+    // This method removes all carousel items that are after the currently active item. This is useful for cleaning up the carousel when navigating back to a previous item, ensuring that only relevant items remain in the carousel.
+    private cleanupCarouselItems() {
+        const items = (this.carousel as HTMLElement).querySelectorAll("ons-carousel-item");
+        let index = 0;
+        const activeIndex = this.getActiveIndex();
+        for (const item of items) {
+            if (activeIndex < index) {
+                item.remove();
+            }
+            index++;
+        }
+    }
+
+    // Workaround for BAD onsen return type of getActiveIndex, currently it's define in .d.ts as 'void'
+    private getActiveIndex(): number {
+        return (this.carousel.getActiveIndex as unknown as () => number)();
     }
 };
