@@ -65,3 +65,30 @@ Vitest.test('LoadGame2 should be properly initialized', async () => {
         Vitest.expect(selectLastItem?.classList).toContain('selected');
     });
 });
+
+Vitest.test('LoadGame2 should handle delete icon click', async () => {
+    const navControllerMock = {
+        onDeleteGame: Vitest.vi.fn(),
+    };
+
+    const playerServiceMock = {
+        listPlayersFromStorage: Vitest.vi.fn(() => ["player1@example.com", "player2@example.com"]),
+        loadPlayers: Vitest.vi.fn((email: string) => {
+            const players = new Players();
+            players.addPlayer(new Player("Player1", "player1@example.com"));
+            players.addPlayer(new Player("Player2", "player2@example.com"));
+            players.addDefaultPlayers();
+            return players;
+        }),
+    };
+
+    const allPlayersListMock = Vitest.vi.spyOn(AllPlayersList, 'renderAllPlayersList2');
+
+    const loadGame = await LoadGame2.create(navControllerMock as any, playerServiceMock as any);
+    Vitest.expect(loadGame).not.toBeNull();
+    Vitest.expect(allPlayersListMock).toHaveBeenCalled();
+
+    loadGame.getCarouselItem().querySelector<HTMLElement>(".delete-icon")?.dispatchEvent(new Event('click', { bubbles: true }));
+
+    Vitest.expect(navControllerMock.onDeleteGame).toHaveBeenCalledWith("player1@example.com");
+});
