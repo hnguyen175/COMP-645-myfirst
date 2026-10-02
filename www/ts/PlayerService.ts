@@ -1,6 +1,7 @@
 import Player from './Player.ts';
 import Players from './Players.ts';
 import allPlayers from './AllPlayers.ts';
+import currentGameState from "./GameState.ts";
 
 import loggingProxy from './utilities/LoggingProxy.ts';
 
@@ -10,8 +11,6 @@ type PlayerInfoResult = {
 };
 
 export default class PlayerService {
-    activePlayers: Players | null= null;
-
     savePlayers(name: string, email: string) : void{
         const player = Player.createRandomPlayer(name, email);
 
@@ -23,12 +22,15 @@ export default class PlayerService {
 
         allPlayers.addPlayer(email);
 
-        this.activePlayers = players;
+        currentGameState.set(players);
     }
 
     loadPlayers(email: string): Players | null {
-        this.activePlayers = Players.loadPlayersFromStorage(email);
-        return this.activePlayers;
+        const current = Players.loadPlayersFromStorage(email);
+        if (current !== null) {
+            currentGameState.set(current);
+        }
+        return current;
     }
 
     isPlayerInfoValid(name: string, email: string): PlayerInfoResult {

@@ -8,6 +8,8 @@ import Welcome from './carousel-items/Welcome.ts';
 import Comrades from './carousel-items/Comrades.ts';
 import DrunkenTavern from './carousel-items/DrunkenTavern.ts';
 
+import currentGameState from './GameState.ts';
+
 interface CarouselChangeEvent extends Event {
     carousel: ons.OnsCarouselElement;
     activeIndex: number;
@@ -83,8 +85,9 @@ export default class NavController {
     }
 
     private priorDisplayingPlayers() {
-        if (this.playerService.activePlayers !== null) {
-            this.playerView.renderPlayerCards(this.playerService.activePlayers);
+        const current = currentGameState.get();
+        if (current !== null) {
+            this.playerView.renderPlayerCards(current);
         }
     }
 
