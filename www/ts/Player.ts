@@ -1,3 +1,5 @@
+import loggingProxy from "./utilities/LoggingProxy.ts";
+
 type PlayerStats = {
     hp: number;
     str: number;
@@ -70,7 +72,7 @@ export default class Player {
     }
 
     static createRandomPlayer(name: string = "", email: string = "") : Player {
-        const player = new Player(name, email);
+        const player = loggingProxy(new Player(name, email));
         Object.assign(player, Player.randomStats());
         return player;
     }
@@ -93,5 +95,9 @@ export default class Player {
 
     static fromJSON(data: Partial<Player>) : Player {
         return Object.assign(new Player(), data);
+    }
+
+    toString() : string {
+        return `Player: ${this.name}, Email: ${this.email}, HP: ${this.hp}, STR: ${this.str}, SPD: ${this.spd}, MP: ${this.mp}, LUK: ${this.luk}, WEP: ${this.wep}, CLS: ${this.cls}`;
     }
 }

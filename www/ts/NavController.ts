@@ -23,8 +23,7 @@ export default class NavController {
 
     constructor(private playerService: PlayerService = new PlayerService(),
         private playerView: PlayerView = new PlayerView()
-    ) {
-    }
+    ) {}
 
     async init(): Promise<void> {
         const carousel = document.getElementById("carouselNewGame") as ons.OnsCarouselElement | null;
@@ -84,8 +83,6 @@ export default class NavController {
     }
 
     private priorDisplayingPlayers() {
-        console.log("Preparing to display players section.");
-
         if (this.playerService.activePlayers !== null) {
             this.playerView.renderPlayerCards(this.playerService.activePlayers);
         }
