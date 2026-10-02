@@ -21,34 +21,38 @@ export default class LoadGame2 extends CarouselItem {
         const loadGame2 = new LoadGame2(element, navController, playerService);
         loadGame2.loadPlayers();
 
-        loadGame2.registerEvents();
+        await loadGame2.registerEvents();
         return loadGame2;
     }
 
-    private async registerEvents(): Promise<void> {
+    private registerEvents(): void {
         const carouselItem = must(this.getCarouselItem());
         const list = must(carouselItem.querySelector<HTMLElement>("#onslPlayers"));
 
-        list.addEventListener("click", async (event) => {
-            const target = event.target as HTMLElement;
-
-            const listItem = target.closest("ons-list-item");
-            if (listItem) {
-                const email = must(listItem.getAttribute("data-email"));
-                console.log(`Selected player email: ${email}`);
-
-                if (await this.willDeleteGame(email, target)) {
-                    return;
-                }
-
-                await this.navController.onLoadGame2ButtonClick(email);
-
-                list.querySelectorAll("ons-list-item").forEach((item) => {
-                    item.classList.remove("selected");
-                });
-                listItem?.classList.add("selected");
-            }
+        list.addEventListener("click", (event) => {
+            void this.handlePlayerClick(event, list);
         });
+    }
+
+    private async handlePlayerClick(event: Event, list: HTMLElement): Promise<void> {
+        const target = event.target as HTMLElement;
+
+        const listItem = target.closest("ons-list-item");
+        if (listItem) {
+            const email = must(listItem.getAttribute("data-email"));
+            console.log(`Selected player email: ${email}`);
+
+            if (await this.willDeleteGame(email, target)) {
+                return;
+            }
+
+            await this.navController.onLoadGame2ButtonClick(email);
+
+            list.querySelectorAll("ons-list-item").forEach((item) => {
+                item.classList.remove("selected");
+            });
+            listItem?.classList.add("selected");
+        }
     }
 
     private async willDeleteGame(

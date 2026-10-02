@@ -58,7 +58,7 @@ export default class NavController {
     }
 
     async onCarouselNewGame() {
-        await this.loadCarouselItem([this.newGame]);
+        this.loadCarouselItem([this.newGame]);
         await this.carousel.next();
     }
 
@@ -72,7 +72,7 @@ export default class NavController {
                 await this.priorWelcome();
                 break;
             case "caiPlayers":
-                await this.priorDisplayingPlayers();
+                this.priorDisplayingPlayers();
                 break;
             // case "caiLoadGame":
             //     break;
@@ -83,7 +83,7 @@ export default class NavController {
         await this.welcome.updateLoadGameButtonState();
     }
 
-    private async priorDisplayingPlayers() {
+    private priorDisplayingPlayers() {
         console.log("Preparing to display players section.");
 
         if (this.playerService.activePlayers !== null) {
@@ -131,10 +131,10 @@ export default class NavController {
         }
 
         if (isValid.name) {
-            await this.playerView.showValidationToast(playerInputs.name, isValid.name);
+            this.playerView.showValidationToast(playerInputs.name, isValid.name);
         }
         if (isValid.email) {
-            await this.playerView.showValidationToast(playerInputs.email, isValid.email);
+            this.playerView.showValidationToast(playerInputs.email, isValid.email);
         }
     }
 
@@ -147,7 +147,7 @@ export default class NavController {
 
     async onReloadButtonClick() {
         // add load-game html page
-        await this.loadCarouselItem([this.loadGame2]);
+        this.loadCarouselItem([this.loadGame2]);
 
         await this.carousel.next();
     }
@@ -155,11 +155,11 @@ export default class NavController {
     async addCarouselItem(carouselItem: CarouselItem) {
         const existingItem = this.carousel.querySelector<HTMLElement>(`ons-carousel-item#${carouselItem.getCarouselItem().id}`);
         if (!existingItem) {
-            await this.carousel.appendChild(carouselItem.getCarouselItem());
+            this.carousel.appendChild(carouselItem.getCarouselItem());
         }
     }
 
-    async loadCarouselItem(carouselItems: CarouselItem[]) {
+    loadCarouselItem(carouselItems: CarouselItem[]) {
         this.cleanupCarouselItems();
 
         for (const carouselItem of carouselItems) {
