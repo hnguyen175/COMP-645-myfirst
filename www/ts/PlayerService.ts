@@ -3,8 +3,6 @@ import Players from './Players.ts';
 import allPlayers from './AllPlayers.ts';
 import currentGameState from "./GameState.ts";
 
-import loggingProxy from './utilities/LoggingProxy.ts';
-
 type PlayerInfoResult = {
     name?: string;
     email?: string;

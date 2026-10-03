@@ -1,8 +1,6 @@
 import Player from "../Player.ts";
-import Players from "../Players.ts";
 import must from "../utilities/RequiredField.ts";
 import createPlayerCard from "./PlayerDisplay.ts";
-import currentGameState from '../GameState.ts';
 
 export default class PlayerView {
     renderPlayerCards(carouselId: string, players: Player[], showStrength = true): void {

@@ -1,4 +1,4 @@
-let loggingEnabled = true;
+const loggingEnabled = true;
 
 export default function loggingProxy<T extends object>(target: T): T {
     let depth = 0;

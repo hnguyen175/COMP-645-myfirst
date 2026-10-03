@@ -10,7 +10,7 @@ class ShowIpButton {
 
     constructor(button: HTMLInputElement) {
         this.button = button;
-        this.button.addEventListener('click', () => this.showIp());
+        this.button.addEventListener('click', () => void this.showIp());
     }
 
     async showIp() {
