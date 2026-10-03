@@ -14,7 +14,7 @@ export default class PlayerService {
     savePlayers(name: string, email: string) : void{
         const player = Player.createRandomPlayer(name, email);
 
-        const players = loggingProxy(new Players());
+        const players = new Players();
         players.addPlayer(player);
         players.addDefaultPlayers();
 
@@ -60,4 +60,8 @@ export default class PlayerService {
         localStorage.removeItem(email);
         allPlayers.removePlayer(email);
     }
-};
+
+    createVillain() : Player {
+        return Player.getVillainPlayer();
+    }
+}

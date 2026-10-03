@@ -41,9 +41,10 @@ ons-carousel-item h4 {
     text-align: left;
 }
 
-ons-list-header {
+ons-list-header.list-header {
     font-family: system-ui, sans-serif;
     font-weight: bold;
+    padding: 0 10px;
 }
 
 table {
@@ -106,7 +107,7 @@ ons-carousel-item ons-card td:nth-child(2) {
 }
 
 .player-card {
-    margin: 10px;
+    margin: 2px;
     box-shadow: 0 4px 12px rgba(1, 1, 1, 1) !important;
 }
 
@@ -171,4 +172,16 @@ ons-list-item.selected {
 .delete-icon {
     font-size: 24px;
     cursor: pointer;
+}
+
+ons-carousel-item .player-cards{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+ons-list.list{
+    padding: 10px 15px;
 }

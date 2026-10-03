@@ -8,7 +8,10 @@ import Welcome from './carousel-items/Welcome.ts';
 import Comrades from './carousel-items/Comrades.ts';
 import DrunkenTavern from './carousel-items/DrunkenTavern.ts';
 
+import must from './utilities/RequiredField.ts';
+
 import currentGameState from './GameState.ts';
+import loggingProxy from './utilities/LoggingProxy.ts';
 
 interface CarouselChangeEvent extends Event {
     carousel: ons.OnsCarouselElement;
@@ -23,7 +26,7 @@ export default class NavController {
     comrades!: Comrades;
     drunkenTavern!: DrunkenTavern;
 
-    constructor(private playerService: PlayerService = new PlayerService(),
+    constructor(private playerService: PlayerService = loggingProxy(new PlayerService()),
         private playerView: PlayerView = new PlayerView()
     ) {}
 
@@ -77,6 +80,9 @@ export default class NavController {
                 break;
             // case "caiLoadGame":
             //     break;
+            case "caiDrunkenTavern":
+                this.priorDisplayingDrunkenTavern();
+                break;
         };
     }
 
@@ -84,11 +90,15 @@ export default class NavController {
         await this.welcome.updateLoadGameButtonState();
     }
 
+    private priorDisplayingDrunkenTavern() {
+        this.playerView.renderPlayerCards("caiDrunkenTavern", must(currentGameState.get()?.players));
+        // create villain
+        // const villainName = this.playerService.createVillain();
+        this.playerView.renderPlayerCards("divDrunkenTavernVillain", [this.playerService.createVillain()]);
+    }
+
     private priorDisplayingPlayers() {
-        const current = currentGameState.get();
-        if (current !== null) {
-            this.playerView.renderPlayerCards(current);
-        }
+        this.playerView.renderPlayerCards("caiPlayers", must(currentGameState.get()?.players));
     }
 
     private static getActiveCarouselItem(event: Event) {

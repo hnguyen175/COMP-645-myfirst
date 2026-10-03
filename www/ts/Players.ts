@@ -1,5 +1,4 @@
 import Player from "./Player.ts";
-import loggingProxy from './utilities/LoggingProxy.ts';
 
 export default class Players {
     // private key: string;
@@ -35,10 +34,14 @@ export default class Players {
     }
 
     private static fromJSON(data: Partial<Players>) : Players {
-        const players = Object.assign(loggingProxy(new Players()), data);
+        const players = Object.assign(new Players(), data);
 
         players.players = data.players?.map(
             playerData => Player.fromJSON(playerData)) || [];
         return players;
+    }
+
+    toString(): string {
+        return `Players: ${this.players.map(player => player.toString()).join(", ")}`;
     }
 };

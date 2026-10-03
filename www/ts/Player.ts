@@ -1,5 +1,3 @@
-import loggingProxy from "./utilities/LoggingProxy.ts";
-
 type PlayerStats = {
     hp: number;
     str: number;
@@ -21,6 +19,7 @@ export default class Player {
     wep: string = "";
     cls: string = "";
     static arrNames = ["Abakor", "Bandala", "Cartin", "Darianne", "Fezzor", "Gizleeni", "Halor", "Ia", "Jeepenn", "Kalindaa", "Lineuss", "Mordana", "Nazzor", "Ortery", "Parto", "Quey", "Rato", "Salana", "Torqq", "Uvala", "Vixtor", "Wylia", "Xex", "Yala", "Zetch"] as const;
+    static arrVillainNames = ["Azrath", "Belnox", "Craven", "Dravora", "Ezrakk", "Grizmor", "Hexar", "Ivara", "Jorvex", "Kharza", "Maldrin", "Nyxara", "Ozrak", "Raveth", "Skarro", "Thyra", "Vorren", "Xandrak", "Zerith", "Morvane", "Drexil", "Valgora", "Krynn", "Noctra", "Zalthor"] as const;
     static arrWeapons = ["Rocks", "Staff", "Dagger", "Mace", "Warhammer", "Sword", "Battle Axe"] as const;
     static arrClasses = ["Healer", "Warrior", "Thief", "Knight", "Damsel", "Warlock", "Farmer"] as const;
     static arrLukProbability = [.02, .1, .2, 1] as const;
@@ -58,6 +57,10 @@ export default class Player {
         return Player.randomString(Player.arrNames);
     }
 
+    static randomVillainName() : string  {
+        return Player.randomString(Player.arrVillainNames);
+    }
+
     static randomWeapon() : string  {
         return Player.randomString(Player.arrWeapons);
     }
@@ -72,7 +75,7 @@ export default class Player {
     }
 
     static createRandomPlayer(name: string = "", email: string = "") : Player {
-        const player = loggingProxy(new Player(name, email));
+        const player = new Player(name, email);
         Object.assign(player, Player.randomStats());
         return player;
     }
@@ -90,7 +93,13 @@ export default class Player {
     }
 
     public static getDefaultPlayer() : Player{
-        return Player.createRandomPlayer(Player.randomName(), `${Player.randomName().toLowerCase()}@comp645.com`);
+        const randomName = Player.randomName();
+        return Player.createRandomPlayer(randomName, `${randomName.toLowerCase()}@comp645.com`);
+    }
+
+    public static getVillainPlayer() : Player{
+        const randomVillainName = Player.randomVillainName();
+        return Player.createRandomPlayer(randomVillainName, `${randomVillainName.toLowerCase()}@comp645.com`);
     }
 
     static fromJSON(data: Partial<Player>) : Player {
