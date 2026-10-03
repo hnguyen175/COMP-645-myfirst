@@ -5,12 +5,12 @@ import createPlayerCard from "./PlayerDisplay.ts";
 import currentGameState from '../GameState.ts';
 
 export default class PlayerView {
-    renderPlayerCards(carouselId: string, players: Player[]): void {
+    renderPlayerCards(carouselId: string, players: Player[], showStrength = true): void {
         const playerCards = must(document.querySelector(`#${carouselId} .player-cards`)) as HTMLElement;
 
         playerCards.innerHTML = ""; // Clear previous content
         players.forEach((player) => {
-            playerCards.innerHTML += createPlayerCard(player);
+            playerCards.innerHTML += createPlayerCard(player, showStrength);
         });
     };
 

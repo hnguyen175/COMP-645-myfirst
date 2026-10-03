@@ -93,8 +93,7 @@ export default class NavController {
     private priorDisplayingDrunkenTavern() {
         this.playerView.renderPlayerCards("caiDrunkenTavern", must(currentGameState.get()?.players));
         // create villain
-        // const villainName = this.playerService.createVillain();
-        this.playerView.renderPlayerCards("divDrunkenTavernVillain", [this.playerService.createVillain()]);
+        this.playerView.renderPlayerCards("divDrunkenTavernVillain", [this.playerService.createVillain()], false);
     }
 
     private priorDisplayingPlayers() {
