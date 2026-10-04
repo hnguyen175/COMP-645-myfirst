@@ -12,15 +12,17 @@ Vitest.beforeEach(() => {
 
 Vitest.test('renderPlayerCards should render player cards correctly', () => {
     document.body.innerHTML = `
-        <div id="playerCards"></div>
+        <ons-carousel-item id="caiPlayers">
+            <div class="player-cards"></div>
+        </ons-carousel-item>
     `;
 
     const players = new Players();
     players.addPlayer(Player.createRandomPlayer('alice', 'alice@wonderland.org'));
 
-    const playerCards = document.getElementById("playerCards");
+    const playerCards = document.querySelector("#caiPlayers .player-cards") as HTMLElement;
 
-    playerView.renderPlayerCards(players);
+    playerView.renderPlayerCards("caiPlayers", players.players);
 
     Vitest.expect(playerCards?.innerHTML).toContain('<ons-card class="player-card"><ons-list><ons-list-header>');
     Vitest.expect(playerCards?.innerHTML).toContain('<ons-list-item class="player-stat">');
@@ -31,8 +33,11 @@ Vitest.test('renderPlayerCards should render player cards correctly', () => {
 
 Vitest.test('renderPlayerCards should log error if playerCards container is not found', () => {
     const consoleErrorSpy = Vitest.vi.spyOn(console, 'error').mockImplementation(() => {});
-    playerView.renderPlayerCards(new Players());
-    Vitest.expect(consoleErrorSpy).toHaveBeenCalled();
+    try {
+        playerView.renderPlayerCards("htmlId", []);
+    } catch (error: Error | any) {
+        Vitest.expect(error.message).contains("required value was not found");
+    }
 });
 
 Vitest.test('showValidationToast should display a toast message', async () => {

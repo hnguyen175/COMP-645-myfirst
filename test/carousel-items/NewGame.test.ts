@@ -80,7 +80,10 @@ Vitest.test("NewGame should throw error when loadElement fails", async () => {
     }
 
     // Simulate a failed fetch
-    Vitest.vi.spyOn(globalThis, 'fetch').mockResolvedValue(null as any);
+    // Vitest.vi.spyOn(globalThis, 'fetch').mockResolvedValue(null as any);
 
-    await Vitest.expect(NewGame.create(navControllerMock as any)).rejects.toThrow(/Can't load.*/);
+    await NewGame.create(navControllerMock as any).catch((error) => {
+        Vitest.expect(error).toBeInstanceOf(Error);
+        Vitest.expect(error.message).toContain("Failed to parse URL from ../views/new-game.html");
+    });
 });

@@ -1,12 +1,11 @@
 import * as Vitest from 'vitest';
-// import PlayerService from '../www/ts/PlayerService';
 
 Vitest.beforeEach( async () => {
     localStorage.clear();
     Vitest.vi.resetModules();
 });
 
-Vitest.test("savePlayers saves a player to storage", async () => {
+Vitest.test("savePlayers saves/deletes a player to/form storage", async () => {
     const module = await import('../www/ts/PlayerService');
     const playerService = new module.default();
 
@@ -19,13 +18,14 @@ Vitest.test("savePlayers saves a player to storage", async () => {
     Vitest.expect(savedPlayers).not.toBeNull();
     Vitest.expect(savedPlayers?.players[0]?.name).toBe(name);
     Vitest.expect(savedPlayers?.players[0]?.email).toBe(email);
+
+    playerService.deletePlayers(email);
+    Vitest.expect(playerService.loadPlayers(email)).toBeNull();
 });
 
 Vitest.test("listPlayersFromStorage returns all saved players", async () => {
     const module = await import('../www/ts/PlayerService');
     const playerService = new module.default();
-    // const module = await import('../www/ts/AllPlayers');
-    // const allPlayers = module.default;
 
     playerService.savePlayers("Alice", "alice@wonderland.com");
     const playerList = playerService.listPlayersFromStorage();
@@ -55,4 +55,12 @@ Vitest.test.each([
     } else {
         Vitest.expect(result.email).toBeUndefined();
     }
+});
+
+Vitest.test("createVillain creates a villain player", async () => {
+    const module = await import('../www/ts/PlayerService');
+    const playerService = new module.default();
+
+    const villain = playerService.createVillain();
+    Vitest.expect(villain).toBeDefined();
 });

@@ -18,13 +18,11 @@ export default class Comrades extends CarouselItem {
     private registerEvents(): void {
         const carouselItem = must(this.getCarouselItem());
         carouselItem.addEventListener("click", (event) => {
-            void this.handlePlayerClick(event);
+            if ((event.target as HTMLElement).closest("#btnStartGame")) {
+                    void this.navController.onGameStart().catch((error) => {
+                        console.error("Error in onGameStart:", error);
+                    });
+            }
         });
-    }
-
-    private async handlePlayerClick(event: Event): Promise<void> {
-        if ((event.target as HTMLElement).closest("#btnStartGame")) {
-            await this.navController.onGameStart();
-        }
     }
 }

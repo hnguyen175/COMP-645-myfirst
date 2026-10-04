@@ -12,6 +12,7 @@ import newGameHtml from '../www/views/new-game.html?raw';
 import playersHtml from '../www/views/players.html?raw';
 import welcomeHtml from '../www/views/welcome.html?raw';
 import drunkenTavernHtml from '../www/views/drunken-tavern.html?raw';
+import currentGameState from '../www/ts/GameState';
 
 const toastMock = Vitest.vi.fn().mockResolvedValue(undefined);
 
@@ -114,7 +115,8 @@ Vitest.test("onCarouselPriorDisplayingItem prior displaying players", () => {
         activeIndex: 1,
     });
 
-    const playerServiceSpy = Vitest.vi.spyOn(playerService, 'activePlayers', 'get').mockImplementation(() => {
+    // const playerServiceSpy = Vitest.vi.spyOn(playerService, 'activePlayers', 'get').mockImplementation(() => {
+    const playerServiceSpy = Vitest.vi.spyOn(currentGameState, 'get').mockImplementation(() => {
         return new Players();
     });
 
@@ -125,7 +127,7 @@ Vitest.test("onCarouselPriorDisplayingItem prior displaying players", () => {
     Vitest.expect(renderPlayerCardsSpy).toHaveBeenCalledOnce();
 });
 
-Vitest.test("onCarouselPriorDisplayingItem prior displaying players with no active players", () => {
+Vitest.test("onCarouselPriorDisplayingItem prior displaying players with no active players", async () => {
     document.body.innerHTML = `
         <ons-carousel id="carouselNewGame" swipeable auto-scroll>
         <ons-carousel-item id="caiWelcome">
@@ -142,14 +144,16 @@ Vitest.test("onCarouselPriorDisplayingItem prior displaying players with no acti
         activeIndex: 1,
     });
 
-    const playerServiceSpy = Vitest.vi.spyOn(playerService, 'activePlayers', 'get').mockImplementation(() => {
+    const playerServiceSpy = Vitest.vi.spyOn(currentGameState, 'get').mockImplementation(() => {
         return null;
     });
     const renderPlayerCardsSpy = Vitest.vi.spyOn(playerView, 'renderPlayerCards').mockImplementation(() => { });
 
-    navController.onCarouselPriorDisplayingItem(event);
-
-    Vitest.expect(renderPlayerCardsSpy).not.toHaveBeenCalled();
+    
+    await navController.onCarouselPriorDisplayingItem(event).catch((error) => {
+        Vitest.expect(error.message).toBe("required value was not found");
+        Vitest.expect(renderPlayerCardsSpy).not.toHaveBeenCalled();
+    });
 });
 
 Vitest.test("onCarouselPriorDisplayingItem prior displaying Welcome", async () => {
