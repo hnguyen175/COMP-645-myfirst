@@ -100,7 +100,7 @@ ons-carousel-item ons-card td:nth-child(2) {
 
 .input-with-clear ons-button {
     flex: 0 0 auto;
-    padding: 0;
+    padding: 5px 0 0 0;
     border: none;
     background: transparent;
     color: white;
@@ -184,4 +184,10 @@ ons-carousel-item .player-cards{
 
 ons-list.list{
     padding: 10px 15px;
+}
+
+.clear-button {
+    min-width: 40px;
+    min-height: 40px;
+    padding: 8px 12px;
 }
