@@ -53,12 +53,34 @@ export default class Player {
         return arr[randomIndex];
     }
 
+    private static namePool: string[] = [];
     static randomName() : string  {
-        return Player.randomString(Player.arrNames);
+        if (this.namePool.length !== 0) {
+            return this.namePool.pop() as string;
+        }
+
+        this.namePool = [...this.arrNames];
+        for (let i = this.namePool.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [this.namePool[i], this.namePool[j]] = [this.namePool[j], this.namePool[i]];
+        }
+
+        return this.namePool.pop() as string;
     }
 
+    private static villainNamePool: string[] = [];
     static randomVillainName() : string  {
-        return Player.randomString(Player.arrVillainNames);
+        if (this.villainNamePool.length !== 0) {
+            return this.villainNamePool.pop() as string;
+        }
+
+        this.villainNamePool = [...this.arrVillainNames];
+        for (let i = this.villainNamePool.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [this.villainNamePool[i], this.villainNamePool[j]] = [this.villainNamePool[j], this.villainNamePool[i]];
+        }
+
+        return this.villainNamePool.pop() as string;
     }
 
     static randomWeapon() : string  {
