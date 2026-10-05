@@ -42,7 +42,7 @@ export default class NavController {
         this.welcome = await Welcome.create(this, this.playerService);
         this.comrades = await Comrades.create(this);
         this.loadGame2 = await LoadGame2.create(this, this.playerService);
-        this.drunkenTavern = await DrunkenTavern.create(this, this.playerService);
+        this.drunkenTavern = await DrunkenTavern.create();
     }
 
     static showSection(sectionId: string) {
@@ -91,13 +91,13 @@ export default class NavController {
     }
 
     private priorDisplayingDrunkenTavern() {
-        this.playerView.renderPlayerCards("caiDrunkenTavern", must(currentGameState.get()?.players));
+        this.playerView.renderPlayerCards("caiDrunkenTavern", must(currentGameState.getPlayers()?.players));
         // create villain
         this.playerView.renderPlayerCards("divDrunkenTavernVillain", [this.playerService.createVillain()], false);
     }
 
     private priorDisplayingPlayers() {
-        this.playerView.renderPlayerCards("caiPlayers", must(currentGameState.get()?.players));
+        this.playerView.renderPlayerCards("caiPlayers", must(currentGameState.getPlayers()?.players));
     }
 
     private static getActiveCarouselItem(event: Event) {

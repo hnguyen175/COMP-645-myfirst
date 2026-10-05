@@ -20,13 +20,13 @@ export default class PlayerService {
 
         allPlayers.addPlayer(email);
 
-        currentGameState.set(players);
+        currentGameState.setPlayers(players);
     }
 
     loadPlayers(email: string): Players | null {
         const current = Players.loadPlayersFromStorage(email);
         if (current !== null) {
-            currentGameState.set(current);
+            currentGameState.setPlayers(current);
         }
         return current;
     }
@@ -60,6 +60,8 @@ export default class PlayerService {
     }
 
     createVillain() : Player {
-        return Player.getVillainPlayer();
+        const villain = Player.getVillainPlayer();
+        currentGameState.setDtkVillain(villain);
+        return villain;
     }
 }

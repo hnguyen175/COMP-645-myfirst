@@ -116,7 +116,7 @@ Vitest.test("onCarouselPriorDisplayingItem prior displaying players", () => {
         activeIndex: 1,
     });
 
-    const playerServiceSpy = Vitest.vi.spyOn(currentGameState, 'get').mockImplementation(() => {
+    const playerServiceSpy = Vitest.vi.spyOn(currentGameState, 'getPlayers').mockImplementation(() => {
         return new Players();
     });
 
@@ -144,7 +144,7 @@ Vitest.test("onCarouselPriorDisplayingItem prior displaying players with no acti
         activeIndex: 1,
     });
 
-    const playerServiceSpy = Vitest.vi.spyOn(currentGameState, 'get').mockImplementation(() => {
+    const playerServiceSpy = Vitest.vi.spyOn(currentGameState, 'getPlayers').mockImplementation(() => {
         return null;
     });
     const renderPlayerCardsSpy = Vitest.vi.spyOn(playerView, 'renderPlayerCards').mockImplementation(() => { });
@@ -209,7 +209,7 @@ Vitest.test("onCarouselPriorDisplayingItem prior displaying drunken tavern", asy
     });
 
     const mockPlayers = new Players();
-    const playerServiceSpy = Vitest.vi.spyOn(currentGameState, 'get').mockImplementation(() => {
+    const playerServiceSpy = Vitest.vi.spyOn(currentGameState, 'getPlayers').mockImplementation(() => {
         return mockPlayers;
     });
     const renderPlayerCardsSpy = Vitest.vi.spyOn(playerView, 'renderPlayerCards')

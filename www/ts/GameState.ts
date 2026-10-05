@@ -1,12 +1,21 @@
+import Player from "./Player.ts";
 import Players from "./Players.ts";
 
 class GameState{
-    constructor(private players: Players | null = null) {}
-    get() : Players | null {
+    constructor(private players: Players | null = null,
+        private dktVillain: Player | null = null
+    ) {}
+    getPlayers() : Players | null {
         return this.players;
     }
-    set(players: Players) {
+    setPlayers(players: Players) {
         this.players = players;
+    }
+    getDtkVillain() : Player | null {
+        return this.dktVillain;
+    }
+    setDtkVillain(villain: Player) {
+        this.dktVillain = villain;
     }
 }
 
