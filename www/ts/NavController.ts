@@ -75,7 +75,7 @@ export default class NavController {
             case "caiWelcome":
                 await this.priorWelcome();
                 break;
-            case "caiPlayers":
+            case "caiComrades":
                 this.priorDisplayingPlayers();
                 break;
             // case "caiLoadGame":
@@ -97,7 +97,7 @@ export default class NavController {
     }
 
     private priorDisplayingPlayers() {
-        this.playerView.renderPlayerCards("caiPlayers", must(currentGameState.getPlayers()?.players));
+        this.playerView.renderPlayerCards("caiComrades", must(currentGameState.getPlayers()?.players));
     }
 
     private static getActiveCarouselItem(event: Event) {

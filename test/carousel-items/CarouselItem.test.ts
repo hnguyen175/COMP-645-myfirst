@@ -4,12 +4,12 @@ import * as Vitest from "vitest";
 class TestCarouselItem extends CarouselItem {
 }
 
-const comradesHtml = "../../www/views/players.html?raw";
+const comradesHtml = "../../www/views/comrades.html?raw";
 
 Vitest.beforeAll(async () => {
     // Mock the fetch function to return the HTML content for the specified URLs
     Vitest.vi.spyOn(globalThis, "fetch").mockImplementation(async (url) => {
-        if (url.toString().endsWith("views/players.html?raw")) {
+        if (url.toString().endsWith("views/comrades.html?raw")) {
             const comrades = await import(comradesHtml);
             return new Response(comrades.default);
         }

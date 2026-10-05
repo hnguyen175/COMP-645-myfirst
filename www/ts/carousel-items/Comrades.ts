@@ -8,7 +8,7 @@ export default class Comrades extends CarouselItem {
     }
 
     static async create(navController: NavController): Promise<Comrades> {
-        const element = must(await this.loadElement("../views/players.html"));
+        const element = must(await this.loadElement("../views/comrades.html"));
         const comrades = new Comrades(element, navController);
         comrades.registerEvents();
 

@@ -4,12 +4,12 @@ import Player from "../../www/ts/Player";
 import Players from "../../www/ts/Players";
 import AllPlayersList from "../../www/ts/rendering/AllPlayersList";
 
-const comradesHtml = "../../www/views/players.html?raw";
+const comradesHtml = "../../www/views/comrades.html?raw";
 
 Vitest.beforeAll(async () => {
     // Mock the fetch function to return the HTML content for the specified URLs
     Vitest.vi.spyOn(globalThis, "fetch").mockImplementation(async (url) => {
-        if (url.toString().endsWith("../views/players.html")) {
+        if (url.toString().endsWith("../views/comrades.html")) {
             const comrades = await import(comradesHtml);
             return new Response(comrades.default);
         }
@@ -47,7 +47,7 @@ Vitest.test("Clicking on the start game button should call onGameStart", async (
 
 Vitest.test("Clicking on the list but not the start game button should not call onGameStart", async () => {
     const comrades = await Comrades.create(navControllerMock as any);
-    const div = comrades.getCarouselItem().querySelector<HTMLElement>("#caiPlayers .player-cards");
+    const div = comrades.getCarouselItem().querySelector<HTMLElement>("#caiComrades .player-cards");
     Vitest.expect(div).not.toBeNull();
     await div?.dispatchEvent(new Event("click", { bubbles: true }));
 

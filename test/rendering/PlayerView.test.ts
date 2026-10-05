@@ -12,7 +12,7 @@ Vitest.beforeEach(() => {
 
 Vitest.test('renderPlayerCards should render player cards correctly', () => {
     document.body.innerHTML = `
-        <ons-carousel-item id="caiPlayers">
+        <ons-carousel-item id="caiComrades">
             <div class="player-cards"></div>
         </ons-carousel-item>
     `;
@@ -20,9 +20,9 @@ Vitest.test('renderPlayerCards should render player cards correctly', () => {
     const players = new Players();
     players.addPlayer(Player.createRandomPlayer('alice', 'alice@wonderland.org'));
 
-    const playerCards = document.querySelector("#caiPlayers .player-cards") as HTMLElement;
+    const playerCards = document.querySelector("#caiComrades .player-cards") as HTMLElement;
 
-    playerView.renderPlayerCards("caiPlayers", players.players);
+    playerView.renderPlayerCards("caiComrades", players.players);
 
     Vitest.expect(playerCards?.innerHTML).toContain('<ons-card class="player-card"><ons-list><ons-list-header>');
     Vitest.expect(playerCards?.innerHTML).toContain('<ons-list-item class="player-stat">');

@@ -10,7 +10,7 @@ import type { OnsCarouselElement as CarouselElement } from '../www/lib/onsenui';
 
 import loadGame2Html from '../www/views/load-game2.html?raw';
 import newGameHtml from '../www/views/new-game.html?raw';
-import playersHtml from '../www/views/players.html?raw';
+import playersHtml from '../www/views/comrades.html?raw';
 import welcomeHtml from '../www/views/welcome.html?raw';
 import drunkenTavernHtml from '../www/views/drunken-tavern.html?raw';
 import currentGameState from '../www/ts/GameState';
@@ -43,7 +43,7 @@ Vitest.beforeEach(async () => {
         if (url === "../views/load-game2.html") {
             return new Response(loadGame2Html);
         }
-        if (url === "../views/players.html") {
+        if (url === "../views/comrades.html") {
             return new Response(playersHtml);
         }
         if (url === "../views/welcome.html") {
@@ -99,7 +99,7 @@ Vitest.test("onCarouselPriorDisplayingItem prior displaying players", () => {
         <ons-carousel id="carouselNewGame" swipeable auto-scroll>
         <ons-carousel-item id="caiWelcome">
         </ons-carousel-item>
-        <ons-carousel-item id="caiPlayers">
+        <ons-carousel-item id="caiComrades">
         <ons-card id="playerCards"></ons-card>
         </ons-carousel-item>
         </ons-carousel>
@@ -132,7 +132,7 @@ Vitest.test("onCarouselPriorDisplayingItem prior displaying players with no acti
         <ons-carousel id="carouselNewGame" swipeable auto-scroll>
         <ons-carousel-item id="caiWelcome">
         </ons-carousel-item>
-        <ons-carousel-item id="caiPlayers">
+        <ons-carousel-item id="caiComrades">
         <ons-card id="playerCards"></ons-card>
         </ons-carousel-item>
         </ons-carousel>
@@ -161,7 +161,7 @@ Vitest.test("onCarouselPriorDisplayingItem prior displaying Welcome", async () =
         <ons-carousel id="carouselNewGame" swipeable auto-scroll>
         <ons-carousel-item id="caiWelcome">
         </ons-carousel-item>
-        <ons-carousel-item id="caiPlayers">
+        <ons-carousel-item id="caiComrades">
         </ons-carousel-item>
         </ons-carousel>
 
@@ -286,8 +286,8 @@ Vitest.test("onRollButtonClick with invalid player info shows toast notification
             <ons-carousel-item id="caiWelcome">
                 <h2>Welcome</h2>
             </ons-carousel-item>
-            <ons-carousel-item id="caiPlayers">
-                <h2>Players</h2>
+            <ons-carousel-item id="caiComrades">
+                <h2>Comrades</h2>
             </ons-carousel-item>
             <ons-carousel-item id="caiNewGame">
                 <h2>New Game</h2>
@@ -318,7 +318,7 @@ Vitest.test("onRollButtonClick with missing input fields logs an error and does 
         <ons-carousel-item id="caiWelcome">
             <h2>Welcome</h2>
         </ons-carousel-item>
-        <ons-carousel-item id="caiPlayers">
+        <ons-carousel-item id="caiComrades">
             <h2>Players</h2>
         </ons-carousel-item>
         <ons-carousel-item id="caiNewGame">
@@ -359,7 +359,7 @@ Vitest.test.each([
             <ons-carousel-item id="caiWelcome">
                 <h2>Welcome</h2>
             </ons-carousel-item>
-            <ons-carousel-item id="caiPlayers">
+            <ons-carousel-item id="caiComrades">
                 <h2>Players</h2>
             </ons-carousel-item>
             <ons-carousel-item id="caiNewGame">
@@ -400,7 +400,7 @@ Vitest.test("onRollButtonClick with valid name and valid email shows no toast", 
             <ons-carousel-item id="caiWelcome">
                 <h2>Welcome</h2>
             </ons-carousel-item>
-            <ons-carousel-item id="caiPlayers">
+            <ons-carousel-item id="caiComrades">
                 <h2>Players</h2>
             </ons-carousel-item>
             <ons-carousel-item id="caiNewGame">
