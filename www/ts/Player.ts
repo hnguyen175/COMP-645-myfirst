@@ -1,3 +1,5 @@
+import suffleItems from "./utilities/SuffleItems.ts";
+
 type PlayerStats = {
     hp: number;
     str: number;
@@ -59,12 +61,7 @@ export default class Player {
             return this.namePool.pop() as string;
         }
 
-        this.namePool = [...this.arrNames];
-        for (let i = this.namePool.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [this.namePool[i], this.namePool[j]] = [this.namePool[j], this.namePool[i]];
-        }
-
+        this.namePool = suffleItems(this.arrNames);
         return this.namePool.pop() as string;
     }
 
@@ -74,12 +71,7 @@ export default class Player {
             return this.villainNamePool.pop() as string;
         }
 
-        this.villainNamePool = [...this.arrVillainNames];
-        for (let i = this.villainNamePool.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [this.villainNamePool[i], this.villainNamePool[j]] = [this.villainNamePool[j], this.villainNamePool[i]];
-        }
-
+        this.villainNamePool = suffleItems(this.arrVillainNames);
         return this.villainNamePool.pop() as string;
     }
 
