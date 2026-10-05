@@ -1,0 +1,33 @@
+{
+    "security.allowedUNCHosts": [
+        "wsl.localhost"
+    ],
+    "workbench.browser.dataStorage": "global",
+    "update.mode": "none",
+    "workbench.startupEditor": "none",
+    "vim.easymotion": true,
+    "vim.incsearch": true,
+    "vim.useSystemClipboard": true,
+    "vim.useCtrlKeys": false,
+    "vim.hlsearch": true,
+    // To improve performance
+    "extensions.experimental.affinity": {
+        "vscodevim.vim": 1
+    },
+    "git.autofetch": true,
+    "security.workspace.trust.untrustedFiles": "open",
+    "editor.wordWrap": "on",
+    "workbench.editorAssociations": {
+        "*.copilotmd": "vscode.markdown.preview.editor",
+        "*.svg": "imagePreview.previewEditor"
+    },
+    "[html]": {
+        "editor.defaultFormatter": "vscode.html-language-features"
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+    },
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "remote.autoForwardPortsSource": "hybrid",
+}
