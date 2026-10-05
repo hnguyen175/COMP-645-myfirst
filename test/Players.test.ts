@@ -16,6 +16,7 @@ Vitest.test("addPlayer adds a player to the players array", () => {
     players.addPlayer(player);
     Vitest.expect(players.players.length).toBe(1);
     Vitest.expect(players.players[0]).toEqual(player);
+    Vitest.expect(players.toString()).toBe(`Players: ${player.toString()}`);
 });
 
 Vitest.test("addDefaultPlayers adds two default players to the players array", () => {

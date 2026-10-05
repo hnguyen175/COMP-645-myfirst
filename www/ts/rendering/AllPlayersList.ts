@@ -48,6 +48,9 @@ export default class AllPlayersList {
             const levelDiv = rowDiv.appendChild(document.createElement("div"));
             levelDiv.textContent = currentScreen; // Placeholder for level info
 
+            const trashIconDiv = rowDiv.appendChild(document.createElement("div"));
+            trashIconDiv.innerHTML = '<img src="images/trash.svg" alt="Delete" class="delete-icon">';
+
             playerListElement?.appendChild(onsListItem);
         });
     }

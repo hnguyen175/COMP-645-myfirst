@@ -1,3 +1,5 @@
+import suffleItems from "./utilities/SuffleItems.ts";
+
 type PlayerStats = {
     hp: number;
     str: number;
@@ -19,6 +21,7 @@ export default class Player {
     wep: string = "";
     cls: string = "";
     static arrNames = ["Abakor", "Bandala", "Cartin", "Darianne", "Fezzor", "Gizleeni", "Halor", "Ia", "Jeepenn", "Kalindaa", "Lineuss", "Mordana", "Nazzor", "Ortery", "Parto", "Quey", "Rato", "Salana", "Torqq", "Uvala", "Vixtor", "Wylia", "Xex", "Yala", "Zetch"] as const;
+    static arrVillainNames = ["Azrath", "Belnox", "Craven", "Dravora", "Ezrakk", "Grizmor", "Hexar", "Ivara", "Jorvex", "Kharza", "Maldrin", "Nyxara", "Ozrak", "Raveth", "Skarro", "Thyra", "Vorren", "Xandrak", "Zerith", "Morvane", "Drexil", "Valgora", "Krynn", "Noctra", "Zalthor"] as const;
     static arrWeapons = ["Rocks", "Staff", "Dagger", "Mace", "Warhammer", "Sword", "Battle Axe"] as const;
     static arrClasses = ["Healer", "Warrior", "Thief", "Knight", "Damsel", "Warlock", "Farmer"] as const;
     static arrLukProbability = [.02, .1, .2, 1] as const;
@@ -52,8 +55,24 @@ export default class Player {
         return arr[randomIndex];
     }
 
+    private static namePool: string[] = [];
     static randomName() : string  {
-        return Player.randomString(Player.arrNames);
+        if (this.namePool.length !== 0) {
+            return this.namePool.pop() as string;
+        }
+
+        this.namePool = suffleItems(this.arrNames);
+        return this.namePool.pop() as string;
+    }
+
+    private static villainNamePool: string[] = [];
+    static randomVillainName() : string  {
+        if (this.villainNamePool.length !== 0) {
+            return this.villainNamePool.pop() as string;
+        }
+
+        this.villainNamePool = suffleItems(this.arrVillainNames);
+        return this.villainNamePool.pop() as string;
     }
 
     static randomWeapon() : string  {
@@ -88,10 +107,20 @@ export default class Player {
     }
 
     public static getDefaultPlayer() : Player{
-        return Player.createRandomPlayer(Player.randomName(), `${Player.randomName().toLowerCase()}@comp645.com`);
+        const randomName = Player.randomName();
+        return Player.createRandomPlayer(randomName, `${randomName.toLowerCase()}@comp645.com`);
+    }
+
+    public static getVillainPlayer() : Player{
+        const randomVillainName = Player.randomVillainName();
+        return Player.createRandomPlayer(randomVillainName, `${randomVillainName.toLowerCase()}@comp645.com`);
     }
 
     static fromJSON(data: Partial<Player>) : Player {
         return Object.assign(new Player(), data);
+    }
+
+    toString() : string {
+        return `Player: ${this.name}, Email: ${this.email}, HP: ${this.hp}, STR: ${this.str}, SPD: ${this.spd}, MP: ${this.mp}, LUK: ${this.luk}, WEP: ${this.wep}, CLS: ${this.cls}`;
     }
 }
