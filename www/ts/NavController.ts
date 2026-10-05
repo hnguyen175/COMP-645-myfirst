@@ -3,7 +3,7 @@ import PlayerView from './rendering/PlayerView.ts';
 import NewGame from './carousel-items/NewGame.ts';
 import CarouselItem from './carousel-items/CarouselItem.ts';
 
-import LoadGame2 from './carousel-items/LoadGame2.ts';
+import LoadGame from './carousel-items/LoadGame.ts';
 import Welcome from './carousel-items/Welcome.ts';
 import Comrades from './carousel-items/Comrades.ts';
 import DrunkenTavern from './carousel-items/DrunkenTavern.ts';
@@ -21,7 +21,7 @@ interface CarouselChangeEvent extends Event {
 export default class NavController {
     private carousel!: ons.OnsCarouselElement;
     newGame!: NewGame;
-    loadGame2!: LoadGame2;
+    loadGame!: LoadGame;
     welcome!: Welcome;
     comrades!: Comrades;
     drunkenTavern!: DrunkenTavern;
@@ -41,7 +41,7 @@ export default class NavController {
         this.newGame = await NewGame.create(this);
         this.welcome = await Welcome.create(this, this.playerService);
         this.comrades = await Comrades.create(this);
-        this.loadGame2 = await LoadGame2.create(this, this.playerService);
+        this.loadGame = await LoadGame.create(this, this.playerService);
         this.drunkenTavern = await DrunkenTavern.create();
     }
 
@@ -78,12 +78,17 @@ export default class NavController {
             case "caiComrades":
                 this.priorDisplayingPlayers();
                 break;
-            // case "caiLoadGame":
-            //     break;
+            case "caiLoadGame":
+                this.priorLoadGame();
+                break;
             case "caiDrunkenTavern":
                 this.priorDisplayingDrunkenTavern();
                 break;
         };
+    }
+
+    private priorLoadGame() {
+        this.loadGame.loadPlayers();
     }
 
     private async priorWelcome() {
@@ -131,7 +136,6 @@ export default class NavController {
 
         if (!isValid.name && !isValid.email) {
             this.playerService.savePlayers(playerInputs.name.value, playerInputs.email.value);
-            this.loadGame2.loadPlayers();
             await this.addCarouselItem(this.comrades);
 
             await this.carousel.next();
@@ -147,7 +151,7 @@ export default class NavController {
         }
     }
 
-    async onLoadGame2ButtonClick(email: string): Promise<void> {
+    async onLoadGameButtonClick(email: string): Promise<void> {
         this.playerService.loadPlayers(email);
         await this.addCarouselItem(this.comrades);
 
@@ -156,7 +160,7 @@ export default class NavController {
 
     async onReloadButtonClick() {
         // add load-game html page
-        this.loadCarouselItem([this.loadGame2]);
+        this.loadCarouselItem([this.loadGame]);
 
         await this.carousel.next();
     }
@@ -183,7 +187,7 @@ export default class NavController {
 
     async onDeleteGame(email: string) {
         this.playerService.deletePlayers(email);
-        this.loadGame2.loadPlayers();
+        this.loadGame.loadPlayers();
 
         // if there are still players left, do not navigate back to the welcome screen
         if (this.playerService.listPlayersFromStorage().length > 0) {

@@ -4,7 +4,7 @@ import must from "../utilities/RequiredField.ts";
 import AllPlayersList from "../rendering/AllPlayersList.ts";
 import NavController from "../NavController.ts";
 
-export default class LoadGame2 extends CarouselItem {
+export default class LoadGame extends CarouselItem {
     constructor(
         carouselItem: HTMLElement,
         private readonly navController: NavController,
@@ -16,13 +16,12 @@ export default class LoadGame2 extends CarouselItem {
     static async create(
         navController: NavController,
         playerService: PlayerService,
-    ): Promise<LoadGame2> {
-        const element = await this.loadElement("../views/load-game2.html");
-        const loadGame2 = new LoadGame2(element, navController, playerService);
-        loadGame2.loadPlayers();
+    ): Promise<LoadGame> {
+        const element = await this.loadElement("../views/load-game.html");
+        const loadGame = new LoadGame(element, navController, playerService);
 
-        await loadGame2.registerEvents();
-        return loadGame2;
+        await loadGame.registerEvents();
+        return loadGame;
     }
 
     private registerEvents(): void {
@@ -46,7 +45,7 @@ export default class LoadGame2 extends CarouselItem {
                 return;
             }
 
-            await this.navController.onLoadGame2ButtonClick(email);
+            await this.navController.onLoadGameButtonClick(email);
 
             list.querySelectorAll("ons-list-item").forEach((item) => {
                 item.classList.remove("selected");

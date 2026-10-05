@@ -2,12 +2,22 @@
     <header>
         <h1>Load Game</h1>
     </header>
-    <ons-select id="lstPlayers" modifier="underbar" select-id="selPlayers">
-        <select id="selPlayers" class="js-select-player">
-            <option id="optSelectPlayer" value="" disabled selected>Select a player</option>
-        </select>
-    </ons-select>
+    <ons-list-title>Hello travelers, return to your party</ons-list-title>
+    <ons-list id="onslPlayers" class="scrollable-list">
+        <ons-list-header id="onslhPlayers">
+            <div class="player-row">
+                <div>
+                    Player
+                </div>
+                <div>
+                    Email
+                </div>
+                <div>
+                    Level
+                </div>
+            </div>
+        </ons-list-header>
+    </ons-list>
     <p></p>
-    <ons-button class="btn" id="btnLoadGame" disabled="true">Load Game</ons-button>
     <footer>Load a previously saved game.</footer>
 </ons-carousel-item>
