@@ -1,6 +1,6 @@
 import Player from './Player.ts';
 import Players from './Players.ts';
-import allPlayers from './AllPlayers.ts';
+import playerRegistry from './PlayerRegistry.ts';
 import currentGameState from "./GameState.ts";
 
 type PlayerInfoResult = {
@@ -9,7 +9,7 @@ type PlayerInfoResult = {
 };
 
 export default class PlayerService {
-    savePlayers(name: string, email: string) : void{
+    savePlayers(name: string, email: string): void {
         const player = Player.createRandomPlayer(name, email);
 
         const players = new Players();
@@ -18,7 +18,7 @@ export default class PlayerService {
 
         players.savePlayersToStorage();
 
-        allPlayers.addPlayer(email);
+        playerRegistry.addEmail(email);
 
         currentGameState.setPlayers(players);
     }
@@ -51,15 +51,15 @@ export default class PlayerService {
     }
 
     listPlayersFromStorage(): string[] {
-        return allPlayers.getAllPlayers();
+        return playerRegistry.getEmails();
     }
 
     deletePlayers(email: string): void {
         localStorage.removeItem(email);
-        allPlayers.removePlayer(email);
+        playerRegistry.removeEmail(email);
     }
 
-    createVillain() : Player {
+    createVillain(): Player {
         const villain = Player.getVillainPlayer();
         currentGameState.setDtkVillain(villain);
         return villain;
