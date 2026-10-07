@@ -18,13 +18,17 @@ Vitest.test('renderPlayerCards should render player cards correctly', () => {
     `;
 
     const players = new Players();
-    players.addPlayer(Player.createRandomPlayer('alice', 'alice@wonderland.org'));
+    const player1 = Player.createRandomPlayer('alice', 'alice@wonderland.org');
+    players.addPlayer(player1);
 
     const playerCards = document.querySelector("#caiComrades .player-cards") as HTMLElement;
 
     playerView.renderPlayerCards("caiComrades", players.players);
 
-    Vitest.expect(playerCards?.innerHTML).toContain('<ons-card class="player-card"><ons-list><ons-list-header>');
+    // Vitest.expect(playerCards?.innerHTML).toContain(`<ons-card class="player-card"><ons-list><ons-list-header class="list-item__icon"><div class="left"><img src="https://api.dicebear.com/10.x/pixel-art/svg?seed=${encodeURIComponent(player1.id)}&size=20" alt="Player avatar" class="avatar"></div><div class="right">${player1.name}</div></ons-list-header>`);
+
+    Vitest.expect(playerCards.querySelector("ons-card.player-card ons-list ons-list-header.list-item__icon div.left img.avatar")?.getAttribute("src")).toBe(`https://api.dicebear.com/10.x/pixel-art/svg?seed=${encodeURIComponent(player1.id)}&size=20`);
+
     Vitest.expect(playerCards?.innerHTML).toContain('<ons-list-item class="player-stat">');
     Vitest.expect(playerCards?.innerHTML).toContain('</ons-list-item>');
     Vitest.expect(playerCards?.innerHTML).toContain('</ons-list></ons-card>');
@@ -32,7 +36,7 @@ Vitest.test('renderPlayerCards should render player cards correctly', () => {
 });
 
 Vitest.test('renderPlayerCards should log error if playerCards container is not found', () => {
-    const consoleErrorSpy = Vitest.vi.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleErrorSpy = Vitest.vi.spyOn(console, 'error').mockImplementation(() => { });
     try {
         playerView.renderPlayerCards("htmlId", []);
     } catch (error: Error | any) {

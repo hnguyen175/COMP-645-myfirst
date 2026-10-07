@@ -25,7 +25,7 @@ export default class Players {
         localStorage.setItem(this.players[0]?.email, json);
     }
 
-    static loadPlayersFromStorage(email: string) : Players | null {
+    static loadPlayersFromStorage(email: string): Players | null {
         const savedPlayers = localStorage.getItem(email);
         if (savedPlayers) {
             return Players.fromJSON(JSON.parse(savedPlayers));
@@ -33,7 +33,7 @@ export default class Players {
         return null;
     }
 
-    private static fromJSON(data: Partial<Players>) : Players {
+    private static fromJSON(data: Partial<Players>): Players {
         const players = Object.assign(new Players(), data);
 
         players.players = data.players?.map(
