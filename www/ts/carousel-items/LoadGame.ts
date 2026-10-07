@@ -3,6 +3,7 @@ import CarouselItem from "./CarouselItem.ts";
 import must from "../utilities/RequiredField.ts";
 import AllPlayersList from "../rendering/AllPlayersList.ts";
 import NavController from "../NavController.ts";
+import loggingProxy from "../utilities/LoggingProxy.ts";
 
 export default class LoadGame extends CarouselItem {
     constructor(
@@ -18,7 +19,7 @@ export default class LoadGame extends CarouselItem {
         playerService: PlayerService,
     ): Promise<LoadGame> {
         const element = await this.loadElement("../views/load-game.html");
-        const loadGame = new LoadGame(element, navController, playerService);
+        const loadGame = loggingProxy(new LoadGame(element, navController, playerService));
 
         await loadGame.registerEvents();
         return loadGame;

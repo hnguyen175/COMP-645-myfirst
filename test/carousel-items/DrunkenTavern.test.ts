@@ -9,6 +9,7 @@ import PlayerService from '../../www/ts/PlayerService';
 const drunkenTavernHtml = '../../www/views/drunken-tavern.html?raw';
 
 let playerService: PlayerService = null as unknown as PlayerService;
+let gameStateMock: unknown;
 
 Vitest.beforeAll(async () => {
     // Mock the fetch function to return the HTML content for the specified URLs
@@ -28,6 +29,16 @@ Vitest.beforeAll(async () => {
         }
     });
     playerService = new PlayerService();
+
+    gameStateMock = Vitest.vi.spyOn(currentGameState, 'getPlayers').mockImplementation(() => {
+        const players = new Players();
+        players.addPlayer(Player.createRandomPlayer());
+
+        playerService.savePlayers(players.players[0].name, players.players[0].email);
+        const villain = playerService.createVillain();
+
+        return players;
+    });
 });
 
 Vitest.test('DrunkenTavern should be properly initialized', async () => {
@@ -38,24 +49,16 @@ Vitest.test('DrunkenTavern should be properly initialized', async () => {
 
 Vitest.test('DrunkenTavern should handle click events on challenge buttons', async () => {
     const dkt = await DrunkenTavern.create();
+    dkt.initializeRandomPlayerPicker();
+
     Vitest.expect(dkt).not.toBeNull();
     Vitest.expect(dkt.getCarouselItem()).not.toBeNull();
 
     const btnSTR = must(dkt.getCarouselItem().querySelector<HTMLElement>('#btnSTR'));
     Vitest.expect(btnSTR).not.toBeNull();
 
-    const gameStateMock = Vitest.vi.spyOn(currentGameState, 'getPlayers').mockImplementation(() => {
-        const players = new Players();
-        players.addPlayer(Player.createRandomPlayer());
-
-        playerService.savePlayers(players.players[0].name, players.players[0].email);
-        const villain = playerService.createVillain();
-
-        return players;
-    });
-
     btnSTR.click();
-    Vitest.expect(gameStateMock).toHaveBeenCalledOnce();
+    Vitest.expect(gameStateMock).toHaveBeenCalledTimes(1);
     Vitest.expect(currentGameState.getDtkVillain()).not.toBeNull();
     Vitest.expect(currentGameState.getPlayers()).not.toBeNull();
 });

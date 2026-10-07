@@ -1,6 +1,7 @@
 import CarouselItem from "./CarouselItem.ts";
 import NavController from "../NavController.ts";
 import must from "../utilities/RequiredField.ts"
+import loggingProxy from "../utilities/LoggingProxy.ts";
 
 export default class NewGame extends CarouselItem {
     constructor(carouselItem: HTMLElement, private readonly navController: NavController) {
@@ -9,7 +10,7 @@ export default class NewGame extends CarouselItem {
 
     static async create(navController: NavController): Promise<NewGame> {
         const element = must(await this.loadElement("../views/new-game.html"));
-        const newGame = new NewGame(element, navController);
+        const newGame = loggingProxy(new NewGame(element, navController));
         newGame.registerEvents();
         return newGame;
     }

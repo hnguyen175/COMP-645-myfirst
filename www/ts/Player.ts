@@ -1,4 +1,5 @@
-import suffleItems from "./utilities/SuffleItems.ts";
+import shuffleItems from "./utilities/ShuffleItems.ts";
+import { RandomItemPicker } from "./utilities/ShuffleItems.ts";
 
 type PlayerStats = {
     hp: number;
@@ -69,25 +70,8 @@ export default class Player {
         return arr[randomIndex];
     }
 
-    private static namePool: string[] = [];
-    static randomName(): string {
-        if (this.namePool.length !== 0) {
-            return this.namePool.pop() as string;
-        }
-
-        this.namePool = suffleItems(this.arrNames);
-        return this.namePool.pop() as string;
-    }
-
-    private static villainNamePool: string[] = [];
-    static randomVillainName(): string {
-        if (this.villainNamePool.length !== 0) {
-            return this.villainNamePool.pop() as string;
-        }
-
-        this.villainNamePool = suffleItems(this.arrVillainNames);
-        return this.villainNamePool.pop() as string;
-    }
+    private static namePool = new RandomItemPicker(Player.arrNames);
+    private static villainNamePool = new RandomItemPicker(Player.arrVillainNames);
 
     static randomWeapon(): string {
         return Player.randomString(Player.arrWeapons);
@@ -121,12 +105,12 @@ export default class Player {
     }
 
     public static getDefaultPlayer(): Player {
-        const randomName = Player.randomName();
+        const randomName = Player.namePool.getRandomItem();
         return Player.createRandomPlayer(randomName, `${randomName.toLowerCase()}@comp645.com`);
     }
 
     public static getVillainPlayer(): Player {
-        const randomVillainName = Player.randomVillainName();
+        const randomVillainName = Player.villainNamePool.getRandomItem();
         return Player.createRandomPlayer(randomVillainName, `${randomVillainName.toLowerCase()}@comp645.com`);
     }
 

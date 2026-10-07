@@ -28,7 +28,7 @@ export default class NavController {
 
     constructor(private playerService: PlayerService = loggingProxy(new PlayerService()),
         private playerView: PlayerView = new PlayerView()
-    ) {}
+    ) { }
 
     async init(): Promise<void> {
         const carousel = document.getElementById("carouselNewGame") as ons.OnsCarouselElement | null;
@@ -99,6 +99,8 @@ export default class NavController {
         this.playerView.renderPlayerCards("caiDrunkenTavern", must(currentGameState.getPlayers()?.players));
         // create villain
         this.playerView.renderPlayerCards("divDrunkenTavernVillain", [this.playerService.createVillain()], false);
+        // need to tell the carousel item to reinitialze the random player picker, so that it can pick a new random player from the current players
+        this.drunkenTavern.initializeRandomPlayerPicker();
     }
 
     private priorDisplayingPlayers() {
