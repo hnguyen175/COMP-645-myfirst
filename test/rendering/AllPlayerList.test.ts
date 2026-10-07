@@ -29,13 +29,13 @@ Vitest.test("renderAllPlayersList should render player options correctly", () =>
 });
 
 Vitest.test("renderAllPlayersList2 should render player list items correctly", () => {
-    const players = ["one", "two", "three"];
+    const names = ["one", "two", "three"];
     const playerServiceMock = {
         loadPlayers: Vitest.vi.fn((email: string) => {
-            const players = Player.getDefaultPlayer();
-            players.name = email; // Use email as name for testing
-            players.email = email;
-            return { players: [players], currentScreen: "TestScreen" };
+            const players = new Players();
+            players.addPlayer(Player.createRandomPlayer(email, email));
+            players.currentScreen = "TestScreen";
+            return players;
         }),
     }
 
@@ -43,7 +43,7 @@ Vitest.test("renderAllPlayersList2 should render player list items correctly", (
 
     const createElementSpy = Vitest.vi.spyOn(document, 'createElement');
 
-    AllPlayersList.renderAllPlayersList2(temp, players, playerServiceMock as any);
+    AllPlayersList.renderAllPlayersList2(temp, names, playerServiceMock as any);
 
     const rows = [...temp.querySelectorAll("ons-list-item")].map(row => ({
         name: row.getAttribute("data-email"),

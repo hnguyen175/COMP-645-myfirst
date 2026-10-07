@@ -25,7 +25,10 @@ Vitest.test('renderPlayerCards should render player cards correctly', () => {
 
     playerView.renderPlayerCards("caiComrades", players.players);
 
-    Vitest.expect(playerCards?.innerHTML).toContain(`<ons-card class="player-card"><ons-list><ons-list-header class="list-item__icon"><div class="left"><img src="https://api.dicebear.com/10.x/pixel-art/svg?seed=${encodeURIComponent(player1.toString())}" alt="Player avatar" class="avatar"></div><div class="right">${player1.name}</div></ons-list-header>`);
+    // Vitest.expect(playerCards?.innerHTML).toContain(`<ons-card class="player-card"><ons-list><ons-list-header class="list-item__icon"><div class="left"><img src="https://api.dicebear.com/10.x/pixel-art/svg?seed=${encodeURIComponent(player1.id)}&size=20" alt="Player avatar" class="avatar"></div><div class="right">${player1.name}</div></ons-list-header>`);
+
+    Vitest.expect(playerCards.querySelector("ons-card.player-card ons-list ons-list-header.list-item__icon div.left img.avatar")?.getAttribute("src")).toBe(`https://api.dicebear.com/10.x/pixel-art/svg?seed=${encodeURIComponent(player1.id)}&size=20`);
+
     Vitest.expect(playerCards?.innerHTML).toContain('<ons-list-item class="player-stat">');
     Vitest.expect(playerCards?.innerHTML).toContain('</ons-list-item>');
     Vitest.expect(playerCards?.innerHTML).toContain('</ons-list></ons-card>');

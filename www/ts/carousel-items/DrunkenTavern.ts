@@ -6,7 +6,7 @@ import Player from "../Player.ts";
 export default class DrunkenTavern extends CarouselItem {
     constructor(
         carouselItem: HTMLElement
-        ) {
+    ) {
         super(carouselItem);
     }
 
@@ -37,9 +37,9 @@ export default class DrunkenTavern extends CarouselItem {
         const pickedPlayer = must(players[Math.floor(Math.random() * players.length)]);
 
         console.log('Challenge - ' + challenge);
-        console.log('My player - ' + pickedPlayer['name'] + " " + pickedPlayer[challenge]);
+        console.log('My player - ' + pickedPlayer['_name'] + " " + pickedPlayer[challenge]);
 
         const villain = must(currentGameState.getDtkVillain());
-        console.log('Villain - ' + villain['name'] + " " + villain[challenge]);
+        console.log('Villain - ' + villain['_name'] + " " + villain[challenge]);
     }
 }
