@@ -1,5 +1,4 @@
-import shuffleItems from "./utilities/ShuffleItems.ts";
-import { RandomItemPicker } from "./utilities/ShuffleItems.ts";
+import ShuffleBag from "./utilities/ShuffleBag.ts";
 
 type PlayerStats = {
     hp: number;
@@ -70,8 +69,8 @@ export default class Player {
         return arr[randomIndex];
     }
 
-    private static namePool = new RandomItemPicker(Player.arrNames);
-    private static villainNamePool = new RandomItemPicker(Player.arrVillainNames);
+    private static namePool = new ShuffleBag(Player.arrNames);
+    private static villainNamePool = new ShuffleBag(Player.arrVillainNames);
 
     static randomWeapon(): string {
         return Player.randomString(Player.arrWeapons);

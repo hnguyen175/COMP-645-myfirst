@@ -1,22 +1,23 @@
 import must from "./RequiredField.ts";
 
-export default function shuffleItems<T>(items: readonly T[]): T[] {
-    const shuffled = [...items];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled;
-}
-
-export class RandomItemPicker<T> {
+export default class ShuffleBag<T> {
     private items: T[];
     private lastPickedItem: T | null = null;
 
     constructor(private originalItems: readonly T[]) {
-        this.items = shuffleItems(originalItems);
+        this.items = ShuffleBag.shuffleItems(originalItems);
         must(this.items.length > 0, "The originalItems array must contain at least one item.");
     }
+
+    private static shuffleItems<T>(items: readonly T[]): T[] {
+        const shuffled = [...items];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled;
+    }
+
 
     // Guarantees no consecutive duplicate picks
     // when originalItems contains at least 2 unique items.
@@ -28,7 +29,7 @@ export class RandomItemPicker<T> {
 
         let pickedItem: T;
         if (this.items.length === 0) {
-            this.items = shuffleItems(this.originalItems);
+            this.items = ShuffleBag.shuffleItems(this.originalItems);
             pickedItem = this.items.pop()!;
             if (pickedItem === this.lastPickedItem) {
                 this.items.unshift(pickedItem);

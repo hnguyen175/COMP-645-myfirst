@@ -2,8 +2,7 @@ import CarouselItem from "./CarouselItem.ts";
 import must from "../utilities/RequiredField.ts";
 import currentGameState from "../GameState.ts";
 import Player from "../Player.ts";
-import shuffleItems from "../utilities/ShuffleItems.ts";
-import { RandomItemPicker } from "../utilities/ShuffleItems.ts";
+import ShuffleBag from "../utilities/ShuffleBag.ts";
 import loggingProxy from "../utilities/LoggingProxy.ts";
 
 export default class DrunkenTavern extends CarouselItem {
@@ -35,13 +34,13 @@ export default class DrunkenTavern extends CarouselItem {
         });
     }
 
-    private randomPlayerPicker: RandomItemPicker<number> = null as unknown as RandomItemPicker<number>;
+    private randomPlayerPicker: ShuffleBag<number> = null as unknown as ShuffleBag<number>;
     private currentPlayers: Player[] = [];
 
     initializePage(): void {
         this.currentPlayers = must(currentGameState.getPlayers()?.players);
         const randomPlayerRange = Array.from({ length: this.currentPlayers.length }, (_, i) => i);
-        this.randomPlayerPicker = new RandomItemPicker(randomPlayerRange);
+        this.randomPlayerPicker = new ShuffleBag(randomPlayerRange);
         this.toggleAllChallengeButtons(true);
         // const divDrunkenTavernChallenge = must(this.carouselItem.querySelector<HTMLElement>("#divDrunkenTavernChallenge"));
         // divDrunkenTavernChallenge.textContent = "";
