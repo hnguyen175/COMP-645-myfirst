@@ -5,8 +5,10 @@ export default class ShuffleBag<T> {
     private lastPickedItem: T | null = null;
 
     constructor(private originalItems: readonly T[]) {
-        this.items = ShuffleBag.shuffleItems(originalItems);
-        must(this.items.length > 0, "The originalItems array must contain at least one item.");
+        this.originalItems = [...new Set(originalItems)];
+        must(this.originalItems.length > 0, "The originalItems array must contain at least one item.");
+
+        this.items = ShuffleBag.shuffleItems(this.originalItems);
     }
 
     private static shuffleItems<T>(items: readonly T[]): T[] {
@@ -22,16 +24,11 @@ export default class ShuffleBag<T> {
     // Guarantees no consecutive duplicate picks
     // when originalItems contains at least 2 unique items.
     public getRandomItem(): T {
-        if (this.items.length === 1) {
-            this.lastPickedItem = this.items.pop()!;
-            return this.lastPickedItem;
-        }
-
         let pickedItem: T;
         if (this.items.length === 0) {
             this.items = ShuffleBag.shuffleItems(this.originalItems);
             pickedItem = this.items.pop()!;
-            if (pickedItem === this.lastPickedItem) {
+            if (pickedItem === this.lastPickedItem && this.items.length > 0) {
                 this.items.unshift(pickedItem);
                 pickedItem = this.items.pop()!;
             }
