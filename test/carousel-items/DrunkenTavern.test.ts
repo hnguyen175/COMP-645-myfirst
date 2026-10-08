@@ -44,17 +44,17 @@ Vitest.beforeAll(async () => {
 Vitest.test('DrunkenTavern should be properly initialized', async () => {
     const dkt = await DrunkenTavern.create();
     Vitest.expect(dkt).not.toBeNull();
-    Vitest.expect(dkt.getCarouselItem()).not.toBeNull();
+    Vitest.expect(dkt.carouselItem).not.toBeNull();
 });
 
 Vitest.test('DrunkenTavern should handle click events on challenge buttons', async () => {
     const dkt = await DrunkenTavern.create();
-    dkt.initializeRandomPlayerPicker();
+    dkt.initializePage();
 
     Vitest.expect(dkt).not.toBeNull();
-    Vitest.expect(dkt.getCarouselItem()).not.toBeNull();
+    Vitest.expect(dkt.carouselItem).not.toBeNull();
 
-    const btnSTR = must(dkt.getCarouselItem().querySelector<HTMLElement>('#btnSTR'));
+    const btnSTR = must(dkt.carouselItem.querySelector<HTMLElement>('#btnSTR'));
     Vitest.expect(btnSTR).not.toBeNull();
 
     btnSTR.click();
@@ -66,8 +66,8 @@ Vitest.test('DrunkenTavern should handle click events on challenge buttons', asy
 Vitest.test('DrunkenTavern should handle click events when clicked element is not a challenge button', async () => {
     const dkt = await DrunkenTavern.create();
     Vitest.expect(dkt).not.toBeNull();
-    Vitest.expect(dkt.getCarouselItem()).not.toBeNull();
-    const nonButtonElement = must(dkt.getCarouselItem().querySelector<HTMLElement>('#divDrunkenTavernVillain'));
+    Vitest.expect(dkt.carouselItem).not.toBeNull();
+    const nonButtonElement = must(dkt.carouselItem.querySelector<HTMLElement>('#divDrunkenTavernVillain'));
 
     const gameStateMock = Vitest.vi.spyOn(currentGameState, 'getPlayers').mockImplementation(() => {
         return null; // This should not be called in this test

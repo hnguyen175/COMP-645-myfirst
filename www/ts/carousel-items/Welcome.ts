@@ -20,7 +20,7 @@ export default class Welcome extends CarouselItem {
     }
 
     private registerEvents(): void {
-        const carouselItem = this.getCarouselItem();
+        const carouselItem = this.carouselItem;
         carouselItem.addEventListener("click", (event) => {
             void this.handleButtonClick(event);
         });
@@ -37,7 +37,7 @@ export default class Welcome extends CarouselItem {
 
     // disable 'reload' button if there are no players in storage
     async updateLoadGameButtonState(): Promise<void> {
-        const carouselItem = this.getCarouselItem();
+        const carouselItem = this.carouselItem;
         const reloadButton = must(carouselItem.querySelector<HTMLElement>("#btnReload"));
         const players = await this.playerService.listPlayersFromStorage();
         if (!players || players.length === 0) {

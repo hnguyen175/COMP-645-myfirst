@@ -22,7 +22,7 @@ export default class DrunkenTavern extends CarouselItem {
     }
 
     private registerEvents(): void {
-        const carouselItem = must(this.getCarouselItem());
+        const carouselItem = must(this.carouselItem);
         const carouselItemId = must(carouselItem.id);
 
         carouselItem.addEventListener("click", (event) => {
@@ -38,19 +38,66 @@ export default class DrunkenTavern extends CarouselItem {
     private randomPlayerPicker: RandomItemPicker<number> = null as unknown as RandomItemPicker<number>;
     private currentPlayers: Player[] = [];
 
-    initializeRandomPlayerPicker(): void {
+    initializePage(): void {
         this.currentPlayers = must(currentGameState.getPlayers()?.players);
         const randomPlayerRange = Array.from({ length: this.currentPlayers.length }, (_, i) => i);
         this.randomPlayerPicker = new RandomItemPicker(randomPlayerRange);
+        this.toggleAllChallengeButtons(true);
+        // const divDrunkenTavernChallenge = must(this.carouselItem.querySelector<HTMLElement>("#divDrunkenTavernChallenge"));
+        // divDrunkenTavernChallenge.textContent = "";
     }
 
+    // grey out a particular challenge button
+    toggleChallengeButtons(challenges: string[], enable: boolean): void {
+        const carouselItem = must(this.carouselItem);
+        challenges.forEach((challenge) => {
+            const challengeButton = must(carouselItem.querySelector<HTMLElement>(`#btn${challenge.toUpperCase()}`));
+            if (enable) {
+                challengeButton.removeAttribute("disabled");
+            } else {
+                challengeButton.setAttribute("disabled", "true");
+            }
+        });
+    };
+
+    toggleAllChallengeButtons(enable: boolean): void {
+        this.toggleChallengeButtons(["str", "spd", "mp"], enable);
+    }
+
+    private tieBreakeChallenges = 0;
     private drunkenTavernChallenge(challenge: keyof Player): void {
         const pickedPlayer = must(this.currentPlayers[this.randomPlayerPicker.getRandomItem()]);
-
-        console.log('Challenge - ' + challenge);
-        console.log('My player - ' + pickedPlayer['_name'] + " " + pickedPlayer[challenge]);
+        const divDrunkenTavernChallenge = must(this.carouselItem.querySelector<HTMLElement>("#divDrunkenTavernChallenge"));
+        divDrunkenTavernChallenge.textContent = "";
 
         const villain = must(currentGameState.getDtkVillain());
-        console.log('Villain - ' + villain['_name'] + " " + villain[challenge]);
+        const villainChallengeValue = villain[challenge];
+        const playerChallengeValue = pickedPlayer[challenge];
+        const playerChallengeName = pickedPlayer.name;
+        const villainChallengeName = villain.name;
+        const challengeName = challenge.toUpperCase();
+
+        if (playerChallengeValue > villainChallengeValue) {
+            divDrunkenTavernChallenge.textContent = `${playerChallengeName} has won the challenge! ${playerChallengeName}'s ${challengeName} (${playerChallengeValue}) is greater than the ${villainChallengeName}'s  (${villainChallengeValue}).`;
+            this.toggleAllChallengeButtons(false);
+            return;
+        }
+
+        if (playerChallengeValue < villainChallengeValue) {
+            divDrunkenTavernChallenge.textContent = `${playerChallengeName} has lost the challenge! Your ${challengeName} (${playerChallengeValue}) is less than the ${villainChallengeName}'s  (${villainChallengeValue}).`;
+            this.toggleAllChallengeButtons(false);
+            return;
+        }
+
+        // tie, let's compare the luck
+        const villainLuck = villain.luk;
+        const playerLuck = pickedPlayer.luk;
+
+        if (playerLuck > villainLuck) {
+            divDrunkenTavernChallenge.textContent = `${playerChallengeName} has won the challenge! ${playerChallengeName}'s LUK (${playerLuck}) is greater than the ${villainChallengeName}'s LUK (${villainLuck}).`;
+        } else {
+            this.toggleChallengeButtons([challenge], false);
+            divDrunkenTavernChallenge.textContent += `It's a tie for ${playerChallengeName} (${challengeName}: ${playerChallengeValue})! Let's try again! You have ${3 - ++this.tieBreakeChallenges} more attempts to break the tie.`;
+        }
     }
 }

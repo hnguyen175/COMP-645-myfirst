@@ -26,7 +26,7 @@ export default class LoadGame extends CarouselItem {
     }
 
     private registerEvents(): void {
-        const carouselItem = must(this.getCarouselItem());
+        const carouselItem = must(this.carouselItem);
         const list = must(carouselItem.querySelector<HTMLElement>("#onslPlayers"));
 
         list.addEventListener("click", (event) => {
@@ -72,7 +72,7 @@ export default class LoadGame extends CarouselItem {
         // Implementation for loading players
         const allPlayers = must(this.playerService.listPlayersFromStorage());
         const onsList = must(
-            this.getCarouselItem().querySelector<HTMLElement>("#onslPlayers"),
+            this.carouselItem.querySelector<HTMLElement>("#onslPlayers"),
         );
 
         AllPlayersList.renderAllPlayersList2(

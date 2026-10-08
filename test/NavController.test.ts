@@ -548,12 +548,12 @@ Vitest.test("onDeleteGame deletes players and resets carousel to welcome if no p
 
     // Vitest.vi.spyOn(playerService, 'savePlayers').mockImplementation((name: string, email: string): Players => { return new Players(); });
     Vitest.vi.spyOn(playerService, 'deletePlayers').mockImplementation((email: string): void => { });
-    Vitest.vi.spyOn(navController.loadGame, 'loadPlayers').mockImplementation(() => Vitest.vi.fn());
+    const loadPlayersSpy = Vitest.vi.spyOn(navController.loadGame, 'loadPlayers').mockImplementation(() => Vitest.vi.fn());
 
     await navController.onDeleteGame("a@b.c");
 
     Vitest.expect(playerService.deletePlayers).toHaveBeenCalledWith("a@b.c");
-    Vitest.expect(navController.loadGame.loadPlayers).toHaveBeenCalled();
+    Vitest.expect(loadPlayersSpy).toHaveBeenCalled();
     Vitest.expect(carousel.prev).toHaveBeenCalled();
 });
 
@@ -577,12 +577,12 @@ Vitest.test("onDeleteGame deletes players and does not reset carousel if players
 
     Vitest.vi.spyOn(playerService, 'listPlayersFromStorage').mockImplementation((): string[] => { return ["a@b.c"]; });
     Vitest.vi.spyOn(playerService, 'deletePlayers').mockImplementation((email: string): void => { });
-    Vitest.vi.spyOn(navController.loadGame, 'loadPlayers').mockImplementation(() => Vitest.vi.fn());
+    const loadPlayersSpy = Vitest.vi.spyOn(navController.loadGame, 'loadPlayers').mockImplementation(() => Vitest.vi.fn());
 
     await navController.onDeleteGame("a@b.c");
 
     Vitest.expect(playerService.deletePlayers).toHaveBeenCalledWith("a@b.c");
-    Vitest.expect(navController.loadGame.loadPlayers).toHaveBeenCalled();
+    Vitest.expect(loadPlayersSpy).toHaveBeenCalled();
     Vitest.expect(carousel.prev).not.toHaveBeenCalled();
 });
 
@@ -611,5 +611,5 @@ Vitest.test("onGameStart adds drunkenTavern carousel item and navigates to it", 
     await navController.onGameStart();
 
     Vitest.expect(nextMock).toHaveBeenCalledOnce();
-    Vitest.expect(carousel.querySelector(`#${navController.drunkenTavern.getCarouselItem().id}`)).not.toBeNull();
+    Vitest.expect(carousel.querySelector(`#${navController.drunkenTavern.carouselItem.id}`)).not.toBeNull();
 });

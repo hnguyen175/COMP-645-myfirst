@@ -16,7 +16,7 @@ export default class NewGame extends CarouselItem {
     }
 
     private registerEvents(): void {
-        this.getCarouselItem().addEventListener("click", (event) => {
+        this.carouselItem.addEventListener("click", (event) => {
             void this.handleButtonClick(event);
         });
     }
@@ -34,7 +34,7 @@ export default class NewGame extends CarouselItem {
     }
 
     private emptyInput(inputField: string): void {
-        const input = this.getCarouselItem().querySelector(`#${inputField}`) as HTMLInputElement;
+        const input = this.carouselItem.querySelector(`#${inputField}`) as HTMLInputElement;
         if (input) {
             input.value = "";
             input.focus();

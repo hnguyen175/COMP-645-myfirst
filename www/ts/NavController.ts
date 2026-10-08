@@ -100,7 +100,7 @@ export default class NavController {
         // create villain
         this.playerView.renderPlayerCards("divDrunkenTavernVillain", [this.playerService.createVillain()], false);
         // need to tell the carousel item to reinitialze the random player picker, so that it can pick a new random player from the current players
-        this.drunkenTavern.initializeRandomPlayerPicker();
+        this.drunkenTavern.initializePage();
     }
 
     private priorDisplayingPlayers() {
@@ -168,9 +168,9 @@ export default class NavController {
     }
 
     async addCarouselItem(carouselItem: CarouselItem) {
-        const existingItem = this.carousel.querySelector<HTMLElement>(`ons-carousel-item#${carouselItem.getCarouselItem().id}`);
+        const existingItem = this.carousel.querySelector<HTMLElement>(`ons-carousel-item#${carouselItem.carouselItem.id}`);
         if (!existingItem) {
-            this.carousel.appendChild(carouselItem.getCarouselItem());
+            this.carousel.appendChild(carouselItem.carouselItem);
         }
     }
 
@@ -178,7 +178,7 @@ export default class NavController {
         this.cleanupCarouselItems();
 
         for (const carouselItem of carouselItems) {
-            this.carousel.appendChild(carouselItem.getCarouselItem());
+            this.carousel.appendChild(carouselItem.carouselItem);
         }
     }
 
