@@ -157,7 +157,7 @@ Vitest.test("onCarouselPriorDisplayingItem prior displaying players with no acti
 });
 
 Vitest.test("onCarouselPriorDisplayingItem prior displaying Welcome", async () => {
-    document.body.innerHTML = `
+    document.body.innerHTML = /*html*/ `
         <ons-carousel id="carouselNewGame" swipeable auto-scroll>
         <ons-carousel-item id="caiWelcome">
         </ons-carousel-item>
@@ -167,6 +167,11 @@ Vitest.test("onCarouselPriorDisplayingItem prior displaying Welcome", async () =
 
         <input type="text" id="inputPlayerName" value="John Doe" />
         <input type="text" id="inputPlayerEmail" value="john.doe@example.com" />
+        <template id="templ8GameTasks">
+            <h4 style="text-align: center;" class="game-tasks">
+                Game Tasks
+            </h4>
+        </template>
     `;
     await navController.init();
 
@@ -197,6 +202,11 @@ Vitest.test("onCarouselPriorDisplayingItem prior displaying drunken tavern", asy
             <h1>Drunken Tavern</h1>
         </ons-carousel-item>
         </ons-carousel>
+        <template id="templ8GameTasks">
+            <h4 style="text-align: center;" class="game-tasks">
+                Game Tasks
+            </h4>
+        </template>
     `;
     await navController.init();
 
@@ -237,6 +247,11 @@ Vitest.test("onCarouselPriorDisplayingItem prior displaying load game", async ()
             <h1>load game</h1>
         </ons-carousel-item>
         </ons-carousel>
+        <template id="templ8GameTasks">
+            <h4 style="text-align: center;" class="game-tasks">
+                Game Tasks
+            </h4>
+        </template>
     `;
     await navController.init();
     Vitest.expect(navController.loadGame).not.toBeNull();
@@ -263,6 +278,11 @@ Vitest.test("onCarouselNewGame navigates to next carousel item", async () => {
             </ons-carousel-item>
         </ons-carousel>
         <ons-button class="btn js-load-game" id="btnNewGame">New Game</ons-button>
+        <template id="templ8GameTasks">
+            <h4 style="text-align: center;" class="game-tasks">
+                Game Tasks
+            </h4>
+        </template>
         `;
     await navController.init();
 
@@ -324,6 +344,11 @@ Vitest.test("onRollButtonClick with invalid player info shows toast notification
         <ons-button class="btn js-roll" id="btnRoll">Roll</ons-button>
         <input id="inputPlayerName">
         <input id="inputPlayerEmail" value="john.doe.example.com">
+        <template id="templ8GameTasks">
+            <h4 style="text-align: center;" class="game-tasks">
+                Game Tasks
+            </h4>
+        </template>
     `;
 
     await navController.init();
@@ -354,6 +379,11 @@ Vitest.test("onRollButtonClick with missing input fields logs an error and does 
         </ons-carousel-item>
     </ons-carousel>
     <ons-button class="btn js-roll" id="btnRoll">Roll</ons-button>
+    <template id="templ8GameTasks">
+        <h4 style="text-align: center;" class="game-tasks">
+            Game Tasks
+        </h4>
+    </template>
     `;
 
     await navController.init();
@@ -397,6 +427,11 @@ Vitest.test.each([
         <ons-button class="btn js-roll" id="btnRoll">Roll</ons-button>
         <input id="inputPlayerName" value="${name}">
         <input id="inputPlayerEmail" value="${email}">
+        <template id="templ8GameTasks">
+            <h4 style="text-align: center;" class="game-tasks">
+                Game Tasks
+            </h4>
+        </template>
     `;
 
     await navController.init();
@@ -438,6 +473,11 @@ Vitest.test("onRollButtonClick with valid name and valid email shows no toast", 
         <ons-button class="btn js-roll" id="btnRoll">Roll</ons-button>
         <input id="inputPlayerName" value="John Doe">
         <input id="inputPlayerEmail" value="a@b.c">
+        <template id="templ8GameTasks">
+            <h4 style="text-align: center;" class="game-tasks">
+                Game Tasks
+            </h4>
+        </template>
     `;
 
     await navController.init();
@@ -458,6 +498,11 @@ Vitest.test("onReloadButtonClick calls loadCarouselItems and navigates to next i
                 <h1>Welcome</h1>
             </ons-carousel-item>
         </ons-carousel>
+        <template id="templ8GameTasks">
+            <h4 style="text-align: center;" class="game-tasks">
+                Game Tasks
+            </h4>
+        </template>
     `;
     await navController.init();
 
@@ -477,6 +522,11 @@ Vitest.test("loadCarouselItems removes all carousel items except welcome", async
     document.body.innerHTML = `
         <ons-carousel id="carouselNewGame" swipeable auto-scroll>
         </ons-carousel>
+        <template id="templ8GameTasks">
+            <h4 style="text-align: center;" class="game-tasks">
+                Game Tasks
+            </h4>
+        </template>
     `;
     await navController.init();
     const carousel = document.getElementById("carouselNewGame") as unknown as CarouselElement;
@@ -503,6 +553,11 @@ Vitest.test("onLoadGameButtonClick loads players and navigates to next carousel 
     document.body.innerHTML = `
         <ons-carousel id="carouselNewGame" swipeable auto-scroll>
         </ons-carousel>
+        <template id="templ8GameTasks">
+            <h4 style="text-align: center;" class="game-tasks">
+                Game Tasks
+            </h4>
+        </template>
         `;
     await navController.init();
     const carousel = document.getElementById("carouselNewGame") as unknown as CarouselElement;
@@ -532,12 +587,20 @@ Vitest.test("onDeleteGame deletes players and resets carousel to welcome if no p
     document.body.innerHTML = `
         <ons-carousel id="carouselNewGame" swipeable auto-scroll>
         </ons-carousel>
+        <template id="templ8GameTasks">
+            <h4 style="text-align: center;" class="game-tasks">
+                Game Tasks
+            </h4>
+        </template>
         `;
     await navController.init();
     const carousel = document.getElementById("carouselNewGame") as unknown as CarouselElement;
     Object.defineProperties(carousel, {
         'getActiveIndex': {
             value: Vitest.vi.fn(() => 0),
+        },
+        'setActiveIndex': {
+            value: Vitest.vi.fn(),
         },
         'prev': {
             value: Vitest.vi.fn(),
@@ -554,13 +617,18 @@ Vitest.test("onDeleteGame deletes players and resets carousel to welcome if no p
 
     Vitest.expect(playerService.deletePlayers).toHaveBeenCalledWith("a@b.c");
     Vitest.expect(loadPlayersSpy).toHaveBeenCalled();
-    Vitest.expect(carousel.prev).toHaveBeenCalled();
+    Vitest.expect(carousel.setActiveIndex).toHaveBeenCalledWith(0);
 });
 
 Vitest.test("onDeleteGame deletes players and does not reset carousel if players left", async () => {
     document.body.innerHTML = `
         <ons-carousel id="carouselNewGame" swipeable auto-scroll>
         </ons-carousel>
+        <template id="templ8GameTasks">
+            <h4 style="text-align: center;" class="game-tasks">
+                Game Tasks
+            </h4>
+        </template>
         `;
     await navController.init();
     const carousel = document.getElementById("carouselNewGame") as unknown as CarouselElement;
@@ -590,6 +658,11 @@ Vitest.test("onGameStart adds drunkenTavern carousel item and navigates to it", 
     document.body.innerHTML = `
         <ons-carousel id="carouselNewGame" swipeable auto-scroll>
         </ons-carousel>
+        <template id="templ8GameTasks">
+            <h4 style="text-align: center;" class="game-tasks">
+                Game Tasks
+            </h4>
+        </template>
         `;
 
     // // const beforeIndex = navController.get
