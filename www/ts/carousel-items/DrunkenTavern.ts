@@ -2,9 +2,7 @@ import CarouselItem from "./CarouselItem.ts";
 import must from "../utilities/RequiredField.ts";
 import currentGameState from "../GameState.ts";
 import Player from "../Player.ts";
-import ShuffleBag from "../utilities/ShuffleBag.ts";
 import loggingProxy from "../utilities/LoggingProxy.ts";
-import Players from "../Players.ts";
 import TemplateGameTasks from "../templates/TemplateGameTasks.ts";
 
 type ChallengeResult = {
