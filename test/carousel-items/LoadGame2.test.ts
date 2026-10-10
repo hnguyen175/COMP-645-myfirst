@@ -44,15 +44,15 @@ Vitest.test('LoadGame should be properly initialized', async () => {
         }),
     };
 
-    const allPlayersListMock = Vitest.vi.spyOn(AllPlayersList, 'renderAllPlayersList2');
+    const allPlayersListMock = Vitest.vi.spyOn(AllPlayersList, 'renderAllPlayersList');
 
     const loadGame = await LoadGame.create(navControllerMock as any, playerServiceMock as any);
     Vitest.expect(loadGame).not.toBeNull();
 
-    Vitest.expect(allPlayersListMock).not.toHaveBeenCalled(); // Ensure that renderAllPlayersList2 is not called during initialization
+    Vitest.expect(allPlayersListMock).not.toHaveBeenCalled(); // Ensure that renderAllPlayersList is not called during initialization
 
     loadGame.loadPlayers(); // Load players to render the list
-    Vitest.expect(allPlayersListMock).toHaveBeenCalled(); // Ensure that renderAllPlayersList2 is called after loading players
+    Vitest.expect(allPlayersListMock).toHaveBeenCalled(); // Ensure that renderAllPlayersList is called after loading players
 
     const selectLastItem = loadGame.carouselItem.querySelector<HTMLElement>('#onslPlayers')?.lastElementChild;
     Vitest.expect(selectLastItem?.getAttribute('selected')).toBeNull(); // Ensure it's not selected initially 
@@ -94,11 +94,11 @@ Vitest.test('LoadGame should handle delete icon click', async () => {
         }),
     };
 
-    const allPlayersListMock = Vitest.vi.spyOn(AllPlayersList, 'renderAllPlayersList2');
+    const allPlayersListMock = Vitest.vi.spyOn(AllPlayersList, 'renderAllPlayersList');
 
     const loadGame = await LoadGame.create(navControllerMock as any, playerServiceMock as any);
     Vitest.expect(loadGame).not.toBeNull();
-    Vitest.expect(allPlayersListMock).not.toHaveBeenCalled(); // Ensure that renderAllPlayersList2 is not called during initialization
+    Vitest.expect(allPlayersListMock).not.toHaveBeenCalled(); // Ensure that renderAllPlayersList is not called during initialization
 
     Vitest.expect(loadGame.carouselItem.querySelector<HTMLElement>(".delete-icon")).toBeNull(); // Ensure the delete icon is not present initially
 

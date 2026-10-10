@@ -70,14 +70,12 @@ export default class LoadGame extends CarouselItem {
 
     loadPlayers(): void {
         // Implementation for loading players
-        const allPlayers = must(this.playerService.listPlayersFromStorage());
         const onsList = must(
             this.carouselItem.querySelector<HTMLElement>("#onslPlayers"),
         );
 
-        AllPlayersList.renderAllPlayersList2(
+        AllPlayersList.renderAllPlayersList(
             onsList,
-            allPlayers,
             this.playerService,
         );
     }
