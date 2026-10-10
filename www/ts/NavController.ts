@@ -28,6 +28,8 @@ export default class NavController {
     drunkenTavern!: DrunkenTavern;
     templateGameTask!: TemplateGameTasks;
 
+    private gameLevels: Map<string, CarouselItem> = new Map();
+
     constructor(private playerService: PlayerService = loggingProxy(new PlayerService()),
         private playerView: PlayerView = new PlayerView()
     ) { }
@@ -47,6 +49,8 @@ export default class NavController {
         this.comrades = await Comrades.create(this);
         this.loadGame = await LoadGame.create(this, this.playerService);
         this.drunkenTavern = await DrunkenTavern.create(this.templateGameTask);
+
+        this.gameLevels.set("DrunkenTavern", this.drunkenTavern);
     }
 
     static showSection(sectionId: string) {
@@ -187,7 +191,7 @@ export default class NavController {
     }
 
     async onGameStart() {
-        await this.addCarouselItem(this.drunkenTavern);
+        await this.addCarouselItem(this.gameLevels.get(must(currentGameState.getPlayers())?.currentScreen) as CarouselItem);
         await this.carousel.next();
     }
 

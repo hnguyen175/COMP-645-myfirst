@@ -4,7 +4,7 @@ import ShuffleBag from "./utilities/ShuffleBag.ts";
 
 export default class Players {
     // private key: string;
-    currentScreen: string = "Drunken Dragon Inn";
+    currentScreen: string = "DrunkenTavern";
     questCompleted: boolean = false;
     players: Player[];
     private _shuffleBag: ShuffleBag<number> | null = null;
