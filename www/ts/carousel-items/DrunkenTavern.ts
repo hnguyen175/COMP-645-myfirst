@@ -5,7 +5,7 @@ import Player from "../Player.ts";
 import ShuffleBag from "../utilities/ShuffleBag.ts";
 import loggingProxy from "../utilities/LoggingProxy.ts";
 import Players from "../Players.ts";
-import TemplateGameTask from "./TemplateGameTask.ts";
+import TemplateGameTasks from "../templates/TemplateGameTasks.ts";
 
 type ChallengeResult = {
     outcome: "win" | "lose" | "tie";
@@ -31,7 +31,7 @@ export default class DrunkenTavern extends CarouselItem {
         super(carouselItem);
     }
 
-    static async create(template: TemplateGameTask): Promise<DrunkenTavern> {
+    static async create(template: TemplateGameTasks): Promise<DrunkenTavern> {
         const element = must(await this.loadElement("../views/drunken-tavern.html"));
         const drunkadTavern = loggingProxy(new DrunkenTavern(element));
 

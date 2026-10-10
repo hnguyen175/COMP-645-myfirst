@@ -52,7 +52,7 @@ export default class Players {
     randomPlayerPicker(): Player {
         must(this.players.length > 0, "No players available to pick from.");
 
-        if (!this._shuffleBag || this._shuffleBag.getRandomItem() === undefined) {
+        if (!this._shuffleBag) {
             const randomRange = Array.from({ length: this.players.length }, (_, i) => i);
             this._shuffleBag = new ShuffleBag(randomRange);
         }

@@ -5,7 +5,7 @@ import Players from '../../www/ts/Players';
 import Player from '../../www/ts/Player';
 import currentGameState from '../../www/ts/GameState';
 import PlayerService from '../../www/ts/PlayerService';
-import TemplateGameTask from '../../www/ts/carousel-items/TemplateGameTask';
+import TemplateGameTasks from '../../www/ts/templates/TemplateGameTasks';
 
 const drunkenTavernHtml = '../../www/views/drunken-tavern.html?raw';
 
@@ -46,7 +46,7 @@ Vitest.beforeAll(async () => {
         return players;
     });
 
-    templateFragmentMock = Vitest.vi.spyOn(TemplateGameTask.prototype, 'templateFragment', 'get').mockImplementation(() => {
+    templateFragmentMock = Vitest.vi.spyOn(TemplateGameTasks.prototype, 'templateFragment', 'get').mockImplementation(() => {
         document.body.innerHTML = /*html*/ `
             <html>
                 <template id="templ8GameTasks">
@@ -59,13 +59,13 @@ Vitest.beforeAll(async () => {
 });
 
 Vitest.test('DrunkenTavern should be properly initialized', async () => {
-    const dkt = await DrunkenTavern.create(templateFragmentMock as unknown as TemplateGameTask);
+    const dkt = await DrunkenTavern.create(templateFragmentMock as unknown as TemplateGameTasks);
     Vitest.expect(dkt).not.toBeNull();
     Vitest.expect(dkt.carouselItem).not.toBeNull();
 });
 
 Vitest.test('DrunkenTavern should handle click events on challenge buttons', async () => {
-    const dkt = await DrunkenTavern.create(templateFragmentMock as unknown as TemplateGameTask);
+    const dkt = await DrunkenTavern.create(templateFragmentMock as unknown as TemplateGameTasks);
     dkt.initializePage();
 
     Vitest.expect(dkt).not.toBeNull();
@@ -81,7 +81,7 @@ Vitest.test('DrunkenTavern should handle click events on challenge buttons', asy
 });
 
 Vitest.test('DrunkenTavern should handle click events when clicked element is not a challenge button', async () => {
-    const dkt = await DrunkenTavern.create(templateFragmentMock as unknown as TemplateGameTask);
+    const dkt = await DrunkenTavern.create(templateFragmentMock as unknown as TemplateGameTasks);
     Vitest.expect(dkt).not.toBeNull();
     Vitest.expect(dkt.carouselItem).not.toBeNull();
     const nonButtonElement = must(dkt.carouselItem.querySelector<HTMLElement>('#divDrunkenTavernVillain'));
@@ -140,21 +140,21 @@ function mockScenario(challengeMock: ChallengeMock) {
 }
 
 Vitest.test.each([
-    [() => mockScenario({ outcome: "lose" }), 'losing scenario', "str"],
-    [() => mockScenario({ outcome: "win" }), 'winning scenario', "str"],
-    [() => mockScenario({ outcome: "lose" }), 'losing scenario', "spd"],
-    [() => mockScenario({ outcome: "win" }), 'winning scenario', "spd"],
-    [() => mockScenario({ outcome: "lose" }), 'losing scenario', "mp"],
-    [() => mockScenario({ outcome: "win" }), 'winning scenario', "mp"],
-    [() => mockScenario({ outcome: "winWithLuck" }), 'winning scenario', "str"],
-    [() => mockScenario({ outcome: "loseWithLuck" }), 'lossing scenario', "str"],
-    // [() => mockScenario({ outcome: "winWithLuck" }), 'winning scenario', "spd"],
-    [() => mockScenario({ outcome: "loseWithLuck" }), 'lossing scenario', "spd"],
-    // [() => mockScenario({ outcome: "winWithLuck" }), 'winning scenario', "mp"],
-    [() => mockScenario({ outcome: "loseWithLuck" }), 'lossing scenario', "mp"],
-] as const)('DrunkenTavern challenge button click should handle %s', async (setupScenario, scenarioName, attribute) => {
+    [() => mockScenario({ outcome: "lose" }), "str"],
+    [() => mockScenario({ outcome: "win" }), "str"],
+    [() => mockScenario({ outcome: "lose" }), "spd"],
+    [() => mockScenario({ outcome: "win" }), "spd"],
+    [() => mockScenario({ outcome: "lose" }), "mp"],
+    [() => mockScenario({ outcome: "win" }), "mp"],
+    [() => mockScenario({ outcome: "winWithLuck" }), "str"],
+    [() => mockScenario({ outcome: "loseWithLuck" }), "str"],
+    [() => mockScenario({ outcome: "winWithLuck" }), "spd"],
+    [() => mockScenario({ outcome: "loseWithLuck" }), "spd"],
+    [() => mockScenario({ outcome: "winWithLuck" }), "mp"],
+    [() => mockScenario({ outcome: "loseWithLuck" }), "mp"],
+] as const)('DrunkenTavern challenge button click should handle %s', async (setupScenario, attribute) => {
     setupScenario();
-    const dkt = await DrunkenTavern.create(templateFragmentMock as unknown as TemplateGameTask);
+    const dkt = await DrunkenTavern.create(templateFragmentMock as unknown as TemplateGameTasks);
 
     const btnStrength = must(dkt.carouselItem.querySelector<HTMLElement>(`#btn${attribute.toUpperCase()}`));
     Vitest.expect(btnStrength).not.toBeNull();
@@ -173,7 +173,7 @@ Vitest.test.each([
 
 Vitest.test('Tie scenario user can try their luk 3 times', async () => {
     mockScenario({ outcome: "tie" });
-    const dkt = await DrunkenTavern.create(templateFragmentMock as unknown as TemplateGameTask);
+    const dkt = await DrunkenTavern.create(templateFragmentMock as unknown as TemplateGameTasks);
 
     const mockDktQuerySelector = Vitest.vi.spyOn(dkt.carouselItem, 'querySelector');
     const htmlElementMock = must(dkt.carouselItem.querySelector<HTMLElement>('#divDrunkenTavernChallenge'));

@@ -12,7 +12,7 @@ import must from './utilities/RequiredField.ts';
 
 import currentGameState from './GameState.ts';
 import loggingProxy from './utilities/LoggingProxy.ts';
-import TemplateGameTask from './carousel-items/TemplateGameTask.ts';
+import TemplateGameTasks from './templates/TemplateGameTasks.ts';
 
 interface CarouselChangeEvent extends Event {
     carousel: ons.OnsCarouselElement;
@@ -26,7 +26,7 @@ export default class NavController {
     welcome!: Welcome;
     comrades!: Comrades;
     drunkenTavern!: DrunkenTavern;
-    templateGameTask!: TemplateGameTask;
+    templateGameTask!: TemplateGameTasks;
 
     constructor(private playerService: PlayerService = loggingProxy(new PlayerService()),
         private playerView: PlayerView = new PlayerView()
@@ -40,7 +40,7 @@ export default class NavController {
 
         this.carousel = carousel;
 
-        this.templateGameTask = new TemplateGameTask(this);
+        this.templateGameTask = new TemplateGameTasks(this);
 
         this.newGame = await NewGame.create(this);
         this.welcome = await Welcome.create(this, this.playerService);
