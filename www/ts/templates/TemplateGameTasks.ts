@@ -30,6 +30,13 @@ export default class TemplateGameTasks {
                 fireAndForget(
                     this._navController.resetCarouselToWelcome()
                 );
+                return;
+            }
+            if (action === "load") {
+                fireAndForget(
+                    this._navController.resetCarouselToLoadGame()
+                );
+                return;
             }
         });
     }

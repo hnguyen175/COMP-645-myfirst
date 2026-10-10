@@ -207,7 +207,20 @@ export default class NavController {
     }
 
     async resetCarouselToWelcome() {
-        await this.carousel.setActiveIndex(0);
+        await this.resetCarouselToCarouselItem(this.welcome);
+    }
+
+    async resetCarouselToLoadGame() {
+        const loadGameItem = this.carousel.querySelector<HTMLElement>(`ons-carousel-item#${this.loadGame.carouselItem.id}`);
+        if (!loadGameItem) {
+            this.newGame.carouselItem.replaceWith(this.loadGame.carouselItem);
+        }
+        await this.resetCarouselToCarouselItem(this.loadGame);
+    }
+
+    async resetCarouselToCarouselItem(carouselItem: CarouselItem) {
+        const index = must(this.getCarouselItemIndex(carouselItem));
+        await this.carousel.setActiveIndex(index);
         this.cleanupCarouselItems();
     }
 
@@ -228,4 +241,16 @@ export default class NavController {
     private getActiveIndex(): number {
         return (this.carousel.getActiveIndex as unknown as () => number)();
     }
-};
+
+    private getCarouselItemIndex(carouselItem: CarouselItem): number {
+        const items = (this.carousel as HTMLElement).querySelectorAll("ons-carousel-item");
+        let index = 0;
+        for (const item of items) {
+            if (item.id === carouselItem.carouselItem.id) {
+                return index;
+            }
+            index++;
+        }
+        return -1; // Return -1 if the carousel item is not found
+    }
+}

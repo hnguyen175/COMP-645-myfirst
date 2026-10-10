@@ -7,6 +7,7 @@ let navControllerMock: any;
 Vitest.beforeAll(() => {
     navControllerMock = {
         resetCarouselToWelcome: Vitest.vi.fn().mockResolvedValue(undefined),
+        resetCarouselToLoadGame: Vitest.vi.fn().mockResolvedValue(undefined),
     };
 });
 
@@ -65,7 +66,7 @@ Vitest.test('TemplateGameTask should handle click events on game task links', as
                     <h3>Game Task</h3>
                     <p>This is a game task.</p>
                     <a href="#" data-gametsk='quit'>Click me</a>
-                    <a href="#" data-gametsk='duh'>Click me</a>
+                    <a href="#" data-gametsk='load'>Click me</a>
                 </div>
             </template>
         </html>`;
@@ -76,11 +77,15 @@ Vitest.test('TemplateGameTask should handle click events on game task links', as
 
     document.body.appendChild(templateGameTasks.templateFragment);
 
-    const gameTaskLink = must(document.querySelector<HTMLAnchorElement>('a[data-gametsk]'));
-
-    gameTaskLink.click();
-
+    const gameQuitLink = must(document.querySelector<HTMLAnchorElement>('a[data-gametsk="quit"]'));
+    gameQuitLink.click();
     await Vitest.vi.waitFor(() => {
         Vitest.expect(navControllerMock.resetCarouselToWelcome).toHaveBeenCalled();
+    });
+
+    const gameLoadLink = must(document.querySelector<HTMLAnchorElement>('a[data-gametsk="load"]'));
+    gameLoadLink.click();
+    await Vitest.vi.waitFor(() => {
+        Vitest.expect(navControllerMock.resetCarouselToLoadGame).toHaveBeenCalled();
     });
 });
