@@ -181,9 +181,12 @@ export default class NavController {
 
     async addCarouselItem(carouselItem: CarouselItem) {
         const existingItem = this.carousel.querySelector<HTMLElement>(`ons-carousel-item#${carouselItem.carouselItem.id}`);
-        if (!existingItem) {
-            this.carousel.appendChild(carouselItem.carouselItem);
+        if (existingItem) {
+            return;
         }
+
+        this.cleanupCarouselItems();
+        this.carousel.appendChild(carouselItem.carouselItem);
     }
 
     loadCarouselItem(carouselItems: CarouselItem[]) {
