@@ -2,6 +2,7 @@ import Player from './Player.ts';
 import Players from './Players.ts';
 import playerRegistry from './PlayerRegistry.ts';
 import currentGameState from "./GameState.ts";
+import must from './utilities/RequiredField.ts';
 
 type PlayerInfoResult = {
     name?: string;
@@ -63,5 +64,10 @@ export default class PlayerService {
         const villain = Player.getVillainPlayer();
         currentGameState.setDtkVillain(villain);
         return villain;
+    }
+
+    static saveActivePlayers(): void {
+        const players = must(currentGameState.getPlayers());
+        players.savePlayersToStorage();
     }
 }

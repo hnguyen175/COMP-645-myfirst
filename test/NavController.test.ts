@@ -13,6 +13,7 @@ import newGameHtml from '../www/views/new-game.html?raw';
 import playersHtml from '../www/views/comrades.html?raw';
 import welcomeHtml from '../www/views/welcome.html?raw';
 import drunkenTavernHtml from '../www/views/drunken-tavern.html?raw';
+import forestHtml from '../www/views/forest.html?raw';
 import currentGameState from '../www/ts/GameState';
 
 const toastMock = Vitest.vi.fn().mockResolvedValue(undefined);
@@ -52,9 +53,13 @@ Vitest.beforeEach(async () => {
         if (url === "../views/drunken-tavern.html") {
             return new Response(drunkenTavernHtml);
         }
+        if (url === "../views/forest.html") {
+            return new Response(forestHtml);
+        }
 
         throw new Error(`Unexpected fetch URL: ${url}`);
     });
+
     Vitest.vi.stubGlobal("ons", {
         createElement: Vitest.vi.fn((htmlString: string) => {
             const template = document.createElement("template");
@@ -543,7 +548,7 @@ Vitest.test("loadCarouselItems removes all carousel items except welcome", async
 
     const items = carousel.querySelectorAll("ons-carousel-item");
     Vitest.expect(items.length).toBe(4); // welcome + 2 new items
-    Vitest.expect(fetch).toHaveBeenCalledTimes(5);
+    Vitest.expect(fetch).toHaveBeenCalledTimes(6);
 });
 
 Vitest.test("onLoadGameButtonClick loads players and navigates to next carousel item", async () => {

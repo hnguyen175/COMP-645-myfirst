@@ -13,6 +13,7 @@ import must from './utilities/RequiredField.ts';
 import currentGameState from './GameState.ts';
 import loggingProxy from './utilities/LoggingProxy.ts';
 import TemplateGameTasks from './templates/TemplateGameTasks.ts';
+import Forest from './carousel-items/Forest.ts';
 
 interface CarouselChangeEvent extends Event {
     carousel: ons.OnsCarouselElement;
@@ -27,6 +28,7 @@ export default class NavController {
     comrades!: Comrades;
     drunkenTavern!: DrunkenTavern;
     templateGameTask!: TemplateGameTasks;
+    forest!: Forest;
 
     private gameLevels: Map<string, CarouselItem> = new Map();
 
@@ -48,9 +50,11 @@ export default class NavController {
         this.welcome = await Welcome.create(this, this.playerService);
         this.comrades = await Comrades.create(this);
         this.loadGame = await LoadGame.create(this, this.playerService);
-        this.drunkenTavern = await DrunkenTavern.create(this.templateGameTask);
+        this.drunkenTavern = await DrunkenTavern.create(this.playerService, this.templateGameTask);
+        this.forest = await Forest.create(this.templateGameTask);
 
         this.gameLevels.set("DrunkenTavern", this.drunkenTavern);
+        this.gameLevels.set("Forest", this.forest);
     }
 
     static showSection(sectionId: string) {

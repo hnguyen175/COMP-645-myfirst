@@ -28,6 +28,14 @@ export default class Players {
         localStorage.setItem(this.players[0]?.email, json);
     }
 
+    public toJSON(): Partial<Players> {
+        return {
+            currentScreen: this.currentScreen,
+            questCompleted: this.questCompleted,
+            players: this.players
+        };
+    }
+
     static loadPlayersFromStorage(email: string): Players | null {
         const savedPlayers = localStorage.getItem(email);
         if (savedPlayers) {
