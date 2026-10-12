@@ -3,7 +3,7 @@
 import * as Vitest from 'vitest';
 import NavController from '../www/ts/NavController';
 import PlayerService from '../www/ts/PlayerService';
-import Players from '../www/ts/Players';
+import Party from '../www/ts/Party';
 import Player from '../www/ts/Player';
 import PlayerView from '../www/ts/rendering/PlayerView';
 import type { OnsCarouselElement as CarouselElement } from '../www/lib/onsenui';
@@ -122,7 +122,7 @@ Vitest.test("onCarouselPriorDisplayingItem prior displaying players", () => {
     });
 
     const playerServiceSpy = Vitest.vi.spyOn(currentGameState, 'getPlayers').mockImplementation(() => {
-        return new Players();
+        return new Party();
     });
 
     const renderPlayerCardsSpy = Vitest.vi.spyOn(playerView, 'renderPlayerCards').mockImplementation(() => { });
@@ -188,7 +188,7 @@ Vitest.test("onCarouselPriorDisplayingItem prior displaying Welcome", async () =
         activeIndex: 0,
     });
 
-    Vitest.vi.spyOn(playerService, 'savePlayers').mockImplementation((name: string, email: string): Players => { return new Players(); });
+    Vitest.vi.spyOn(playerService, 'savePlayers').mockImplementation((name: string, email: string): Party => { return new Party(); });
     const consoleErrorSpy = Vitest.vi.spyOn(console, 'error').mockImplementation(() => { });
 
     navController.onCarouselPriorDisplayingItem(event);
@@ -223,7 +223,7 @@ Vitest.test("onCarouselPriorDisplayingItem prior displaying drunken tavern", asy
         activeIndex: 1,
     });
 
-    const mockPlayers = new Players();
+    const mockPlayers = new Party();
     const playerServiceSpy = Vitest.vi.spyOn(currentGameState, 'getPlayers').mockImplementation(() => {
         return mockPlayers;
     });
@@ -486,7 +486,7 @@ Vitest.test("onRollButtonClick with valid name and valid email shows no toast", 
     const carousel = document.getElementById("carouselNewGame") as unknown as ons.OnsCarouselElement;
     carousel.next = Vitest.vi.fn();
 
-    Vitest.vi.spyOn(playerService, 'savePlayers').mockImplementation((name: string, email: string): Players => { return new Players(); });
+    Vitest.vi.spyOn(playerService, 'savePlayers').mockImplementation((name: string, email: string): Party => { return new Party(); });
     await navController.onRollButtonClick();
 
     Vitest.expect(playerViewMock.showValidationToast).not.toHaveBeenCalled();
@@ -578,7 +578,7 @@ Vitest.test("onLoadGameButtonClick loads players and navigates to next carousel 
         value: nextMock
     });
 
-    const loadPlayersSpy = Vitest.vi.spyOn(playerService, 'loadPlayers').mockImplementation((email: string): Players => { return new Players(); });
+    const loadPlayersSpy = Vitest.vi.spyOn(playerService, 'loadPlayers').mockImplementation((email: string): Party => { return new Party(); });
 
     await navController.onLoadGameButtonClick("a@b.c");
     Vitest.expect(nextMock).toHaveBeenCalledOnce();

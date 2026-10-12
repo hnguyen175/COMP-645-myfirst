@@ -1,5 +1,5 @@
 import Player from './Player.ts';
-import Players from './Players.ts';
+import Party from './Party.ts';
 import playerRegistry from './PlayerRegistry.ts';
 import currentGameState from "./GameState.ts";
 import must from './utilities/RequiredField.ts';
@@ -13,7 +13,7 @@ export default class PlayerService {
     savePlayers(name: string, email: string): void {
         const player = Player.createRandomPlayer(name, email);
 
-        const players = new Players();
+        const players = new Party();
         players.addPlayer(player);
         players.addDefaultPlayers();
 
@@ -24,8 +24,8 @@ export default class PlayerService {
         currentGameState.setPlayers(players);
     }
 
-    loadPlayers(email: string): Players | null {
-        const current = Players.loadPlayersFromStorage(email);
+    loadPlayers(email: string): Party | null {
+        const current = Party.loadPlayersFromStorage(email);
         if (current !== null) {
             currentGameState.setPlayers(current);
         }

@@ -1,7 +1,7 @@
 import * as Vitest from 'vitest';
 import DrunkenTavern from '../../www/ts/carousel-items/DrunkenTavern';
 import must from '../../www/ts/utilities/RequiredField';
-import Players from '../../www/ts/Players';
+import Party from '../../www/ts/Party';
 import Player from '../../www/ts/Player';
 import currentGameState from '../../www/ts/GameState';
 import PlayerService from '../../www/ts/PlayerService';
@@ -41,7 +41,7 @@ Vitest.beforeAll(async () => {
     playerService = new PlayerService();
 
     mockGameStateGetPlayers = Vitest.vi.spyOn(currentGameState, 'getPlayers').mockImplementation(() => {
-        const players = new Players();
+        const players = new Party();
         players.addPlayer(Player.createRandomPlayer());
         return players;
     });
@@ -101,7 +101,7 @@ Vitest.test('DrunkenTavern should handle click events when clicked element is no
 
 function mockScenario(challengeMock: ChallengeMock) {
     mockGameStateGetPlayers = Vitest.vi.spyOn(currentGameState, 'getPlayers').mockImplementation(() => {
-        const players = new Players();
+        const players = new Party();
         const player = Player.createRandomPlayer();
         players.addPlayer(player);
 

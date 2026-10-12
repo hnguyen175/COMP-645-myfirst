@@ -2,7 +2,7 @@ import Player from "./Player.ts";
 import must from "./utilities/RequiredField.ts";
 import ShuffleBag from "./utilities/ShuffleBag.ts";
 
-export default class Players {
+export default class Party {
     // private key: string;
     currentScreen: string = "DrunkenTavern";
     questCompleted: boolean = false;
@@ -28,7 +28,7 @@ export default class Players {
         localStorage.setItem(this.players[0]?.email, json);
     }
 
-    public toJSON(): Partial<Players> {
+    public toJSON(): Partial<Party> {
         return {
             currentScreen: this.currentScreen,
             questCompleted: this.questCompleted,
@@ -36,16 +36,16 @@ export default class Players {
         };
     }
 
-    static loadPlayersFromStorage(email: string): Players | null {
+    static loadPlayersFromStorage(email: string): Party | null {
         const savedPlayers = localStorage.getItem(email);
         if (savedPlayers) {
-            return Players.fromJSON(JSON.parse(savedPlayers));
+            return Party.fromJSON(JSON.parse(savedPlayers));
         }
         return null;
     }
 
-    private static fromJSON(data: Partial<Players>): Players {
-        const players = Object.assign(new Players(), data);
+    private static fromJSON(data: Partial<Party>): Party {
+        const players = Object.assign(new Party(), data);
 
         players.players = data.players?.map(
             playerData => Player.fromJSON(playerData)) || [];
