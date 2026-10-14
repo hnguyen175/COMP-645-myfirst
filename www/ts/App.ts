@@ -58,6 +58,13 @@ export default class App {
                 );
             },
         );
+        document.getElementById("carouselNewGame")?.addEventListener(
+            "postchange", (event) => {
+                fireAndForget(
+                    this.navController.onCarouselPostDisplayingItem(event)
+                );
+            },
+        );
     }
 };
 

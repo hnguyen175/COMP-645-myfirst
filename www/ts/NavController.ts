@@ -88,7 +88,7 @@ export default class NavController {
                 await this.priorWelcome();
                 break;
             case "caiComrades":
-                this.priorDisplayingPlayers();
+                await this.priorDisplayingPlayers();
                 break;
             case "caiLoadGame":
                 this.priorLoadGame();
@@ -97,6 +97,17 @@ export default class NavController {
                 this.priorDisplayingDrunkenTavern();
                 break;
         };
+    }
+
+    async onCarouselPostDisplayingItem(event: Event) {
+        const activeItem = NavController.getActiveCarouselItem(event);
+        console.log(`Post change event for carousel item with id: ${activeItem?.id}`);
+        switch (activeItem?.id) {
+            case "caiComrades":
+                this.postDisplayingComrades();
+                break;
+            // Add more cases here for other carousel items if needed
+        }
     }
 
     private priorLoadGame() {
@@ -115,8 +126,12 @@ export default class NavController {
         this.drunkenTavern.initializePage();
     }
 
-    private priorDisplayingPlayers() {
+    private async priorDisplayingPlayers() {
         this.playerView.renderPlayerCards("caiComrades", must(currentGameState.getPlayers()?.players));
+    }
+
+    private postDisplayingComrades() {
+        this.cleanupCarouselItems();
     }
 
     private static getActiveCarouselItem(event: Event) {

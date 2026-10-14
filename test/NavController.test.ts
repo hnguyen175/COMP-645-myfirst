@@ -21,6 +21,38 @@ const toastMock = Vitest.vi.fn().mockResolvedValue(undefined);
 let navController: NavController = null as unknown as NavController;
 let playerService: PlayerService = null as unknown as PlayerService;
 let playerView: PlayerView = null as unknown as PlayerView;
+let carousel: CarouselElement = null as unknown as CarouselElement;
+
+let activeIndex = 0;
+async function mockNavController() {
+    document.body.innerHTML = `
+        <ons-carousel id="carouselNewGame" swipeable auto-scroll>
+        </ons-carousel>
+        <template id="templ8GameTasks">
+            <h4 style="text-align: center;" class="game-tasks">
+                Game Tasks
+            </h4>
+        </template>
+    `;
+    carousel = document.getElementById("carouselNewGame") as unknown as CarouselElement;
+    Object.defineProperties(carousel, {
+        'getActiveIndex': {
+            // value: Vitest.vi.fn(() => activeIndex),
+            value: Vitest.vi.fn().mockImplementation(() => {
+                return activeIndex;
+            })
+        },
+        'next': {
+            value: Vitest.vi.fn()
+        },
+        'setActiveIndex': {
+            value: Vitest.vi.fn().mockImplementation((index: number) => {
+                activeIndex = index;
+            }),
+        },
+    });
+    await navController.init();
+}
 
 Vitest.beforeEach(async () => {
     playerService = new PlayerService();
@@ -68,6 +100,7 @@ Vitest.beforeEach(async () => {
         })
     });
 
+    await mockNavController();
 });
 
 Vitest.test("showSection displays the correct section and hides others", () => {
@@ -521,24 +554,6 @@ Vitest.test("onReloadButtonClick calls loadCarouselItems and navigates to next i
 });
 
 Vitest.test("loadCarouselItems removes all carousel items except welcome", async () => {
-    document.body.innerHTML = `
-        <ons-carousel id="carouselNewGame" swipeable auto-scroll>
-        </ons-carousel>
-        <template id="templ8GameTasks">
-            <h4 style="text-align: center;" class="game-tasks">
-                Game Tasks
-            </h4>
-        </template>
-    `;
-    await navController.init();
-    const carousel = document.getElementById("carouselNewGame") as unknown as CarouselElement;
-
-    Object.defineProperties(carousel, {
-        'getActiveIndex': {
-            value: Vitest.vi.fn(() => 0),
-        },
-    });
-
     await navController.loadCarouselItem([
         navController.welcome,
         navController.newGame,
@@ -763,3 +778,25 @@ Vitest.test("resetCarouselToLoadGame with LoadGame item already present navigate
     await navController.resetCarouselToLoadGame();
     Vitest.expect(carousel.setActiveIndex).toHaveBeenCalledWith(1);
 });
+
+Vitest.test("onCarouselPostDisplayingItem with drunken tavern item triggers renderPlayerCards for villain", () => {
+    navController.loadCarouselItem([navController.welcome, navController.comrades, navController.drunkenTavern]);
+    Vitest.expect(document.getElementById(navController.drunkenTavern.carouselItem.id)).not.toBeNull();
+    Vitest.expect(document.getElementById(navController.comrades.carouselItem.id)).not.toBeNull();
+    Vitest.expect(document.getElementById(navController.welcome.carouselItem.id)).not.toBeNull();
+
+    const event = new Event('postchange');
+    Object.assign(event, {
+        carousel,
+        activeIndex: 1,
+    });
+
+
+    carousel.setActiveIndex(1); // Set the active index to drunken tavern
+    navController.onCarouselPostDisplayingItem(event);
+
+    Vitest.expect(document.getElementById(navController.drunkenTavern.carouselItem.id)).toBeNull();
+    Vitest.expect(document.getElementById(navController.comrades.carouselItem.id)).not.toBeNull();
+    Vitest.expect(document.getElementById(navController.welcome.carouselItem.id)).not.toBeNull();
+});
+
