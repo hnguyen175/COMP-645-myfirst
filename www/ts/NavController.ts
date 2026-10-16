@@ -134,7 +134,6 @@ export default class NavController {
     }
 
     private priorDisplayingForest() {
-        this.playerView.renderPlayerCards("caiForest", must(currentGameState.getPlayers()?.players), ['hp', 'mp']);
         this.forest.initializePage();
     }
 
