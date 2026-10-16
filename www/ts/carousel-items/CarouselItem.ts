@@ -1,10 +1,8 @@
 import must from "../utilities/RequiredField.ts";
 
 export default abstract class CarouselItem {
-    private readonly _resetContent: string;
 
     constructor(private readonly _carouselItem: HTMLElement) {
-        this._resetContent = this.carouselItem.querySelector<HTMLElement>(".cls-reset-content")?.innerHTML ?? "";
     }
 
     static async loadElement(htmlPath: string): Promise<HTMLElement> {
@@ -17,11 +15,6 @@ export default abstract class CarouselItem {
 
     get carouselItem(): HTMLElement {
         return this._carouselItem;
-    }
-
-    resetContent(): void {
-        const resetContentElement = must(this.carouselItem.querySelector<HTMLElement>(".cls-reset-content"));
-        resetContentElement.innerHTML = this._resetContent;
     }
 
     toString(): string {

@@ -31,8 +31,6 @@ export default class FangornForest extends CarouselItem {
         const footer = must(forest.carouselItem.querySelector("footer"));
         footer.after(template.templateFragment);
 
-        // this.showPlayerInfo();
-
         return forest;
     }
 
@@ -44,22 +42,10 @@ export default class FangornForest extends CarouselItem {
             btn.addEventListener("click", () => {
                 const whichHealth = btn.id === "btnAskForHP" ? "hp" : "mp";
                 const bonus = this.grantHealthPoints(whichHealth);
-                // const healthType = whichHealth === "hp" ? "health points" : "mana points";
-                // const message = `You have been granted ${bonus} ${healthType} from the Fangorn Forest!`;
-                // alert(message);
-                this.setActionButtonsState(false, btnAskForHP, btnAskForMP);
+                this.setActionButtonsState(btnAskForHP, btnAskForMP);
                 this.informHealthBoost(whichHealth, bonus);
             });
         });
-        // btnAskForHP.addEventListener("click", () => {
-        //     this.grantHealthPoints('hp');
-        //     this.disableActionButtons(btnAskForHP, btnAskForMP);
-        // });
-
-        // btnAskForMP.addEventListener("click", () => {
-        //     this.grantHealthPoints("mp");
-        //     this.disableActionButtons(btnAskForHP, btnAskForMP);
-        // });
     }
 
     private informHealthBoost(whichHealth: "hp" | "mp", bonus: number): void {
@@ -68,22 +54,17 @@ export default class FangornForest extends CarouselItem {
 
         const template = document.createElement('template');
         template.innerHTML = /*html*/`<p>${message}</p>`;
-        this.carouselItem.querySelector('.cls-reset-content')?.appendChild(must(template.content.firstElementChild));
+        this.carouselItem.querySelector('main')?.appendChild(must(template.content.firstElementChild));
     }
 
-    private setActionButtonsState(state: boolean, btnAskForHP: Element | null = null, btnAskForMP: Element | null = null): void {
+    private setActionButtonsState(btnAskForHP: Element | null = null, btnAskForMP: Element | null = null): void {
         if (!btnAskForHP || !btnAskForMP) {
             btnAskForHP = must(this.carouselItem.querySelector("#btnAskForHP"));
             btnAskForMP = must(this.carouselItem.querySelector("#btnAskForMP"));
         }
 
-        if (state) {
-            btnAskForHP.removeAttribute("disabled");
-            btnAskForMP.removeAttribute("disabled");
-        } else {
-            btnAskForHP.setAttribute("disabled", "true");
-            btnAskForMP.setAttribute("disabled", "true");
-        }
+        btnAskForHP.setAttribute("disabled", "true");
+        btnAskForMP.setAttribute("disabled", "true");
     }
 
     private grantHealthPoints(whichHealth: "hp" | "mp"): number {
@@ -113,7 +94,7 @@ export default class FangornForest extends CarouselItem {
         const template = document.createElement('template');
         template.innerHTML = /*html*/`<p>You will ask ${fangornResult.name} to help your quest by granting you some of their ${fangornResult.attribute} from their ${fangornResult.item}!</p>`;
 
-        must(this.carouselItem.querySelector('.cls-reset-content')).appendChild(template.content.firstElementChild!);
+        must(this.carouselItem.querySelector('main')).appendChild(template.content.firstElementChild!);
     }
 
     static readonly arrNames = new ShuffleBag(["Adabor", "Bentrax", "Celiz", "Danitark", "Xullix", "Yizzoro", "Zana"]);
@@ -123,14 +104,10 @@ export default class FangornForest extends CarouselItem {
         const randomName = FangornForest.arrNames.draw();
         const randomItem = FangornForest.arrItems.draw();
         const randomAttribute = FangornForest.arrAttributes.draw()
-        // const randomValue = Math.floor(Math.random() * 10) + 1;
-        // const rndFrac = Math.random();
         return {
             name: randomName,
             item: randomItem,
             attribute: randomAttribute,
-            // hp: Math.ceil(Player.randomStat() * rndFrac),
-            // mp: Math.ceil(Player.randomMp() * rndFrac),
         };
     }
 }
