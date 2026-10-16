@@ -28,6 +28,7 @@ ons-carousel ons-card.card {
 }
 
 .player-stat .list-item__center {
+    font-size: 14px;
     min-height: 0;
     padding: 0;
 }
@@ -44,6 +45,7 @@ ons-carousel-item h4 {
 ons-list-header.list-header {
     font-family: system-ui, sans-serif;
     font-weight: bold;
+    font-size: 14px;
     padding: 0 10px;
 }
 
@@ -58,7 +60,7 @@ table {
 footer {
     background-color: rgba(0, 255, 242, 0.856);
     padding: 2px;
-    font-size: 20;
+    font-size: 10px;
 }
 
 #scWelcome {
@@ -169,6 +171,10 @@ ons-list-item.selected {
     background-color: #ddd;
 }
 
+ons-list-item.div {
+    font-size: 14px;
+}
+
 .delete-icon {
     font-size: 24px;
     cursor: pointer;
@@ -193,8 +199,8 @@ ons-list.list {
 }
 
 ons-list-header img.avatar {
-    width: 20px;
-    height: 20px;
+    width: 14px;
+    height: 14px;
     margin-right: 5px;
 
     image-rendering: pixelated;
@@ -211,4 +217,8 @@ ons-list-header.list-item__icon {
     font-family: system-ui, sans-serif;
     font-size: 20px;
     text-align: center;
+}
+
+div#right {
+    font-size: 10px;
 }

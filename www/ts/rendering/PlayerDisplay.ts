@@ -1,7 +1,7 @@
 import Player from "../Player.ts";
 
 class PlayerDisplay {
-    static createPlayerCard(player: Player, showStrength = true): string {
+    static createPlayerCard(player: Player, columns: string[]): string {
         let playerHtml = /*html*/`
         <ons-card class="player-card" data-player-id="${player.id}">
             <ons-list>
@@ -14,11 +14,7 @@ class PlayerDisplay {
         `;
 
         Object.entries(player).forEach(([property, value]) => {
-            // ignore properties that start with an underscore (private properties)
-            if (property.startsWith("_")) {
-                return;
-            }
-            if (!showStrength && !(property === "wep" || property === "cls")) {
+            if (!columns.includes(property)) {
                 return;
             }
 
@@ -30,7 +26,7 @@ class PlayerDisplay {
     }
 
     private static createImgUrl(player: Player): string {
-        return `https://api.dicebear.com/10.x/pixel-art/svg?seed=${encodeURIComponent(player.id)}&size=20`;
+        return `https://api.dicebear.com/10.x/pixel-art/svg?seed=${encodeURIComponent(player.id)}&size=14`;
     }
 }
 

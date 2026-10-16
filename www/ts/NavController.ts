@@ -13,7 +13,7 @@ import must from './utilities/RequiredField.ts';
 import currentGameState from './GameState.ts';
 import loggingProxy from './utilities/LoggingProxy.ts';
 import TemplateGameTasks from './templates/TemplateGameTasks.ts';
-import Forest from './carousel-items/Forest.ts';
+import FangornForest from './carousel-items/FangornForest.ts';
 
 interface CarouselChangeEvent extends Event {
     carousel: ons.OnsCarouselElement;
@@ -28,7 +28,7 @@ export default class NavController {
     comrades!: Comrades;
     drunkenTavern!: DrunkenTavern;
     templateGameTask!: TemplateGameTasks;
-    forest!: Forest;
+    forest!: FangornForest;
 
     private gameLevels: Map<string, CarouselItem> = new Map();
 
@@ -51,7 +51,7 @@ export default class NavController {
         this.comrades = await Comrades.create(this);
         this.loadGame = await LoadGame.create(this, this.playerService);
         this.drunkenTavern = await DrunkenTavern.create(this.playerService, this.templateGameTask);
-        this.forest = await Forest.create(this.templateGameTask);
+        this.forest = await FangornForest.create(this.templateGameTask);
 
         this.gameLevels.set("DrunkenTavern", this.drunkenTavern);
         this.gameLevels.set("Forest", this.forest);
@@ -96,6 +96,9 @@ export default class NavController {
             case "caiDrunkenTavern":
                 this.priorDisplayingDrunkenTavern();
                 break;
+            case "caiForest":
+                this.priorDisplayingForest();
+                break;
         };
     }
 
@@ -121,13 +124,18 @@ export default class NavController {
     private priorDisplayingDrunkenTavern() {
         this.playerView.renderPlayerCards("caiDrunkenTavern", must(currentGameState.getPlayers()?.players));
         // create villain
-        this.playerView.renderPlayerCards("divDrunkenTavernVillain", [this.playerService.createVillain()], false);
+        this.playerView.renderPlayerCards("divDrunkenTavernVillain", [this.playerService.createVillain()], ['wep', 'cls']);
         // need to tell the carousel item to reinitialze the random player picker, so that it can pick a new random player from the current players
         this.drunkenTavern.initializePage();
     }
 
     private async priorDisplayingPlayers() {
         this.playerView.renderPlayerCards("caiComrades", must(currentGameState.getPlayers()?.players));
+    }
+
+    private priorDisplayingForest() {
+        this.playerView.renderPlayerCards("caiForest", must(currentGameState.getPlayers()?.players), ['hp', 'mp']);
+        this.forest.initializePage();
     }
 
     private postDisplayingComrades() {
