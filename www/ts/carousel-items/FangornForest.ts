@@ -102,7 +102,6 @@ export default class FangornForest extends CarouselItem {
     }
 
     initializePage(): void {
-        this.resetContent();
         this.playerView.renderPlayerCards(this.carouselItem.id, must(currentGameState?.getPlayers()?.players), ['hp', 'mp']);
 
         const playerNameElement = must(this.carouselItem.querySelector("#forestWelcoming"));
@@ -115,11 +114,6 @@ export default class FangornForest extends CarouselItem {
         template.innerHTML = /*html*/`<p>You will ask ${fangornResult.name} to help your quest by granting you some of their ${fangornResult.attribute} from their ${fangornResult.item}!</p>`;
 
         must(this.carouselItem.querySelector('.cls-reset-content')).appendChild(template.content.firstElementChild!);
-        this.setActionButtonsState(true);
-
-
-        // document.createE /*html*/`<p>You will ask ${fangornResult.name} to help your quest by granting you some of their ${fangornResult.attribute} from their ${fangornResult.item}!</p>`;
-        // must(this.carouselItem.querySelector('main')).appendChild() += /*html*/`<p>You will ask ${fangornResult.name} to help your quest by granting you some of their ${fangornResult.attribute} from their ${fangornResult.item}!</p>`;
     }
 
     static readonly arrNames = new ShuffleBag(["Adabor", "Bentrax", "Celiz", "Danitark", "Xullix", "Yizzoro", "Zana"]);

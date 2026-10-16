@@ -51,7 +51,7 @@ export default class NavController {
         this.comrades = await Comrades.create(this);
         this.loadGame = await LoadGame.create(this, this.playerService);
         this.drunkenTavern = await DrunkenTavern.create(this.playerService, this.templateGameTask);
-        this.forest = await FangornForest.create(this.templateGameTask);
+        // this.forest = await FangornForest.create(this.templateGameTask);
 
         this.gameLevels.set("DrunkenTavern", this.drunkenTavern);
         this.gameLevels.set("Forest", this.forest);
@@ -220,7 +220,19 @@ export default class NavController {
     }
 
     async onGameStart() {
-        await this.addCarouselItem(this.gameLevels.get(must(currentGameState.getPlayers())?.currentScreen) as CarouselItem);
+        // await this.addCarouselItem(this.gameLevels.get(must(currentGameState.getPlayers())?.currentScreen) as CarouselItem);
+        switch (must(currentGameState.getPlayers())?.currentScreen) {
+            case "DrunkenTavern":
+                await this.addCarouselItem(this.drunkenTavern);
+                break;
+            case "Forest":
+                this.forest = await FangornForest.create(this.templateGameTask);
+                await this.addCarouselItem(this.forest);
+                break;
+            default:
+                console.error(`Unknown currentScreen: ${must(currentGameState.getPlayers())?.currentScreen}`);
+                return;
+        }
         await this.carousel.next();
     }
 
