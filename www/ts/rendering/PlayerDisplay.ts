@@ -26,7 +26,7 @@ class PlayerDisplay {
     }
 
     private static createImgUrl(player: Player): string {
-        return `https://api.dicebear.com/10.x/pixel-art/svg?seed=${encodeURIComponent(player.id)}&size=14`;
+        return `https://api.dicebear.com/10.x/adventurer/svg?seed=${encodeURIComponent(player.id)}&size=30&earringsProbability=30`;
     }
 }
 

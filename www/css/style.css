@@ -199,9 +199,9 @@ ons-list.list {
 }
 
 ons-list-header img.avatar {
-    width: 14px;
-    height: 14px;
-    margin-right: 5px;
+    width: 25px;
+    height: 25px;
+    vertical-align: middle;
 
     image-rendering: pixelated;
     image-rendering: crisp-edges;
