@@ -44,10 +44,21 @@ export default class FangornForest extends CarouselItem {
                 const bonus = this.grantHealthPoints(whichHealth);
                 this.setActionButtonsState(btnAskForHP, btnAskForMP);
                 this.informHealthBoost(whichHealth, bonus);
+                this.updatePlayerCards(whichHealth, bonus);
             });
         });
     }
 
+    private updatePlayerCards(whichHealth: "hp" | "mp", bonus: number): void {
+        const query = `ons-list-item[data-property="${whichHealth}"]`;
+        const row = this.carouselItem.querySelectorAll(query);
+        for (let i = 0; i < row.length; i++) {
+            const column = row[i];
+            must(column.querySelector(".clsValue")).textContent =
+                (must(currentGameState?.getPlayers()?.players[i])[whichHealth] + bonus).toString();
+            row[i].classList.add("row-flash");
+        }
+    }
     private informHealthBoost(whichHealth: "hp" | "mp", bonus: number): void {
         const healthType = whichHealth === "hp" ? "health points" : "mana points";
         const message = `You have been granted ${bonus} ${healthType} from the Fangorn Forest!`;

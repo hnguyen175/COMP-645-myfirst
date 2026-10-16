@@ -97,7 +97,6 @@ export default class NavController {
 
     async onCarouselPostDisplayingItem(event: Event) {
         const activeItem = NavController.getActiveCarouselItem(event);
-        console.log(`Post change event for carousel item with id: ${activeItem?.id}`);
         switch (activeItem?.id) {
             case "caiComrades":
                 this.postDisplayingComrades();

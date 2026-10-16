@@ -18,7 +18,7 @@ class PlayerDisplay {
                 return;
             }
 
-            playerHtml += `<ons-list-item class="player-stat" data-property="${property}">${property.toUpperCase()}: ${value}</ons-list-item>`;
+            playerHtml += /*html*/`<ons-list-item class="player-stat" data-property="${property}">${property.toUpperCase()}: <span class="clsValue">${value}</span></ons-list-item>`;
         });
 
         playerHtml += `</ons-list></ons-card>`;
