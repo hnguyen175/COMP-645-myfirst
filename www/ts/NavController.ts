@@ -214,7 +214,7 @@ export default class NavController {
     async onGameStart() {
         switch (must(currentGameState.getPlayers())?.currentScreen) {
             case "DrunkenTavern":
-                this.drunkenTavern = await DrunkenTavern.create(this.playerService, this.templateGameTask);
+                this.drunkenTavern = await DrunkenTavern.create(this, this.playerService, this.templateGameTask);
                 await this.addCarouselItem(this.drunkenTavern);
                 break;
             case "Forest":
@@ -289,5 +289,11 @@ export default class NavController {
             index++;
         }
         return -1; // Return -1 if the carousel item is not found
+    }
+
+    async replaceTavernWithForest() {
+        this.forest = await must(FangornForest.create(this.templateGameTask));
+        this.drunkenTavern.carouselItem.replaceWith(this.forest.carouselItem);
+        this.forest.initializePage();
     }
 }

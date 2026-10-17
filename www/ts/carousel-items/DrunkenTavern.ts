@@ -5,6 +5,8 @@ import Player from "../Player.ts";
 import loggingProxy from "../utilities/LoggingProxy.ts";
 import TemplateGameTasks from "../templates/TemplateGameTasks.ts";
 import PlayerService from "../PlayerService.ts";
+import NavController from "../NavController.ts";
+import { fireAndForget } from "../utilities/AsyncUtils.ts";
 
 type ChallengeResult = {
     outcome: "win" | "lose" | "tie";
@@ -25,15 +27,16 @@ type ChallengeData = {
 
 export default class DrunkenTavern extends CarouselItem {
     constructor(
+        private readonly navController: NavController,
         private readonly playerService: PlayerService,
         carouselItem: HTMLElement
     ) {
         super(carouselItem);
     }
 
-    static async create(playerService: PlayerService, template: TemplateGameTasks): Promise<DrunkenTavern> {
+    static async create(navController: NavController, playerService: PlayerService, template: TemplateGameTasks): Promise<DrunkenTavern> {
         const element = must(await this.loadElement("../views/drunken-tavern.html"));
-        const drunkadTavern = loggingProxy(new DrunkenTavern(playerService, element));
+        const drunkadTavern = loggingProxy(new DrunkenTavern(navController, playerService, element));
 
         const divDurnkenTavern = must(drunkadTavern.carouselItem.querySelector<HTMLElement>("#divDrunkenTavernChallenge"));
 
@@ -61,9 +64,14 @@ export default class DrunkenTavern extends CarouselItem {
         this.toggleAllChallengeButtons(true);
         this.tieBreakeChallenges = 0;
 
-        // reset the challenge result message
-        const divDrunkenTavernChallenge = must(this.carouselItem.querySelector<HTMLElement>("#divDrunkenTavernChallenge"));
-        divDrunkenTavernChallenge.textContent = "";
+        const divDrunken = must(this.carouselItem.querySelector("#divDrunken"));
+        divDrunken.innerHTML = `Welcome, ${currentGameState.getPlayers()?.players[0]?.name}! Grab some refreshments and chat with the various patrons of our fine establishement.
+        <p>In this level, challenge an opponent to who has better STATS. </p> 
+        `;
+
+        // // reset the challenge result message
+        // const divDrunkenTavernChallenge = must(this.carouselItem.querySelector<HTMLElement>("#divDrunkenTavernChallenge"));
+        // divDrunkenTavernChallenge.textContent = "";
     }
 
     toggleAllChallengeButtons(enable: boolean): void {
@@ -88,18 +96,20 @@ export default class DrunkenTavern extends CarouselItem {
 
         const divDrunkenTavernChallenge = must(this.carouselItem.querySelector<HTMLElement>("#divDrunkenTavernChallenge"));
 
-        divDrunkenTavernChallenge.textContent = challengeResult.message;
+        divDrunkenTavernChallenge.innerHTML = challengeResult.message;
         this.toggleChallengeButtons(challengeResult.disableChallengeButtons, false);
 
         if (challengeResult.outcome === "win") {
             this.nextChallenge();
             PlayerService.saveActivePlayers();
+
+            this.GoToNextChallenge();
         }
     }
 
     // private challengeResult: ChallengeResult = null as unknown as ChallengeResult;
     private resolveChallenge(challenge: keyof Player): ChallengeResult {
-        const pickedPlayer = must(currentGameState.getPlayers()?.randomPlayerPicker());
+        const pickedPlayer = must(currentGameState.getPlayers()?.draw());
 
         const villain = must(currentGameState.getDtkVillain());
         const villainChallengeValue = villain[challenge] as number;
@@ -109,11 +119,14 @@ export default class DrunkenTavern extends CarouselItem {
         const challengeName = challenge.toUpperCase();
         const playerLuk = pickedPlayer.luk;
         const villainLuk = villain.luk;
+        const villainCls = villain.cls;
 
         if (playerChallengeValue > villainChallengeValue) {
+            const goldEarned = Math.floor(Math.random() * 50) + 50;
+            currentGameState.getPlayers()?.addGold(goldEarned);
             return {
                 outcome: "win",
-                message: `${playerChallengeName} has won the challenge! ${playerChallengeName}'s ${challengeName} (${playerChallengeValue}) is greater than the ${villainChallengeName}'s  (${villainChallengeValue}).`,
+                message: `${playerChallengeName} stepped forward to battle the ${villainCls} and <b>WON</b>! Their stat went up 5 and earned ${goldEarned} gold! Now, continue your quest!`,
                 disableChallengeButtons: ["mp", "spd", "str"]
             } as ChallengeResult;
         }
@@ -121,7 +134,7 @@ export default class DrunkenTavern extends CarouselItem {
         if (playerChallengeValue < villainChallengeValue) {
             return {
                 outcome: "lose",
-                message: `${playerChallengeName} has lost the challenge! Your ${challengeName} (${playerChallengeValue}) is less than the ${villainChallengeName}'s  (${villainChallengeValue}).`,
+                message: `${playerChallengeName} stepped forward to battle the ${villainCls} and <b>LOST</b> the challenge! Swipe right to go back and try again!`,
                 disableChallengeButtons: ["mp", "spd", "str"]
             } as ChallengeResult;
         }
@@ -132,9 +145,12 @@ export default class DrunkenTavern extends CarouselItem {
     private tieBreakeChallenges = 0;
     private handleTieChallenge(challengeData: ChallengeData): ChallengeResult {
         if (challengeData.playerLuk > challengeData.villainLuk) {
+            const goldEarned = Math.floor(Math.random() * 50) + 50;
+            currentGameState.getPlayers()?.addGold(goldEarned);
+
             return {
                 outcome: "win",
-                message: `${challengeData.playerChallengeName} has won the challenge! ${challengeData.playerChallengeName}'s ${challengeData.challengeName} (${challengeData.playerChallengeValue}) is equal to the ${challengeData.villainChallengeName}, but ${challengeData.playerChallengeName}'s luck (${challengeData.playerLuk}) is greater than the ${challengeData.villainChallengeName}'s luck (${challengeData.villainLuk}).`,
+                message: `${challengeData.playerChallengeName} stepped forward to battle the ${challengeData.villainChallengeName} and <b>WON</b>! Their ${challengeData.challengeName} (${challengeData.playerChallengeValue}) matched the villain's, but their superior luck (${challengeData.playerLuk} vs. ${challengeData.villainLuk}) secured the victory! Their stat went up 5 and they earned ${goldEarned} gold! Now, continue your quest!`,
                 disableChallengeButtons: ["str", "spd", "mp"]
             } as ChallengeResult;
         }
@@ -142,7 +158,7 @@ export default class DrunkenTavern extends CarouselItem {
         if (challengeData.playerLuk < challengeData.villainLuk) {
             return {
                 outcome: "lose",
-                message: `${challengeData.playerChallengeName} has lost the challenge! ${challengeData.playerChallengeName}'s ${challengeData.challengeName} (${challengeData.playerChallengeValue}) is equal to the ${challengeData.villainChallengeName}, but ${challengeData.playerChallengeName}'s luck (${challengeData.playerLuk}) is less than the ${challengeData.villainChallengeName}'s luck (${challengeData.villainLuk}).`,
+                message: `${challengeData.playerChallengeName} stepped forward to battle the ${challengeData.villainChallengeName} and <b>LOST</b> the challenge! Their ${challengeData.challengeName} (${challengeData.playerChallengeValue}) matched the villain's, but their lower luck (${challengeData.playerLuk} vs. ${challengeData.villainLuk}) cost them the victory! Swipe right to go back and try again!`,
                 disableChallengeButtons: ["str", "spd", "mp"]
             } as ChallengeResult;
         }
@@ -150,7 +166,10 @@ export default class DrunkenTavern extends CarouselItem {
         this.tieBreakeChallenges++;
         return {
             outcome: "tie",
-            message: `The challenge has ended in a tie after ${this.tieBreakeChallenges} attempts. ${challengeData.playerChallengeName}'s ${challengeData.challengeName} (${challengeData.playerChallengeValue}) is equal to the ${challengeData.villainChallengeName}.`,
+            message: `${challengeData.playerChallengeName} stepped forward to battle the ${challengeData.villainChallengeName}, but their ${challengeData.challengeName} (${challengeData.playerChallengeValue}) matched the villain's! ${this.tieBreakeChallenges >= 3
+                ? `The battle ended in a <b>TIE</b> after 3 attempts! Neither could claim victory! Swipe right to go back and try again!`
+                : `The battle remains a <b>TIE</b>! Choose another stat to continue the battle! You have ${3 - this.tieBreakeChallenges} attempts remaining!`
+                }`,
             disableChallengeButtons: [challengeData.challengeName.toLowerCase() as keyof Player]
         } as ChallengeResult;
     }
@@ -158,5 +177,17 @@ export default class DrunkenTavern extends CarouselItem {
     private nextChallenge(): void {
         const players = must(currentGameState.getPlayers());
         players.currentScreen = "Forest";
+    }
+
+    private GoToNextChallenge() {
+        const divDrunkenTavernChallenge = must(this.carouselItem.querySelector<HTMLElement>("#divDrunkenTavernChallenge"));
+
+        const btnGoToForest = ons.createElement(`<ons-button id="btnGoToForest" class="challenge-button">Go!</ons-button>`) as HTMLElement;
+
+        btnGoToForest.addEventListener("click", () => {
+            fireAndForget(this.navController.replaceTavernWithForest());
+        });
+
+        divDrunkenTavernChallenge.append(document.createElement('div'), btnGoToForest);
     }
 }
