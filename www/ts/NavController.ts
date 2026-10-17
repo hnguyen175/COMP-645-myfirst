@@ -14,6 +14,10 @@ import currentGameState from './GameState.ts';
 import loggingProxy from './utilities/LoggingProxy.ts';
 import TemplateGameTasks from './templates/TemplateGameTasks.ts';
 import FangornForest from './carousel-items/FangornForest.ts';
+import ShuffleBag from './utilities/ShuffleBag.ts';
+import Mountain from './carousel-items/Mountain.ts';
+import Lake from './carousel-items/Lake.ts';
+import Bridge from './carousel-items/Bridge.ts';
 
 interface CarouselChangeEvent extends Event {
     carousel: ons.OnsCarouselElement;
@@ -221,6 +225,18 @@ export default class NavController {
                 this.forest = await FangornForest.create(this, this.playerService, this.templateGameTask);
                 await this.addCarouselItem(this.forest);
                 break;
+            case "Lake":
+                const lake = await Lake.create(this, this.playerService, this.templateGameTask);
+                await this.addCarouselItem(lake);
+                break;
+            case "Bridge":
+                const bridge = await Bridge.create(this, this.playerService, this.templateGameTask);
+                await this.addCarouselItem(bridge);
+                break;
+            case "Mountain":
+                const mountain = await Mountain.create(this, this.playerService, this.templateGameTask);
+                await this.addCarouselItem(mountain);
+                break;
             default:
                 console.error(`Unknown currentScreen: ${must(currentGameState.getPlayers())?.currentScreen}`);
                 return;
@@ -295,5 +311,12 @@ export default class NavController {
         this.forest = await must(FangornForest.create(this, this.playerService, this.templateGameTask));
         this.drunkenTavern.carouselItem.replaceWith(this.forest.carouselItem);
         this.forest.initializePage();
+    }
+
+    static lbmChallenges = new ShuffleBag([Lake, Bridge, Mountain]);
+    async afterForestChallenge(): Promise<Lake | Bridge | Mountain> {
+        const challengeType = NavController.lbmChallenges.draw();
+
+        return await challengeType.create(this, this.playerService, this.templateGameTask);
     }
 }

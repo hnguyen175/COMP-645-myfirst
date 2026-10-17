@@ -72,10 +72,6 @@ export default class DrunkenTavern extends CarouselItem {
         divDrunken.innerHTML = `Welcome, ${currentGameState.getPlayers()?.players[0]?.name}! Grab some refreshments and chat with the various patrons of our fine establishement.
         <p>In this level, challenge an opponent to who has better STATS. </p> 
         `;
-
-        // // reset the challenge result message
-        // const divDrunkenTavernChallenge = must(this.carouselItem.querySelector<HTMLElement>("#divDrunkenTavernChallenge"));
-        // divDrunkenTavernChallenge.textContent = "";
     }
 
     toggleAllChallengeButtons(enable: boolean): void {

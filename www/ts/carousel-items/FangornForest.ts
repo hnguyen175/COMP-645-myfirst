@@ -37,17 +37,35 @@ export default class FangornForest extends CarouselItem {
         const btnAskForMP = must(this.carouselItem.querySelector("#btnAskForMP"));
 
         [btnAskForHP, btnAskForMP].forEach(btn => {
-            btn.addEventListener("click", () => {
+            btn.addEventListener("click", async () => {
                 const whichHealth = btn.id === "btnAskForHP" ? "hp" : "mp";
                 this.grantHealthPoints(whichHealth);
                 this.setActionButtonsState(btnAskForHP, btnAskForMP);
                 this.informHealthBoost();
                 this.updatePlayerCards(whichHealth);
 
+                // ask navController for where to go next
+                await this.setupNextChallenge();
+
                 PlayerService.saveActivePlayers();
             });
         });
 
+    }
+
+    private async setupNextChallenge() {
+        // could be Lake, Bridge, or Mountain
+        const nextChallenge = await this.navControl.afterForestChallenge();
+        const nextChallengeName = must(nextChallenge.constructor.name);
+
+        const goToNextButton = ons.createElement(/*html*/ `<ons-button id="btnGoToNextChallenge">${nextChallengeName}</ons-button>`) as HTMLElement;
+        this.carouselItem.querySelector("#pForestResult")?.append(document.createElement('div'), goToNextButton);
+
+        must(currentGameState.getPlayers()).currentScreen = nextChallengeName;
+
+        goToNextButton.addEventListener("click", () => {
+            void this.carouselItem.replaceWith(nextChallenge.carouselItem);
+        });
     }
 
     private updatePlayerCards(whichHealth: "hp" | "mp"): void {
