@@ -33,7 +33,8 @@ export default class Party {
         return {
             currentScreen: this.currentScreen,
             questCompleted: this.questCompleted,
-            players: this.players
+            players: this.players,
+            earnedGold: this._earnedGold
         };
     }
 
@@ -71,6 +72,10 @@ export default class Party {
 
     get earnedGold(): number {
         return this._earnedGold;
+    }
+
+    set earnedGold(value: number) {
+        this._earnedGold = value;
     }
 
     addGold(value: number): number {

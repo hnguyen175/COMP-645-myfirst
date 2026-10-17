@@ -12,6 +12,7 @@ type ChallengeResult = {
     outcome: "win" | "lose" | "tie";
     message: string;
     disableChallengeButtons: ("str" | "spd" | "mp")[];
+    pickedPlayer: Player;
 }
 
 type ChallengeData = {
@@ -22,7 +23,10 @@ type ChallengeData = {
     villainChallengeName: string;
     villainChallengeValue: number;
     villainLuk: number;
+    pickedPlayer: Player;
 }
+
+type ChallengeStat = "str" | "spd" | "mp";
 
 
 export default class DrunkenTavern extends CarouselItem {
@@ -54,7 +58,7 @@ export default class DrunkenTavern extends CarouselItem {
             const clickedElement = event.target as HTMLElement;
             if (clickedElement.closest(`#${carouselItemId} :is(#btnSTR, #btnSPD, #btnMP)`)) {
                 const btnTxt = must(clickedElement.textContent);
-                this.drunkenTavernChallenge(btnTxt.trim().toLowerCase() as keyof Player);
+                this.drunkenTavernChallenge(btnTxt.trim().toLowerCase() as ChallengeStat);
                 return;
             }
         });
@@ -91,7 +95,7 @@ export default class DrunkenTavern extends CarouselItem {
         });
     };
 
-    private drunkenTavernChallenge(challenge: keyof Player): void {
+    private drunkenTavernChallenge(challenge: ChallengeStat): void {
         const challengeResult = this.resolveChallenge(challenge);
 
         const divDrunkenTavernChallenge = must(this.carouselItem.querySelector<HTMLElement>("#divDrunkenTavernChallenge"));
@@ -102,13 +106,26 @@ export default class DrunkenTavern extends CarouselItem {
         if (challengeResult.outcome === "win") {
             this.nextChallenge();
             PlayerService.saveActivePlayers();
+            this.updatePlayerCards(challengeResult.pickedPlayer.name, challenge, challengeResult.pickedPlayer[challenge]);
 
-            this.GoToNextChallenge();
+            this.ShowNextChallengeButton();
         }
     }
 
+    private updatePlayerCards(playerName: string, challenge: ChallengeStat, challengeValue: number): void {
+        const query = `ons-list-header div.right[data-property="name"]`;
+        const all = [...this.carouselItem?.querySelectorAll<HTMLElement>(query)];
+
+        const column = all.find((el) => el.textContent.trim().toUpperCase() === playerName.trim().toUpperCase());
+
+        const challengeQuery = `ons-list-item[data-property="${challenge}"]`;
+        const row = column?.closest("ons-list")?.querySelector<HTMLElement>(challengeQuery);
+        const updatingCell = must(row?.querySelector(".clsValue")).textContent = challengeValue.toString();
+        row?.classList.add("row-flash");
+    }
+
     // private challengeResult: ChallengeResult = null as unknown as ChallengeResult;
-    private resolveChallenge(challenge: keyof Player): ChallengeResult {
+    private resolveChallenge(challenge: ChallengeStat): ChallengeResult {
         const pickedPlayer = must(currentGameState.getPlayers()?.draw());
 
         const villain = must(currentGameState.getDtkVillain());
@@ -123,11 +140,13 @@ export default class DrunkenTavern extends CarouselItem {
 
         if (playerChallengeValue > villainChallengeValue) {
             const goldEarned = Math.floor(Math.random() * 50) + 50;
+            pickedPlayer[challenge] += 5;
             currentGameState.getPlayers()?.addGold(goldEarned);
             return {
                 outcome: "win",
-                message: `${playerChallengeName} stepped forward to battle the ${villainCls} and <b>WON</b>! Their stat went up 5 and earned ${goldEarned} gold! Now, continue your quest!`,
-                disableChallengeButtons: ["mp", "spd", "str"]
+                message: `${playerChallengeName} stepped forward to battle the ${villainCls} and <b>WON</b>! Their stat went up 5 more and earned ${goldEarned} gold! Now, continue your quest!`,
+                disableChallengeButtons: ["mp", "spd", "str"],
+                pickedPlayer: pickedPlayer
             } as ChallengeResult;
         }
 
@@ -135,23 +154,26 @@ export default class DrunkenTavern extends CarouselItem {
             return {
                 outcome: "lose",
                 message: `${playerChallengeName} stepped forward to battle the ${villainCls} and <b>LOST</b> the challenge! Swipe right to go back and try again!`,
-                disableChallengeButtons: ["mp", "spd", "str"]
+                disableChallengeButtons: ["mp", "spd", "str"],
+                pickedPlayer: pickedPlayer
             } as ChallengeResult;
         }
 
-        return this.handleTieChallenge({ challengeName, playerChallengeName, playerChallengeValue, villainChallengeName, villainChallengeValue, playerLuk, villainLuk });
+        return this.handleTieChallenge({ challengeName, playerChallengeName, playerChallengeValue, villainChallengeName, villainChallengeValue, playerLuk, villainLuk, pickedPlayer });
     }
 
     private tieBreakeChallenges = 0;
     private handleTieChallenge(challengeData: ChallengeData): ChallengeResult {
         if (challengeData.playerLuk > challengeData.villainLuk) {
             const goldEarned = Math.floor(Math.random() * 50) + 50;
+            challengeData.pickedPlayer[challengeData.challengeName.toLowerCase() as ChallengeStat] += 5;
             currentGameState.getPlayers()?.addGold(goldEarned);
 
             return {
                 outcome: "win",
-                message: `${challengeData.playerChallengeName} stepped forward to battle the ${challengeData.villainChallengeName} and <b>WON</b>! Their ${challengeData.challengeName} (${challengeData.playerChallengeValue}) matched the villain's, but their superior luck (${challengeData.playerLuk} vs. ${challengeData.villainLuk}) secured the victory! Their stat went up 5 and they earned ${goldEarned} gold! Now, continue your quest!`,
-                disableChallengeButtons: ["str", "spd", "mp"]
+                message: `${challengeData.playerChallengeName} stepped forward to battle the ${challengeData.villainChallengeName} and <b>WON</b>! Their ${challengeData.challengeName} (${challengeData.playerChallengeValue}) matched the villain's, but their superior luck (${challengeData.playerLuk} vs. ${challengeData.villainLuk}) secured the victory! Their stat went up 5 more and they earned ${goldEarned} gold! Now, continue your quest!`,
+                disableChallengeButtons: ["str", "spd", "mp"],
+                pickedPlayer: challengeData.pickedPlayer
             } as ChallengeResult;
         }
 
@@ -159,7 +181,8 @@ export default class DrunkenTavern extends CarouselItem {
             return {
                 outcome: "lose",
                 message: `${challengeData.playerChallengeName} stepped forward to battle the ${challengeData.villainChallengeName} and <b>LOST</b> the challenge! Their ${challengeData.challengeName} (${challengeData.playerChallengeValue}) matched the villain's, but their lower luck (${challengeData.playerLuk} vs. ${challengeData.villainLuk}) cost them the victory! Swipe right to go back and try again!`,
-                disableChallengeButtons: ["str", "spd", "mp"]
+                disableChallengeButtons: ["str", "spd", "mp"],
+                pickedPlayer: challengeData.pickedPlayer
             } as ChallengeResult;
         }
 
@@ -170,7 +193,8 @@ export default class DrunkenTavern extends CarouselItem {
                 ? `The battle ended in a <b>TIE</b> after 3 attempts! Neither could claim victory! Swipe right to go back and try again!`
                 : `The battle remains a <b>TIE</b>! Choose another stat to continue the battle! You have ${3 - this.tieBreakeChallenges} attempts remaining!`
                 }`,
-            disableChallengeButtons: [challengeData.challengeName.toLowerCase() as keyof Player]
+            disableChallengeButtons: [challengeData.challengeName.toLowerCase() as ChallengeStat],
+            pickedPlayer: challengeData.pickedPlayer
         } as ChallengeResult;
     }
 
@@ -179,7 +203,7 @@ export default class DrunkenTavern extends CarouselItem {
         players.currentScreen = "Forest";
     }
 
-    private GoToNextChallenge() {
+    private ShowNextChallengeButton() {
         const divDrunkenTavernChallenge = must(this.carouselItem.querySelector<HTMLElement>("#divDrunkenTavernChallenge"));
 
         const btnGoToForest = ons.createElement(`<ons-button id="btnGoToForest" class="challenge-button">Go!</ons-button>`) as HTMLElement;
