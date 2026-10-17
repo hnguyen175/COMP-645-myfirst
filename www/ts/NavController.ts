@@ -218,7 +218,7 @@ export default class NavController {
                 await this.addCarouselItem(this.drunkenTavern);
                 break;
             case "Forest":
-                this.forest = await FangornForest.create(this.templateGameTask);
+                this.forest = await FangornForest.create(this, this.playerService, this.templateGameTask);
                 await this.addCarouselItem(this.forest);
                 break;
             default:
@@ -292,7 +292,7 @@ export default class NavController {
     }
 
     async replaceTavernWithForest() {
-        this.forest = await must(FangornForest.create(this.templateGameTask));
+        this.forest = await must(FangornForest.create(this, this.playerService, this.templateGameTask));
         this.drunkenTavern.carouselItem.replaceWith(this.forest.carouselItem);
         this.forest.initializePage();
     }
