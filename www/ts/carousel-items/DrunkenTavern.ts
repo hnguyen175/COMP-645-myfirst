@@ -80,20 +80,12 @@ export default class DrunkenTavern extends CarouselItem {
         `;
     }
 
-    toggleAllChallengeButtons(enable: boolean): void {
-        this.toggleChallengeButtons(["str", "spd", "mp"], enable);
-    }
-
     // grey out a particular challenge button
-    toggleChallengeButtons(challenges: string[], enable: boolean): void {
+    disableChallengeButtons(challenges: string[]): void {
         const carouselItem = must(this.carouselItem);
         challenges.forEach((challenge) => {
             const challengeButton = must(carouselItem.querySelector<HTMLElement>(`#btn${challenge.toUpperCase()}`));
-            if (enable) {
-                challengeButton.removeAttribute("disabled");
-            } else {
-                challengeButton.setAttribute("disabled", "true");
-            }
+            challengeButton.setAttribute("disabled", "true");
         });
     };
 
@@ -103,14 +95,13 @@ export default class DrunkenTavern extends CarouselItem {
         const divDrunkenTavernChallenge = must(this.carouselItem.querySelector<HTMLElement>("#divDrunkenTavernChallenge"));
 
         divDrunkenTavernChallenge.innerHTML = challengeResult.message;
-        this.toggleChallengeButtons(challengeResult.disableChallengeButtons, false);
+        this.disableChallengeButtons(challengeResult.disableChallengeButtons);
 
         if (challengeResult.outcome === "win") {
-            this.nextChallenge();
-            PlayerService.saveActivePlayers();
             this.updatePlayerCards(challengeResult.pickedPlayer.name, challenge, challengeResult.pickedPlayer[challenge]);
 
             await this.ShowNextChallengeButton();
+            PlayerService.saveActivePlayers();
         }
     }
 
@@ -200,19 +191,19 @@ export default class DrunkenTavern extends CarouselItem {
         } as ChallengeResult;
     }
 
-    private nextChallenge(): void {
+    private nextChallenge(nextChallenge: string): void {
         const players = must(currentGameState.getPlayers());
-        players.currentScreen = "FangornForest";
+        players.currentScreen = nextChallenge;
     }
 
     private async ShowNextChallengeButton() {
-
+        // set the next screen name
         const nextChallenge = await this.navController.createNextChallenge(this);
+        this.nextChallenge(nextChallenge.constructor.name);
 
         const btnGoToForest = ons.createElement(`<ons-button class="challenge-button">${nextChallenge.constructor.name}</ons-button>`) as HTMLElement;
 
         btnGoToForest.addEventListener("click", () => {
-            // fireAndForget(this.navController.replaceTavernWithForest());
             this.carouselItem.replaceWith(nextChallenge.carouselItem);
         });
 

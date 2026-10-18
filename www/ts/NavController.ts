@@ -296,10 +296,8 @@ export default class NavController {
             case FangornForest.name:
                 const challengeType = NavController.lbmChallenges.draw();
                 return await challengeType.create(this, this.playerService, this.templateGameTask);
-                break;
             case DrunkenTavern.name:
                 return await FangornForest.create(this, this.playerService, this.templateGameTask);
-                break;
             default:
                 throw new Error(`Unknown carousel item type: ${carouselItem.constructor.name}`);
         }

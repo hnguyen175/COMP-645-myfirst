@@ -7,6 +7,7 @@ import currentGameState from '../../www/ts/GameState';
 import PlayerService from '../../www/ts/PlayerService';
 import TemplateGameTasks from '../../www/ts/templates/TemplateGameTasks';
 import { MockInstance } from 'vitest';
+import NavController from '../../www/ts/NavController';
 
 const drunkenTavernHtml = '../../www/views/drunken-tavern.html?raw';
 
@@ -23,7 +24,7 @@ let navControllerMock = {
         const element = document.createElement('div');
         return element as HTMLElement;
     })
-};
+} as unknown as NavController;
 
 Vitest.beforeAll(async () => {
     Vitest.vi.resetAllMocks();
