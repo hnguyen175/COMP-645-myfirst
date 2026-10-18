@@ -58,7 +58,7 @@ export default class FangornForest extends CarouselItem {
 
     private async setupNextChallenge() {
         // could be Lake, Bridge, or Mountain
-        const nextChallenge = await this.navControl.afterForestChallenge();
+        const nextChallenge = await this.navControl.createNextChallenge(this);
         const nextChallengeName = must(nextChallenge.constructor.name);
 
         const goToNextButton = ons.createElement(/*html*/ `<ons-button id="btnGoToNextChallenge">${nextChallengeName}</ons-button>`) as HTMLElement;

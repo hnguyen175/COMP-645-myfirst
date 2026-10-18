@@ -18,10 +18,16 @@ let playerService: PlayerService = null as unknown as PlayerService;
 let mockGameStateGetPlayers: MockInstance<typeof currentGameState['getPlayers']>;
 let mockGameStateGetDktVillain: MockInstance<typeof currentGameState['getDtkVillain']>;
 let templateFragmentMock: unknown;
-let navControllerMock: any;
+let navControllerMock = {
+    createNextChallenge: Vitest.vi.fn().mockImplementation(async (carouselItem) => {
+        const element = document.createElement('div');
+        return element as HTMLElement;
+    })
+};
 
 Vitest.beforeAll(async () => {
     Vitest.vi.resetAllMocks();
+
 
     // Mock the fetch function to return the HTML content for the specified URLs
     Vitest.vi.spyOn(globalThis, 'fetch').mockImplementation(async (url) => {
@@ -160,7 +166,7 @@ Vitest.test.each([
     [() => mockScenario({ outcome: "loseWithLuck" }), "spd"],
     [() => mockScenario({ outcome: "winWithLuck" }), "mp"],
     [() => mockScenario({ outcome: "loseWithLuck" }), "mp"],
-] as const)('DrunkenTavern challenge button click should handle %s', async (setupScenario, attribute) => {
+] as const)('DrunkenTavern challenge button click should handle %s, %s', async (setupScenario, attribute) => {
     setupScenario();
 
     mockGameStateGetPlayers.mockClear();

@@ -61,8 +61,10 @@ export default class DrunkenTavern extends CarouselItem {
         carouselItem.addEventListener("click", (event) => {
             const clickedElement = event.target as HTMLElement;
             if (clickedElement.closest(`#${carouselItemId} :is(#btnSTR, #btnSPD, #btnMP)`)) {
+                event.preventDefault();
                 const btnTxt = must(clickedElement.textContent);
-                this.drunkenTavernChallenge(btnTxt.trim().toLowerCase() as ChallengeStat);
+                fireAndForget(this.drunkenTavernChallenge(btnTxt.trim().toLowerCase() as ChallengeStat));
+                // await this.drunkenTavernChallenge(btnTxt.trim().toLowerCase() as ChallengeStat);
                 return;
             }
         });
@@ -95,7 +97,7 @@ export default class DrunkenTavern extends CarouselItem {
         });
     };
 
-    private drunkenTavernChallenge(challenge: ChallengeStat): void {
+    private async drunkenTavernChallenge(challenge: ChallengeStat): Promise<void> {
         const challengeResult = this.resolveChallenge(challenge);
 
         const divDrunkenTavernChallenge = must(this.carouselItem.querySelector<HTMLElement>("#divDrunkenTavernChallenge"));
@@ -108,7 +110,7 @@ export default class DrunkenTavern extends CarouselItem {
             PlayerService.saveActivePlayers();
             this.updatePlayerCards(challengeResult.pickedPlayer.name, challenge, challengeResult.pickedPlayer[challenge]);
 
-            this.ShowNextChallengeButton();
+            await this.ShowNextChallengeButton();
         }
     }
 
@@ -200,18 +202,21 @@ export default class DrunkenTavern extends CarouselItem {
 
     private nextChallenge(): void {
         const players = must(currentGameState.getPlayers());
-        players.currentScreen = "Forest";
+        players.currentScreen = "FangornForest";
     }
 
-    private ShowNextChallengeButton() {
-        const divDrunkenTavernChallenge = must(this.carouselItem.querySelector<HTMLElement>("#divDrunkenTavernChallenge"));
+    private async ShowNextChallengeButton() {
 
-        const btnGoToForest = ons.createElement(`<ons-button id="btnGoToForest" class="challenge-button">Go!</ons-button>`) as HTMLElement;
+        const nextChallenge = await this.navController.createNextChallenge(this);
+
+        const btnGoToForest = ons.createElement(`<ons-button class="challenge-button">${nextChallenge.constructor.name}</ons-button>`) as HTMLElement;
 
         btnGoToForest.addEventListener("click", () => {
-            fireAndForget(this.navController.replaceTavernWithForest());
+            // fireAndForget(this.navController.replaceTavernWithForest());
+            this.carouselItem.replaceWith(nextChallenge.carouselItem);
         });
 
+        const divDrunkenTavernChallenge = must(this.carouselItem.querySelector<HTMLElement>("#divDrunkenTavernChallenge"));
         divDrunkenTavernChallenge.append(document.createElement('div'), btnGoToForest);
     }
 }

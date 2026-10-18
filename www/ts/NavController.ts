@@ -197,13 +197,14 @@ export default class NavController {
         }
     }
 
+    // instantiate the next challenge based on the current screen which is stored in LocalStorage. This is called when the user clicks on the "Start Game" button in the Comrades screen.
     async onGameStart() {
         switch (must(currentGameState.getPlayers())?.currentScreen) {
             case "DrunkenTavern":
                 this.drunkenTavern = await DrunkenTavern.create(this, this.playerService, this.templateGameTask);
                 await this.addCarouselItem(this.drunkenTavern);
                 break;
-            case "Forest":
+            case "FangornForest":
                 this.forest = await FangornForest.create(this, this.playerService, this.templateGameTask);
                 await this.addCarouselItem(this.forest);
                 break;
@@ -289,16 +290,18 @@ export default class NavController {
         return -1; // Return -1 if the carousel item is not found
     }
 
-    async replaceTavernWithForest() {
-        this.forest = await must(FangornForest.create(this, this.playerService, this.templateGameTask));
-        this.drunkenTavern.carouselItem.replaceWith(this.forest.carouselItem);
-        this.forest.renderWelcomeMessage();
-    }
-
     static lbmChallenges = new ShuffleBag([Lake, Bridge, Mountain]);
-    async afterForestChallenge(): Promise<Lake | Bridge | Mountain> {
-        const challengeType = NavController.lbmChallenges.draw();
-
-        return await challengeType.create(this, this.playerService, this.templateGameTask);
+    async createNextChallenge(carouselItem: CarouselItem): Promise<CarouselItem> {
+        switch (carouselItem.constructor.name) {
+            case FangornForest.name:
+                const challengeType = NavController.lbmChallenges.draw();
+                return await challengeType.create(this, this.playerService, this.templateGameTask);
+                break;
+            case DrunkenTavern.name:
+                return await FangornForest.create(this, this.playerService, this.templateGameTask);
+                break;
+            default:
+                throw new Error(`Unknown carousel item type: ${carouselItem.constructor.name}`);
+        }
     }
 }

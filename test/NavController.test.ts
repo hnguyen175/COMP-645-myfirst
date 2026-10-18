@@ -17,6 +17,9 @@ import forestHtml from '../www/views/forest.html?raw';
 import currentGameState from '../www/ts/GameState';
 import AllPlayersList from '../www/ts/rendering/AllPlayersList';
 import DrunkenTavern from '../www/ts/carousel-items/DrunkenTavern';
+import lakeHtml from '../www//views/lake.html?raw';
+import bridgeHtml from '../www/views/bridge.html?raw';
+import mountainHtml from '../www/views/mountain.html?raw';
 import must from '../www/ts/utilities/RequiredField';
 
 const toastMock = Vitest.vi.fn().mockResolvedValue(undefined);
@@ -96,6 +99,15 @@ Vitest.beforeEach(async () => {
         }
         if (url === "../views/forest.html") {
             return new Response(forestHtml);
+        }
+        if (url === "../views/lake.html") {
+            return new Response(lakeHtml);
+        }
+        if (url === "../views/bridge.html") {
+            return new Response(bridgeHtml);
+        }
+        if (url === "../views/mountain.html") {
+            return new Response(mountainHtml);
         }
 
         throw new Error(`Unexpected fetch URL: ${url}`);
@@ -536,3 +548,47 @@ Vitest.test("onCarouselPostDisplayingItem with drunken tavern item triggers rend
     Vitest.expect(document.getElementById(navController.welcome.carouselItem.id)).not.toBeNull();
 });
 
+Vitest.test.each([
+    ["DrunkenTavern"],
+    ["FangornForest"],
+    ["Lake"],
+    ["Bridge"],
+    ["Mountain"],
+] as const)("onGameStart for %s", async (screenName) => {
+    // Vitest.test("onGameStart for DrunkenTavern", async () => {
+    Vitest.vi.spyOn(currentGameState, 'getPlayers').mockImplementation(() => {
+        const party = new Party();
+        party.currentScreen = screenName;
+        party.players = [Player.getDefaultPlayer()];
+        return party;
+    });
+    Vitest.vi.spyOn(navController, 'addCarouselItem').mockImplementation((carouselItem) => {
+        Vitest.expect(carouselItem.constructor.name).toBe(screenName);
+        const element = document.createElement('div'); // Simulate adding the carousel item to the DOM
+        return element as HTMLElement;
+    });
+
+    await navController.onGameStart();
+
+    // Vitest.expect(navController.addCarouselItem).toHaveBeenCalledWith(expectedCarouselItem);
+    Vitest.expect(carousel.next).toHaveBeenCalledOnce();
+});
+
+// Vitest.test("onGameStart for FangornForest", async () => {
+//     Vitest.vi.spyOn(currentGameState, 'getPlayers').mockImplementation(() => {
+//         const party = new Party();
+//         party.currentScreen = "Forest";
+//         party.players = [Player.getDefaultPlayer()];
+//         return party;
+//     });
+//     Vitest.vi.spyOn(navController, 'addCarouselItem').mockResolvedValue(undefined);
+
+//     await navController.onGameStart();
+
+//     Vitest.expect(navController.addCarouselItem).toHaveBeenCalledWith(navController.forest);
+//     Vitest.expect(carousel.next).toHaveBeenCalledOnce();
+// });
+
+// Vitest.test("onGameStart for Lake"), async () => {
+//     Vitest.vi.spyOn(currentGameState, 'getPlayers').mockImplementation(() => {
+//         const party = new Party();
