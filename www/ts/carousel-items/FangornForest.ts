@@ -40,7 +40,7 @@ export default class FangornForest extends CarouselItem {
         const btnAskForMP = must(this.carouselItem.querySelector("#btnAskForMP"));
 
         [btnAskForHP, btnAskForMP].forEach(btn => {
-            btn.addEventListener("click", async () => {
+            btn.addEventListener("click", () => {
                 const whichHealth = btn.id === "btnAskForHP" ? "hp" : "mp";
                 this.grantHealthPoints(whichHealth);
                 this.setActionButtonsState(btnAskForHP, btnAskForMP);
@@ -48,9 +48,9 @@ export default class FangornForest extends CarouselItem {
                 this.updatePlayerCards(whichHealth);
 
                 // ask navController for where to go next
-                await this.setupNextChallenge();
-
-                PlayerService.saveActivePlayers();
+                fireAndForget(
+                    this.setupNextChallenge()
+                );
             });
         });
 
@@ -69,6 +69,8 @@ export default class FangornForest extends CarouselItem {
         goToNextButton.addEventListener("click", () => {
             void this.carouselItem.replaceWith(nextChallenge.carouselItem);
         });
+
+        PlayerService.saveActivePlayers();
     }
 
     private updatePlayerCards(whichHealth: "hp" | "mp"): void {
