@@ -16,6 +16,8 @@ import drunkenTavernHtml from '../www/views/drunken-tavern.html?raw';
 import forestHtml from '../www/views/forest.html?raw';
 import currentGameState from '../www/ts/GameState';
 import AllPlayersList from '../www/ts/rendering/AllPlayersList';
+import DrunkenTavern from '../www/ts/carousel-items/DrunkenTavern';
+import must from '../www/ts/utilities/RequiredField';
 
 const toastMock = Vitest.vi.fn().mockResolvedValue(undefined);
 
@@ -216,29 +218,6 @@ Vitest.test("onCarouselPriorDisplayingItem prior displaying Welcome", async () =
 
     Vitest.expect(playerService.savePlayers).not.toHaveBeenCalled();
     Vitest.expect(consoleErrorSpy).not.toHaveBeenCalled();
-});
-
-Vitest.test("onCarouselPriorDisplayingItem prior displaying drunken tavern", async () => {
-    navController.loadCarouselItem([navController.welcome, navController.drunkenTavern]);
-    const carousel = document.getElementById("carouselNewGame") as unknown as HTMLElement;
-
-    const event = new Event('prechange');
-    Object.assign(event, {
-        carousel,
-        activeIndex: 1,
-    });
-
-    const mockPlayers = new Party();
-    const playerServiceSpy = Vitest.vi.spyOn(currentGameState, 'getPlayers').mockImplementation(() => {
-        return mockPlayers;
-    });
-    const renderPlayerCardsSpy = Vitest.vi.spyOn(playerView, 'renderPlayerCards')
-        .mockImplementationOnce((carouselId: string, players: Player[]) => {
-            Vitest.expect(carouselId).toBe("caiDrunkenTavern");
-            Vitest.expect(players).toBe(mockPlayers.players);
-        });
-
-    await navController.onCarouselPriorDisplayingItem(event);
 });
 
 Vitest.test("onCarouselPriorDisplayingItem prior displaying load game", async () => {
@@ -453,7 +432,7 @@ Vitest.test("loadCarouselItems removes all carousel items except welcome", async
 
     const items = carousel.querySelectorAll("ons-carousel-item");
     Vitest.expect(items.length).toBe(4); // welcome + 2 new items
-    Vitest.expect(fetch).toHaveBeenCalledTimes(6);
+    Vitest.expect(fetch).toHaveBeenCalledTimes(4);
 });
 
 Vitest.test("onLoadGameButtonClick loads players and navigates to next carousel item", async () => {
@@ -533,7 +512,10 @@ Vitest.test("resetCarouselToLoadGame with LoadGame item already present navigate
     Vitest.expect(carousel.setActiveIndex).toHaveBeenCalledWith(1);
 });
 
-Vitest.test("onCarouselPostDisplayingItem with drunken tavern item triggers renderPlayerCards for villain", () => {
+Vitest.test("onCarouselPostDisplayingItem with drunken tavern item triggers renderPlayerCards for villain", async () => {
+    const drunkenTavern = await DrunkenTavern.create(navController, playerService, navController.templateGameTask);
+    navController.drunkenTavern = drunkenTavern;
+
     navController.loadCarouselItem([navController.welcome, navController.comrades, navController.drunkenTavern]);
     Vitest.expect(document.getElementById(navController.drunkenTavern.carouselItem.id)).not.toBeNull();
     Vitest.expect(document.getElementById(navController.comrades.carouselItem.id)).not.toBeNull();

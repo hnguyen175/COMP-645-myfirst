@@ -7,6 +7,7 @@ import TemplateGameTasks from "../templates/TemplateGameTasks.ts";
 import PlayerService from "../PlayerService.ts";
 import NavController from "../NavController.ts";
 import { fireAndForget } from "../utilities/AsyncUtils.ts";
+import PlayerView from "../rendering/PlayerView.ts";
 
 type ChallengeResult = {
     outcome: "win" | "lose" | "tie";
@@ -33,7 +34,8 @@ export default class DrunkenTavern extends CarouselItem {
     constructor(
         private readonly navController: NavController,
         private readonly playerService: PlayerService,
-        carouselItem: HTMLElement
+        carouselItem: HTMLElement,
+        private readonly playerView: PlayerView = new PlayerView()
     ) {
         super(carouselItem);
     }
@@ -45,6 +47,8 @@ export default class DrunkenTavern extends CarouselItem {
         const divDurnkenTavern = must(drunkadTavern.carouselItem.querySelector<HTMLElement>("#divDrunkenTavernChallenge"));
 
         divDurnkenTavern.after(template.templateFragment);
+
+        drunkadTavern.initializePage();
 
         drunkadTavern.registerEvents();
         return drunkadTavern;
@@ -65,8 +69,8 @@ export default class DrunkenTavern extends CarouselItem {
     }
 
     initializePage(): void {
-        this.toggleAllChallengeButtons(true);
-        this.tieBreakeChallenges = 0;
+        this.playerView.renderPlayerCards(this.carouselItem, must(currentGameState.getPlayers()?.players));
+        this.playerView.renderPlayerCardsByName(this.carouselItem, "divDrunkenTavernVillain", [this.playerService.createVillain()], ['wep', 'cls']);
 
         const divDrunken = must(this.carouselItem.querySelector("#divDrunken"));
         divDrunken.innerHTML = `Welcome, ${currentGameState.getPlayers()?.players[0]?.name}! Grab some refreshments and chat with the various patrons of our fine establishement.
@@ -116,7 +120,7 @@ export default class DrunkenTavern extends CarouselItem {
 
         const challengeQuery = `ons-list-item[data-property="${challenge}"]`;
         const row = column?.closest("ons-list")?.querySelector<HTMLElement>(challengeQuery);
-        const updatingCell = must(row?.querySelector(".clsValue")).textContent = challengeValue.toString();
+        must(row?.querySelector(".clsValue")).textContent = challengeValue.toString();
         row?.classList.add("row-flash");
     }
 

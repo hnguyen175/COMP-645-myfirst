@@ -90,12 +90,6 @@ export default class NavController {
             case "caiLoadGame":
                 this.priorLoadGame();
                 break;
-            case "caiDrunkenTavern":
-                this.priorDisplayingDrunkenTavern();
-                break;
-            case "caiForest":
-                this.priorDisplayingForest();
-                break;
         };
     }
 
@@ -117,20 +111,8 @@ export default class NavController {
         await this.welcome.updateLoadGameButtonState();
     }
 
-    private priorDisplayingDrunkenTavern() {
-        this.playerView.renderPlayerCards("caiDrunkenTavern", must(currentGameState.getPlayers()?.players));
-        // create villain
-        this.playerView.renderPlayerCards("divDrunkenTavernVillain", [this.playerService.createVillain()], ['wep', 'cls']);
-        // need to tell the carousel item to reinitialze the random player picker, so that it can pick a new random player from the current players
-        this.drunkenTavern.initializePage();
-    }
-
     private async priorDisplayingPlayers() {
-        this.playerView.renderPlayerCards("caiComrades", must(currentGameState.getPlayers()?.players));
-    }
-
-    private priorDisplayingForest() {
-        this.forest.initializePage();
+        this.playerView.renderPlayerCards(this.comrades.carouselItem, must(currentGameState.getPlayers()?.players));
     }
 
     private postDisplayingComrades() {
@@ -310,7 +292,7 @@ export default class NavController {
     async replaceTavernWithForest() {
         this.forest = await must(FangornForest.create(this, this.playerService, this.templateGameTask));
         this.drunkenTavern.carouselItem.replaceWith(this.forest.carouselItem);
-        this.forest.initializePage();
+        this.forest.renderWelcomeMessage();
     }
 
     static lbmChallenges = new ShuffleBag([Lake, Bridge, Mountain]);

@@ -7,6 +7,7 @@ import PlayerView from "../rendering/PlayerView.ts";
 import ShuffleBag from "../utilities/ShuffleBag.ts";
 import PlayerService from "../PlayerService.ts";
 import NavController from "../NavController.ts";
+import { fireAndForget } from "../utilities/AsyncUtils.ts";
 
 type FangornForestCharacter = {
     name: string;
@@ -28,6 +29,8 @@ export default class FangornForest extends CarouselItem {
 
         const footer = must(forest.carouselItem.querySelector("footer"));
         footer.after(template.templateFragment);
+
+        forest.renderWelcomeMessage();
 
         return forest;
     }
@@ -126,13 +129,13 @@ export default class FangornForest extends CarouselItem {
         }
     }
 
-    initializePage(): void {
-        this.playerView.renderPlayerCards(this.carouselItem.id, must(currentGameState?.getPlayers()?.players), ['hp', 'mp']);
+    renderWelcomeMessage(): void {
+        this.playerView.renderPlayerCards(this.carouselItem, must(currentGameState?.getPlayers()?.players), ['hp', 'mp']);
 
         const playerNameElement = must(this.carouselItem.querySelector("#forestWelcoming"));
         const name = must(currentGameState?.getPlayers()?.players[0]).name;
 
-        playerNameElement.innerHTML = /*html*/`Welcome, ${name}! You have reached the ghostly forest. What's that ahead?. <p>You meet ${this.fangornForestCharacter.name} and their ${this.fangornForestCharacter.item} of ${this.fangornForestCharacter.attribute}. </p>`;
+        playerNameElement.innerHTML = /*html*/`Welcome, ${name}! You have reached the Fangorn forest. What's that ahead?. <p>You meet ${this.fangornForestCharacter.name} and their ${this.fangornForestCharacter.item} of ${this.fangornForestCharacter.attribute}. </p>`;
 
         const template = document.createElement('template');
         template.innerHTML = /*html*/`<p>You will ask ${this.fangornForestCharacter.name} to help your quest by granting you some of their ${this.fangornForestCharacter.attribute} from their ${this.fangornForestCharacter.item}!</p>`;
