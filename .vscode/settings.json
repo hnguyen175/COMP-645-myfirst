@@ -10,6 +10,10 @@
     "vim.useSystemClipboard": true,
     "vim.useCtrlKeys": false,
     "vim.hlsearch": true,
+    "vim.handleKeys": {
+        "<C-o>": true,
+        "<C-i>": true,
+    },
     // To improve performance
     "extensions.experimental.affinity": {
         "vscodevim.vim": 1
