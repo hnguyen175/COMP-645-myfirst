@@ -58,13 +58,12 @@ export default class DrunkenTavern extends CarouselItem {
         const carouselItem = must(this.carouselItem);
         const carouselItemId = must(carouselItem.id);
 
-        carouselItem.addEventListener("click", async (event) => {
+        carouselItem.addEventListener("click", (event) => {
             const clickedElement = event.target as HTMLElement;
             if (clickedElement.closest(`#${carouselItemId} :is(#btnSTR, #btnSPD, #btnMP)`)) {
                 event.preventDefault();
                 const btnTxt = must(clickedElement.textContent);
-                await this.drunkenTavernChallenge(btnTxt.trim().toLowerCase() as ChallengeStat);
-                // await this.drunkenTavernChallenge(btnTxt.trim().toLowerCase() as ChallengeStat);
+                fireAndForget(this.drunkenTavernChallenge(btnTxt.trim().toLowerCase() as ChallengeStat));
                 return;
             }
         });
