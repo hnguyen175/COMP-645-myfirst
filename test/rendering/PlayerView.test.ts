@@ -18,7 +18,7 @@ Vitest.test('renderPlayerCards should render player cards correctly', () => {
     `;
 
     const players = new Players();
-    const player1 = Player.createRandomPlayer('alice', 'alice@wonderland.org');
+    const player1 = new Player('alice', 'alice@wonderland.org');
     players.addPlayer(player1);
 
     const playerCards = document.querySelector("#caiComrades .player-cards") as HTMLElement;

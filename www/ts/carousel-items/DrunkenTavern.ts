@@ -108,7 +108,7 @@ export default class DrunkenTavern extends CarouselItem {
         const query = `ons-list-header div.right[data-property="name"]`;
         const all = [...this.carouselItem?.querySelectorAll<HTMLElement>(query)];
 
-        const column = all.find((el) => el.textContent.trim().toUpperCase() === playerName.trim().toUpperCase());
+        const column = must(all.find((el) => el.textContent.trim().toUpperCase() === playerName.trim().toUpperCase()));
 
         const challengeQuery = `ons-list-item[data-property="${challenge}"]`;
         const row = column?.closest("ons-list")?.querySelector<HTMLElement>(challengeQuery);

@@ -49,7 +49,7 @@ Vitest.beforeEach(() => {
             if (players.players.length > 0) {
                 return players;
             }
-            players.addPlayer(Player.createRandomPlayer());
+            players.addPlayer(new Player());
             return players;
         }),
     };

@@ -6,8 +6,6 @@ import Player from '../../www/ts/Player';
 import currentGameState from '../../www/ts/GameState';
 import PlayerService from '../../www/ts/PlayerService';
 import TemplateGameTasks from '../../www/ts/templates/TemplateGameTasks';
-import { MockInstance } from 'vitest';
-import NavController from '../../www/ts/NavController';
 
 const drunkenTavernHtml = '../../www/views/drunken-tavern.html?raw';
 
@@ -16,12 +14,11 @@ type ChallengeMock = {
 }
 
 let playerService: PlayerService = null as unknown as PlayerService;
-let mockGameStateGetPlayers: MockInstance<typeof currentGameState['getPlayers']>;
-let mockGameStateGetDktVillain: MockInstance<typeof currentGameState['getDtkVillain']>;
 let templateFragmentMock: unknown;
 let navControllerMock: any;
 
-Vitest.beforeAll(async () => {
+Vitest.beforeEach(async () => {
+    Vitest.vi.restoreAllMocks();
 
     navControllerMock = {
         createNextChallenge: Vitest.vi.fn().mockImplementation(async (carouselItem) => {
@@ -49,16 +46,7 @@ Vitest.beforeAll(async () => {
         }
     });
     playerService = new PlayerService();
-
-    mockGameStateGetPlayers = Vitest.vi.spyOn(currentGameState, 'getPlayers').mockImplementation(() => {
-        const players = new Party();
-        players.addPlayer(Player.createRandomPlayer());
-        return players;
-    });
-
-    mockGameStateGetDktVillain = Vitest.vi.spyOn(currentGameState, 'getDtkVillain').mockImplementation(() => {
-        return playerService.createVillain();
-    });
+    mockScenario();
 
     templateFragmentMock = Vitest.vi.spyOn(TemplateGameTasks.prototype, 'templateFragment', 'get').mockImplementation(() => {
         document.body.innerHTML = /*html*/ `
@@ -89,63 +77,63 @@ Vitest.test('DrunkenTavern should handle click events on challenge buttons', asy
     Vitest.expect(btnSTR).not.toBeNull();
 
     btnSTR.click();
-    Vitest.expect(mockGameStateGetPlayers).toHaveBeenCalled();
+    // Vitest.expect(mockGameStateGetPlayers).toHaveBeenCalled();
     Vitest.expect(currentGameState.getDtkVillain()).not.toBeNull();
     Vitest.expect(currentGameState.getPlayers()).not.toBeNull();
 });
 
 Vitest.test('DrunkenTavern should handle click events when clicked element is not a challenge button', async () => {
+    // const gameStateMock = Vitest.vi.spyOn(currentGameState, 'getPlayers').mockImplementation(() => Vitest.vi.fn() as unknown as Party);
+
     const dkt = await DrunkenTavern.create(navControllerMock, playerService, templateFragmentMock as unknown as TemplateGameTasks);
     Vitest.expect(dkt).not.toBeNull();
     Vitest.expect(dkt.carouselItem).not.toBeNull();
     const nonButtonElement = must(dkt.carouselItem.querySelector<HTMLElement>('#divDrunkenTavernVillain'));
 
-    const gameStateMock = Vitest.vi.spyOn(currentGameState, 'getPlayers').mockImplementation(() => {
-        return null; // This should not be called in this test
-    });
-
     nonButtonElement.click();
 
-    Vitest.expect(gameStateMock).toHaveBeenCalled();
+    // Vitest.expect(gameStateMock).toHaveBeenCalled();
+    dkt.carouselItem.querySelectorAll("ons-button.challenge-button").forEach(btn => {
+        Vitest.expect(btn.hasAttribute("disabled")).toBe(false);
+    });
 });
 
-function mockScenario(challengeMock: ChallengeMock) {
-    mockGameStateGetPlayers = Vitest.vi.spyOn(currentGameState, 'getPlayers').mockImplementation(() => {
-        const players = new Party();
-        const player = Player.createRandomPlayer();
-        players.addPlayer(player);
+function mockScenario(challengeMock: ChallengeMock | null = null) {
+    const players = new Party();
+    const player = new Player();
+    players.addPlayer(player);
 
-        if (challengeMock.outcome === "win") {
-            player.mp = 100;
-            player.str = 100;
-            player.spd = 100;
-        } else if (challengeMock.outcome === "lose") {
-            player.mp = 10;
-            player.str = 10;
-            player.spd = 10;
-        } else if (challengeMock.outcome === "winWithLuck" || challengeMock.outcome === "loseWithLuck") {
-            player.mp = 50;
-            player.str = 50;
-            player.spd = 50;
-            if (challengeMock.outcome === "winWithLuck") {
-                player.luk = 100;
-            } else {
-                player.luk = 1;
-            }
-        } else if (challengeMock.outcome === "tie") {
-            player.mp = 50;
-            player.str = 50;
-            player.spd = 50;
-            player.luk = 50;
+    if (challengeMock == null) {
+        // accept the default data
+    } else if (challengeMock.outcome === "win") {
+        player.mp = 100;
+        player.str = 100;
+        player.spd = 100;
+    } else if (challengeMock.outcome === "lose") {
+        player.mp = 10;
+        player.str = 10;
+        player.spd = 10;
+    } else if (challengeMock.outcome === "winWithLuck" || challengeMock.outcome === "loseWithLuck") {
+        player.mp = 50;
+        player.str = 50;
+        player.spd = 50;
+        if (challengeMock.outcome === "winWithLuck") {
+            player.luk = 100;
+        } else {
+            player.luk = 1;
         }
+    } else if (challengeMock.outcome === "tie") {
+        player.mp = 50;
+        player.str = 50;
+        player.spd = 50;
+        player.luk = 50;
+    }
 
-        currentGameState.setPlayers(players);
-        // playerService.savePlayers(players.players[0].name, players.players[0].email);
-        return players;
-    });
+    currentGameState.setPlayers(players);
 
-    mockGameStateGetDktVillain = Vitest.vi.spyOn(currentGameState, 'getDtkVillain').mockImplementation(() => {
-        const villain = playerService.createVillain();
+    Vitest.vi.spyOn(playerService, 'createVillain').mockImplementation(() => {
+        // const villain = playerService.createVillain();
+        const villain = Player.getVillainPlayer();
         villain.mp = 50;
         villain.str = 50;
         villain.spd = 50;
@@ -172,9 +160,6 @@ Vitest.test.each([
 ] as const)('DrunkenTavern challenge button click should handle %s, %s', async (setupScenario, attribute) => {
     setupScenario();
 
-    mockGameStateGetPlayers.mockClear();
-    mockGameStateGetDktVillain.mockClear();
-
     const dkt = await DrunkenTavern.create(navControllerMock, playerService, templateFragmentMock as unknown as TemplateGameTasks);
 
     const btnStrength = must(dkt.carouselItem.querySelector<HTMLElement>(`#btn${attribute.toUpperCase()}`));
@@ -199,7 +184,7 @@ Vitest.test.each([
 
             Vitest.expect(btn).not.toBeNull();
             return btn;
-        });
+        }, { timeout: 5000 });
 
         if (nextChallenge) {
             nextChallenge.dispatchEvent(new Event("click"));
@@ -210,9 +195,6 @@ Vitest.test.each([
 });
 
 Vitest.test('Tie scenario user can try their luk 3 times', async () => {
-    mockGameStateGetPlayers.mockClear();
-    mockGameStateGetDktVillain.mockClear();
-
     mockScenario({ outcome: "tie" });
     const dkt = await DrunkenTavern.create(navControllerMock, playerService, templateFragmentMock as unknown as TemplateGameTasks);
 

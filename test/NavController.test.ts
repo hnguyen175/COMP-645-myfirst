@@ -560,7 +560,7 @@ Vitest.test.each([
     Vitest.vi.spyOn(currentGameState, 'getPlayers').mockImplementation(() => {
         const party = new Party();
         party.currentScreen = screenName;
-        party.players = [Player.getDefaultPlayer()];
+        party.players = [new Player()];
         return party;
     });
     let nextCarouselItem: any = null;
@@ -585,7 +585,7 @@ Vitest.test("onGameStart with unknown screen throws an error", async () => {
     Vitest.vi.spyOn(currentGameState, 'getPlayers').mockImplementation(() => {
         const party = new Party();
         party.currentScreen = "UnknownScreen";
-        party.players = [Player.getDefaultPlayer()];
+        party.players = [new Player()];
         return party;
     });
 

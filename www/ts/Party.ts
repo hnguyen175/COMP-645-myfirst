@@ -19,8 +19,8 @@ export default class Party {
     }
 
     addDefaultPlayers() {
-        this.players.push(Player.getDefaultPlayer());
-        this.players.push(Player.getDefaultPlayer());
+        this.players.push(new Player());
+        this.players.push(new Player());
     }
 
     savePlayersToStorage() {

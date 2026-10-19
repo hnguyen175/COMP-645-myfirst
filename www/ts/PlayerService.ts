@@ -11,7 +11,7 @@ type PlayerInfoResult = {
 
 export default class PlayerService {
     savePlayers(name: string, email: string): void {
-        const player = Player.createRandomPlayer(name, email);
+        const player = new Player(name, email);
 
         const players = new Party();
         players.addPlayer(player);

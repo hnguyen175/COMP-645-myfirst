@@ -34,10 +34,10 @@ export default class Player {
         return this._id;
     }
 
-    static arrNames = ["Abakor", "Bandala", "Cartin", "Darianne", "Fezzor", "Gizleeni", "Halor", "Ia", "Jeepenn", "Kalindaa", "Lineuss", "Mordana", "Nazzor", "Ortery", "Parto", "Quey", "Rato", "Salana", "Torqq", "Uvala", "Vixtor", "Wylia", "Xex", "Yala", "Zetch"] as const;
-    static arrVillainNames = ["Azrath", "Belnox", "Craven", "Dravora", "Ezrakk", "Grizmor", "Hexar", "Ivara", "Jorvex", "Kharza", "Maldrin", "Nyxara", "Ozrak", "Raveth", "Skarro", "Thyra", "Vorren", "Xandrak", "Zerith", "Morvane", "Drexil", "Valgora", "Krynn", "Noctra", "Zalthor"] as const;
-    static arrWeapons = ["Rocks", "Staff", "Dagger", "Mace", "Warhammer", "Sword", "Battle Axe"] as const;
-    static arrClasses = ["Healer", "Warrior", "Thief", "Knight", "Damsel", "Warlock", "Farmer"] as const;
+    static arrNames = new ShuffleBag(["Abakor", "Bandala", "Cartin", "Darianne", "Fezzor", "Gizleeni", "Halor", "Ia", "Jeepenn", "Kalindaa", "Lineuss", "Mordana", "Nazzor", "Ortery", "Parto", "Quey", "Rato", "Salana", "Torqq", "Uvala", "Vixtor", "Wylia", "Xex", "Yala", "Zetch"] as const);
+    static arrVillainNames = new ShuffleBag(["Azrath", "Belnox", "Craven", "Dravora", "Ezrakk", "Grizmor", "Hexar", "Ivara", "Jorvex", "Kharza", "Maldrin", "Nyxara", "Ozrak", "Raveth", "Skarro", "Thyra", "Vorren", "Xandrak", "Zerith", "Morvane", "Drexil", "Valgora", "Krynn", "Noctra", "Zalthor"] as const);
+    static arrWeapons = new ShuffleBag(["Rocks", "Staff", "Dagger", "Mace", "Warhammer", "Sword", "Battle Axe"] as const);
+    static arrClasses = new ShuffleBag(["Healer", "Warrior", "Thief", "Knight", "Damsel", "Warlock", "Farmer"] as const);
     static arrLukProbability = [.02, .1, .2, 1] as const;
 
 
@@ -69,26 +69,18 @@ export default class Player {
         return arr[randomIndex];
     }
 
-    private static namePool = new ShuffleBag(Player.arrNames);
-    private static villainNamePool = new ShuffleBag(Player.arrVillainNames);
-
     static randomWeapon(): string {
-        return Player.randomString(Player.arrWeapons);
+        return Player.arrWeapons.draw();
     }
 
     static randomClass(): string {
-        return Player.randomString(Player.arrClasses);
+        return Player.arrClasses.draw();
     }
 
     constructor(name: string = "", email: string = "") {
-        this._name = name;
-        this._email = email;
-    }
-
-    static createRandomPlayer(name: string = "", email: string = ""): Player {
-        const player = new Player(name, email);
-        Object.assign(player, Player.randomStats());
-        return player;
+        this._name = (name || Player.arrNames.draw());
+        this._email = (email || this._name.toLowerCase() + "@comp645.com");
+        Object.assign(this, Player.randomStats());
     }
 
     private static randomStats(): PlayerStats {
@@ -103,14 +95,9 @@ export default class Player {
         };
     }
 
-    public static getDefaultPlayer(): Player {
-        const randomName = Player.namePool.draw();
-        return Player.createRandomPlayer(randomName, `${randomName.toLowerCase()}@comp645.com`);
-    }
-
     public static getVillainPlayer(): Player {
-        const randomVillainName = Player.villainNamePool.draw();
-        return Player.createRandomPlayer(randomVillainName, `${randomVillainName.toLowerCase()}@comp645.com`);
+        const randomVillainName = Player.arrVillainNames.draw();
+        return new Player(randomVillainName, `${randomVillainName.toLowerCase()}@comp645.com`);
     }
 
     static fromJSON(data: Partial<Player>): Player {

@@ -15,14 +15,14 @@ Vitest.test("renderAllPlayersList should render player list items correctly", ()
     const playerServiceMock = {
         loadPlayers: Vitest.vi.fn((email: string) => {
             const players = new Players();
-            players.addPlayer(Player.createRandomPlayer(email, email));
+            players.addPlayer(new Player(email, email));
             players.currentScreen = "TestScreen";
             return players;
         }),
         listPlayersFromStorage: Vitest.vi.fn(() => names),
     }
     Vitest.vi.spyOn(currentGameState, 'getPlayers').mockReturnValue({
-        players: [Player.createRandomPlayer("one", "one")]
+        players: [new Player("one", "one")]
     } as Players);
     HTMLElement.prototype.scrollIntoView = Vitest.vi.fn(); // Mock scrollIntoView to avoid errors in test environment
 

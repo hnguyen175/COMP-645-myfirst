@@ -12,7 +12,7 @@ Vitest.beforeEach(() => {
 
 Vitest.test("addPlayer adds a player to the players array", () => {
     const players = new Players();
-    const player = Player.getDefaultPlayer();
+    const player = new Player();
     players.addPlayer(player);
     Vitest.expect(players.players.length).toBe(1);
     Vitest.expect(players.players[0]).toEqual(player);
@@ -28,8 +28,8 @@ Vitest.test("addDefaultPlayers adds two default players to the players array", (
 Vitest.test("savePlayersToStorage saves players to storage", () => {
     const players = new Players();
     players.addGold(100);
-    const player1 = Player.getDefaultPlayer();
-    const player2 = Player.getDefaultPlayer();
+    const player1 = new Player();
+    const player2 = new Player();
     players.addPlayer(player1);
     players.addPlayer(player2);
     players.savePlayersToStorage();
@@ -45,8 +45,8 @@ Vitest.test("savePlayersToStorage saves players to storage", () => {
 
 Vitest.test("loadPlayersFromStorage loads players from storage", () => {
     const players = new Players();
-    const player1 = Player.getDefaultPlayer();
-    const player2 = Player.getDefaultPlayer();
+    const player1 = new Player();
+    const player2 = new Player();
     players.addPlayer(player1);
     players.addPlayer(player2);
     players.savePlayersToStorage();
@@ -69,8 +69,8 @@ Vitest.test("loadPlayersFromStorage from invalid JSON does not throw error", () 
 
 Vitest.test("randomPlayerPicker returns a player from the players array", () => {
     const players = new Players();
-    const player1 = Player.getDefaultPlayer();
-    const player2 = Player.getDefaultPlayer();
+    const player1 = new Player();
+    const player2 = new Player();
     players.addPlayer(player1);
     players.addPlayer(player2);
 
