@@ -83,8 +83,6 @@ Vitest.test('DrunkenTavern should handle click events on challenge buttons', asy
 });
 
 Vitest.test('DrunkenTavern should handle click events when clicked element is not a challenge button', async () => {
-    // const gameStateMock = Vitest.vi.spyOn(currentGameState, 'getPlayers').mockImplementation(() => Vitest.vi.fn() as unknown as Party);
-
     const dkt = await DrunkenTavern.create(navControllerMock, playerService, templateFragmentMock as unknown as TemplateGameTasks);
     Vitest.expect(dkt).not.toBeNull();
     Vitest.expect(dkt.carouselItem).not.toBeNull();
@@ -92,44 +90,45 @@ Vitest.test('DrunkenTavern should handle click events when clicked element is no
 
     nonButtonElement.click();
 
-    // Vitest.expect(gameStateMock).toHaveBeenCalled();
     dkt.carouselItem.querySelectorAll("ons-button.challenge-button").forEach(btn => {
         Vitest.expect(btn.hasAttribute("disabled")).toBe(false);
     });
 });
 
 function mockScenario(challengeMock: ChallengeMock | null = null) {
-    const players = new Party();
-    const player = new Player();
-    players.addPlayer(player);
+    Vitest.vi.spyOn(currentGameState, 'getParty').mockImplementation(() => {
+        const players = new Party();
+        const player = new Player('player');
+        players.addPlayer(player);
 
-    if (challengeMock == null) {
-        // accept the default data
-    } else if (challengeMock.outcome === "win") {
-        player.mp = 100;
-        player.str = 100;
-        player.spd = 100;
-    } else if (challengeMock.outcome === "lose") {
-        player.mp = 10;
-        player.str = 10;
-        player.spd = 10;
-    } else if (challengeMock.outcome === "winWithLuck" || challengeMock.outcome === "loseWithLuck") {
-        player.mp = 50;
-        player.str = 50;
-        player.spd = 50;
-        if (challengeMock.outcome === "winWithLuck") {
-            player.luk = 100;
-        } else {
-            player.luk = 1;
+        if (challengeMock == null) {
+            // accept the default data
+        } else if (challengeMock.outcome === "win") {
+            player.mp = 100;
+            player.str = 100;
+            player.spd = 100;
+        } else if (challengeMock.outcome === "lose") {
+            player.mp = 10;
+            player.str = 10;
+            player.spd = 10;
+        } else if (challengeMock.outcome === "winWithLuck" || challengeMock.outcome === "loseWithLuck") {
+            player.mp = 50;
+            player.str = 50;
+            player.spd = 50;
+            if (challengeMock.outcome === "winWithLuck") {
+                player.luk = 100;
+            } else {
+                player.luk = 1;
+            }
+        } else if (challengeMock.outcome === "tie") {
+            player.mp = 50;
+            player.str = 50;
+            player.spd = 50;
+            player.luk = 50;
         }
-    } else if (challengeMock.outcome === "tie") {
-        player.mp = 50;
-        player.str = 50;
-        player.spd = 50;
-        player.luk = 50;
-    }
-
-    currentGameState.setParty(players);
+        currentGameState.setParty(players);
+        return players;
+    });
 
     Vitest.vi.spyOn(playerService, 'createVillain').mockImplementation(() => {
         // const villain = playerService.createVillain();
