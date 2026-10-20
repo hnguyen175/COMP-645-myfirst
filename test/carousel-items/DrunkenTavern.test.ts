@@ -79,7 +79,7 @@ Vitest.test('DrunkenTavern should handle click events on challenge buttons', asy
     btnSTR.click();
     // Vitest.expect(mockGameStateGetPlayers).toHaveBeenCalled();
     Vitest.expect(currentGameState.getDtkVillain()).not.toBeNull();
-    Vitest.expect(currentGameState.getPlayers()).not.toBeNull();
+    Vitest.expect(currentGameState.getParty()).not.toBeNull();
 });
 
 Vitest.test('DrunkenTavern should handle click events when clicked element is not a challenge button', async () => {
@@ -129,7 +129,7 @@ function mockScenario(challengeMock: ChallengeMock | null = null) {
         player.luk = 50;
     }
 
-    currentGameState.setPlayers(players);
+    currentGameState.setParty(players);
 
     Vitest.vi.spyOn(playerService, 'createVillain').mockImplementation(() => {
         // const villain = playerService.createVillain();

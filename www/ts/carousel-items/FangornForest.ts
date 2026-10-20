@@ -64,13 +64,13 @@ export default class FangornForest extends CarouselItem {
         const goToNextButton = ons.createElement(/*html*/ `<ons-button id="btnGoToNextChallenge">${nextChallengeName}</ons-button>`) as HTMLElement;
         this.carouselItem.querySelector("#pForestResult")?.append(document.createElement('div'), goToNextButton);
 
-        must(currentGameState.getPlayers()).currentScreen = nextChallengeName;
+        must(currentGameState.getParty()).currentScreen = nextChallengeName;
 
         goToNextButton.addEventListener("click", () => {
             this.carouselItem.replaceWith(nextChallenge.carouselItem);
         });
 
-        PlayerService.saveActivePlayers();
+        PlayerService.saveActiveParty();
     }
 
     private updatePlayerCards(whichHealth: "hp" | "mp"): void {
@@ -79,7 +79,7 @@ export default class FangornForest extends CarouselItem {
         for (let i = 0; i < row.length; i++) {
             const column = row[i];
             must(column.querySelector(".clsValue")).textContent =
-                (must(currentGameState?.getPlayers()?.players[i])[whichHealth]).toString();
+                (must(currentGameState?.getParty()?.players[i])[whichHealth]).toString();
             row[i].classList.add("row-flash");
         }
     }
@@ -100,7 +100,7 @@ export default class FangornForest extends CarouselItem {
 
     private grantGold(): number {
         const tmpGold = Math.floor(Math.random() * 235) + 999;
-        const party = must(currentGameState?.getPlayers());
+        const party = must(currentGameState?.getParty());
         party.addGold(tmpGold);
         return tmpGold;
     }
@@ -110,7 +110,7 @@ export default class FangornForest extends CarouselItem {
         const hpBonus = Math.floor(((Math.random() * 10) + 10) * rndFrac);
         const mpBonus = Math.floor(((Math.random() * 10) + 20) * rndFrac);
 
-        const players = must(currentGameState?.getPlayers()?.players);
+        const players = must(currentGameState?.getParty()?.players);
         players.forEach(player => {
             if (whichHealth === "hp") {
                 player.hp += hpBonus;
@@ -127,10 +127,10 @@ export default class FangornForest extends CarouselItem {
     }
 
     renderWelcomeMessage(): void {
-        this.playerView.renderPlayerCards(this.carouselItem, must(currentGameState?.getPlayers()?.players), ['hp', 'mp']);
+        this.playerView.renderPlayerCards(this.carouselItem, must(currentGameState?.getParty()?.players), ['hp', 'mp']);
 
         const playerNameElement = must(this.carouselItem.querySelector("#forestWelcoming"));
-        const name = must(currentGameState?.getPlayers()?.players[0]).name;
+        const name = must(currentGameState?.getParty()?.players[0]).name;
 
         playerNameElement.innerHTML = /*html*/`Welcome, ${name}! You have reached the Fangorn forest. What's that ahead?. <p>You meet ${this.fangornForestCharacter.name} and their ${this.fangornForestCharacter.item} of ${this.fangornForestCharacter.attribute}. </p>`;
 

@@ -47,11 +47,11 @@ export default class Party {
     }
 
     private static fromJSON(data: Partial<Party>): Party {
-        const players = Object.assign(new Party(), data);
+        const party = Object.assign(new Party(), data);
 
-        players.players = data.players?.map(
+        party.players = data.players?.map(
             playerData => Player.fromJSON(playerData)) || [];
-        return players;
+        return party;
     }
 
     toString(): string {

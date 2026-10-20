@@ -104,7 +104,7 @@ export default class NavController {
     }
 
     private priorLoadGame() {
-        this.loadGame.loadPlayers();
+        this.loadGame.loadParty();
     }
 
     private async priorWelcome() {
@@ -112,7 +112,7 @@ export default class NavController {
     }
 
     private async priorDisplayingPlayers() {
-        this.playerView.renderPlayerCards(this.comrades.carouselItem, must(currentGameState.getPlayers()?.players));
+        this.playerView.renderPlayerCards(this.comrades.carouselItem, must(currentGameState.getParty()?.players));
     }
 
     private postDisplayingComrades() {
@@ -166,7 +166,7 @@ export default class NavController {
     }
 
     async onLoadGameButtonClick(email: string): Promise<void> {
-        this.playerService.loadPlayers(email);
+        this.playerService.loadParty(email);
         await this.addCarouselItem(this.comrades);
 
         await this.carousel.next();
@@ -199,7 +199,7 @@ export default class NavController {
 
     // instantiate the next challenge based on the current screen which is stored in LocalStorage. This is called when the user clicks on the "Start Game" button in the Comrades screen.
     async onGameStart() {
-        switch (must(currentGameState.getPlayers())?.currentScreen) {
+        switch (must(currentGameState.getParty())?.currentScreen) {
             case "DrunkenTavern":
                 this.drunkenTavern = await DrunkenTavern.create(this, this.playerService, this.templateGameTask);
                 await this.addCarouselItem(this.drunkenTavern);
@@ -221,7 +221,7 @@ export default class NavController {
                 await this.addCarouselItem(mountain);
                 break;
             default:
-                console.error(`Unknown currentScreen: ${must(currentGameState.getPlayers())?.currentScreen}`);
+                console.error(`Unknown currentScreen: ${must(currentGameState.getParty())?.currentScreen}`);
                 return;
         }
         await this.carousel.next();
@@ -229,10 +229,10 @@ export default class NavController {
 
     async onDeleteGame(email: string) {
         this.playerService.deletePlayers(email);
-        this.loadGame.loadPlayers();
+        this.loadGame.loadParty();
 
         // if there are still players left, do not navigate back to the welcome screen
-        if (this.playerService.listPlayersFromStorage().length > 0) {
+        if (this.playerService.listPartyFromStorage().length > 0) {
             this.cleanupCarouselItems();
             return;
         }
