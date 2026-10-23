@@ -176,7 +176,7 @@ Vitest.test("onCarouselPriorDisplayingItem prior displaying players", () => {
         activeIndex: 1,
     });
 
-    const playerServiceSpy = Vitest.vi.spyOn(currentGameState, 'getPlayers').mockImplementation(() => {
+    const playerServiceSpy = Vitest.vi.spyOn(currentGameState, 'getParty').mockImplementation(() => {
         return new Party();
     });
 
@@ -197,7 +197,7 @@ Vitest.test("onCarouselPriorDisplayingItem prior displaying players with no acti
         activeIndex: 1,
     });
 
-    const playerServiceSpy = Vitest.vi.spyOn(currentGameState, 'getPlayers').mockImplementation(() => {
+    const playerServiceSpy = Vitest.vi.spyOn(currentGameState, 'getParty').mockImplementation(() => {
         return null;
     });
     const renderPlayerCardsSpy = Vitest.vi.spyOn(playerView, 'renderPlayerCards').mockImplementation(() => { });
@@ -245,8 +245,7 @@ Vitest.test("onCarouselPriorDisplayingItem prior displaying load game", async ()
         activeIndex: 1,
     });
 
-    // const mockLoadGame = Vitest.vi.spyOn(navController.loadGame, 'loadPlayers').mockImplementation(() => { });
-    const renderAllPlayersSpy = Vitest.vi.spyOn(AllPlayersList, 'renderAllPlayersList').mockImplementation(() => { });
+    const renderAllPlayersSpy = Vitest.vi.spyOn(AllPlayersList, 'renderSavedGameList').mockImplementation(() => { });
 
     Vitest.expect(document.getElementById(navController.comrades.carouselItem.id)).toBeNull();
     await navController.onCarouselPriorDisplayingItem(event);
@@ -453,7 +452,7 @@ Vitest.test("onLoadGameButtonClick loads players and navigates to next carousel 
 
     navController.loadCarouselItem([navController.loadGame]);
 
-    const loadPlayersSpy = Vitest.vi.spyOn(playerService, 'loadPlayers').mockImplementation((email: string): Party => { return new Party(); });
+    const loadPlayersSpy = Vitest.vi.spyOn(playerService, 'loadParty').mockImplementation((email: string): Party => { return new Party(); });
 
     await navController.onLoadGameButtonClick("a@b.c");
     Vitest.expect(carousel.next).toHaveBeenCalledOnce();
@@ -465,7 +464,7 @@ Vitest.test("onDeleteGame deletes players and resets carousel to welcome if no p
     navController.loadCarouselItem([navController.loadGame]);
 
     Vitest.vi.spyOn(playerService, 'deletePlayers').mockImplementation((email: string): void => { });
-    const loadPlayersSpy = Vitest.vi.spyOn(navController.loadGame, 'loadPlayers').mockImplementation(() => Vitest.vi.fn());
+    const loadPlayersSpy = Vitest.vi.spyOn(navController.loadGame, 'loadParty').mockImplementation(() => Vitest.vi.fn());
 
     await navController.onDeleteGame("a@b.c");
 
@@ -480,9 +479,9 @@ Vitest.test("onDeleteGame deletes players and does not reset carousel if players
     const carousel = document.getElementById("carouselNewGame") as unknown as CarouselElement;
     navController.loadCarouselItem([navController.loadGame]);
 
-    Vitest.vi.spyOn(playerService, 'listPlayersFromStorage').mockImplementation((): string[] => { return ["a@b.c"]; });
+    Vitest.vi.spyOn(playerService, 'listPartyFromStorage').mockImplementation((): string[] => { return ["a@b.c"]; });
     Vitest.vi.spyOn(playerService, 'deletePlayers').mockImplementation((email: string): void => { });
-    const loadPlayersSpy = Vitest.vi.spyOn(navController.loadGame, 'loadPlayers').mockImplementation(() => Vitest.vi.fn());
+    const loadPlayersSpy = Vitest.vi.spyOn(navController.loadGame, 'loadParty').mockImplementation(() => Vitest.vi.fn());
 
     await navController.onDeleteGame("a@b.c");
 
@@ -493,7 +492,7 @@ Vitest.test("onDeleteGame deletes players and does not reset carousel if players
 
 Vitest.test("onGameStart adds drunkenTavern carousel item and navigates to it", async () => {
     const carousel = document.getElementById("carouselNewGame") as unknown as CarouselElement;
-    const playerServiceSpy = Vitest.vi.spyOn(currentGameState, 'getPlayers').mockImplementation(() => {
+    const playerServiceSpy = Vitest.vi.spyOn(currentGameState, 'getParty').mockImplementation(() => {
         return new Party();
     });
 
@@ -557,10 +556,10 @@ Vitest.test.each([
     ["Mountain", []],
 ] as const)("onGameStart for %s", async (screenName, nextScreens) => {
     // Vitest.test("onGameStart for DrunkenTavern", async () => {
-    Vitest.vi.spyOn(currentGameState, 'getPlayers').mockImplementation(() => {
+    Vitest.vi.spyOn(currentGameState, 'getParty').mockImplementation(() => {
         const party = new Party();
         party.currentScreen = screenName;
-        party.players = [Player.getDefaultPlayer()];
+        party.players = [new Player()];
         return party;
     });
     let nextCarouselItem: any = null;
@@ -582,10 +581,10 @@ Vitest.test.each([
 });
 
 Vitest.test("onGameStart with unknown screen throws an error", async () => {
-    Vitest.vi.spyOn(currentGameState, 'getPlayers').mockImplementation(() => {
+    Vitest.vi.spyOn(currentGameState, 'getParty').mockImplementation(() => {
         const party = new Party();
         party.currentScreen = "UnknownScreen";
-        party.players = [Player.getDefaultPlayer()];
+        party.players = [new Player()];
         return party;
     });
 

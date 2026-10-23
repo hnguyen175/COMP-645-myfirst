@@ -70,11 +70,11 @@ export default class DrunkenTavern extends CarouselItem {
     }
 
     initializePage(): void {
-        this.playerView.renderPlayerCards(this.carouselItem, must(currentGameState.getPlayers()?.players));
+        this.playerView.renderPlayerCards(this.carouselItem, must(currentGameState.getParty()?.players));
         this.playerView.renderPlayerCardsByName(this.carouselItem, "divDrunkenTavernVillain", [this.playerService.createVillain()], ['wep', 'cls']);
 
         const divDrunken = must(this.carouselItem.querySelector("#divDrunken"));
-        divDrunken.innerHTML = `Welcome, ${currentGameState.getPlayers()?.players[0]?.name}! Grab some refreshments and chat with the various patrons of our fine establishement.
+        divDrunken.innerHTML = `Welcome, ${currentGameState.getParty()?.players[0]?.name}! Grab some refreshments and chat with the various patrons of our fine establishement.
         <p>In this level, challenge an opponent to who has better STATS. </p> 
         `;
     }
@@ -100,7 +100,7 @@ export default class DrunkenTavern extends CarouselItem {
             this.updatePlayerCards(challengeResult.pickedPlayer.name, challenge, challengeResult.pickedPlayer[challenge]);
 
             await this.ShowNextChallengeButton();
-            PlayerService.saveActivePlayers();
+            PlayerService.saveActiveParty();
         }
     }
 
@@ -108,7 +108,7 @@ export default class DrunkenTavern extends CarouselItem {
         const query = `ons-list-header div.right[data-property="name"]`;
         const all = [...this.carouselItem?.querySelectorAll<HTMLElement>(query)];
 
-        const column = all.find((el) => el.textContent.trim().toUpperCase() === playerName.trim().toUpperCase());
+        const column = must(all.find((el) => el.textContent.trim().toUpperCase() === playerName.trim().toUpperCase()));
 
         const challengeQuery = `ons-list-item[data-property="${challenge}"]`;
         const row = column?.closest("ons-list")?.querySelector<HTMLElement>(challengeQuery);
@@ -118,7 +118,7 @@ export default class DrunkenTavern extends CarouselItem {
 
     // private challengeResult: ChallengeResult = null as unknown as ChallengeResult;
     private resolveChallenge(challenge: ChallengeStat): ChallengeResult {
-        const pickedPlayer = must(currentGameState.getPlayers()?.draw());
+        const pickedPlayer = must(currentGameState.getParty()?.draw());
 
         const villain = must(currentGameState.getDtkVillain());
         const villainChallengeValue = villain[challenge] as number;
@@ -133,7 +133,7 @@ export default class DrunkenTavern extends CarouselItem {
         if (playerChallengeValue > villainChallengeValue) {
             const goldEarned = Math.floor(Math.random() * 50) + 50;
             pickedPlayer[challenge] += 5;
-            currentGameState.getPlayers()?.addGold(goldEarned);
+            currentGameState.getParty()?.addGold(goldEarned);
             return {
                 outcome: "win",
                 message: `${playerChallengeName} stepped forward to battle the ${villainCls} and <b>WON</b>! Their stat went up 5 more and earned ${goldEarned} gold! Now, continue your quest!`,
@@ -159,7 +159,7 @@ export default class DrunkenTavern extends CarouselItem {
         if (challengeData.playerLuk > challengeData.villainLuk) {
             const goldEarned = Math.floor(Math.random() * 50) + 50;
             challengeData.pickedPlayer[challengeData.challengeName.toLowerCase() as ChallengeStat] += 5;
-            currentGameState.getPlayers()?.addGold(goldEarned);
+            currentGameState.getParty()?.addGold(goldEarned);
 
             return {
                 outcome: "win",
@@ -191,7 +191,7 @@ export default class DrunkenTavern extends CarouselItem {
     }
 
     private nextChallenge(nextChallenge: string): void {
-        const players = must(currentGameState.getPlayers());
+        const players = must(currentGameState.getParty());
         players.currentScreen = nextChallenge;
     }
 

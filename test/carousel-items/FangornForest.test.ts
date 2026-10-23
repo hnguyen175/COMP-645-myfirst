@@ -9,7 +9,7 @@ let mockPlayerService: any;
 let mockTemplateGameTasks: any;
 let mockCurrentGameState: any;
 let mockOns: any;
-const players = new Party();
+const party = new Party();
 Vitest.beforeEach(() => {
     mockNavController = {
         // createNextChallenge: Vitest.vi.fn(),
@@ -45,19 +45,19 @@ Vitest.beforeEach(() => {
     Vitest.vi.stubGlobal('ons', mockOns);
 
     mockCurrentGameState = {
-        getPlayers: Vitest.vi.fn(() => {
-            if (players.players.length > 0) {
-                return players;
+        getParty: Vitest.vi.fn(() => {
+            if (party.players.length > 0) {
+                return party;
             }
-            players.addPlayer(Player.createRandomPlayer());
-            return players;
+            party.addPlayer(new Player());
+            return party;
         }),
     };
-    Vitest.vi.spyOn(currentGameState, 'getPlayers').mockImplementation(mockCurrentGameState.getPlayers);
+    Vitest.vi.spyOn(currentGameState, 'getParty').mockImplementation(mockCurrentGameState.getParty);
 });
 
 Vitest.afterEach(() => {
-    players.players = [];
+    party.players = [];
     Vitest.vi.restoreAllMocks();
 });
 
@@ -66,7 +66,7 @@ Vitest.test("setupNextChallenge should return a challenge type", async () => {
 
     Vitest.expect(fangornForest).toBeInstanceOf(FangornForest);
     Vitest.expect(mockOns.createElement).toHaveBeenCalled();
-    Vitest.expect(mockCurrentGameState.getPlayers).toHaveBeenCalled();
+    Vitest.expect(mockCurrentGameState.getParty).toHaveBeenCalled();
 });
 
 Vitest.test.each([
@@ -79,7 +79,7 @@ Vitest.test.each([
     const btnAskForHP = fangornForest.carouselItem.querySelector("#btnAskForHP");
     const btnAskForMP = fangornForest.carouselItem.querySelector("#btnAskForMP");
 
-    const currentHpPoints: number[] = [...players.players].map(player => player[healthType]);
+    const currentHpPoints: number[] = [...party.players].map(player => player[healthType]);
 
     switch (healthType) {
         case "hp":
@@ -95,7 +95,7 @@ Vitest.test.each([
     await btnAskForHP?.dispatchEvent(new Event("click"));
 
     // Verify that the player's HP has increased and the next challenge is set up
-    const updatedHpPoints = [...players.players].map(player => player[healthType]);
+    const updatedHpPoints = [...party.players].map(player => player[healthType]);
     Vitest.expect(updatedHpPoints.length).toBe(currentHpPoints.length);
     updatedHpPoints.every((value, index) => {
         Vitest.expect(value).toBeGreaterThanOrEqual(currentHpPoints[index]);
@@ -111,7 +111,7 @@ Vitest.test.each([
     Vitest.expect(informHealthBoost).toContain("Congratulation!");
 
     const hpValues = fangornForest.carouselItem.querySelectorAll(`ons-list-item[data-property="${healthType}"]`);
-    Vitest.expect(hpValues.length).toBe(players.players.length);
+    Vitest.expect(hpValues.length).toBe(party.players.length);
     hpValues.forEach((item) => {
         Vitest.expect(item.classList.contains("row-flash")).toBe(true);
     });

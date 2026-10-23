@@ -5,10 +5,10 @@ class GameState {
     constructor(private players: Party | null = null,
         private dktVillain: Player | null = null
     ) { }
-    getPlayers(): Party | null {
+    getParty(): Party | null {
         return this.players;
     }
-    setPlayers(players: Party) {
+    setParty(players: Party) {
         this.players = players;
     }
     getDtkVillain(): Player | null {
