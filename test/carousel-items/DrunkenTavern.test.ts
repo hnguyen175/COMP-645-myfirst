@@ -47,6 +47,7 @@ Vitest.beforeEach(async () => {
     });
     playerService = new PlayerService();
     mockScenario();
+    setupVillainMock();
 
     templateFragmentMock = Vitest.vi.spyOn(TemplateGameTasks.prototype, 'templateFragment', 'get').mockImplementation(() => {
         document.body.innerHTML = /*html*/ `
@@ -77,8 +78,6 @@ Vitest.test('DrunkenTavern should handle click events on challenge buttons', asy
     Vitest.expect(btnSTR).not.toBeNull();
 
     btnSTR.click();
-    // Vitest.expect(mockGameStateGetPlayers).toHaveBeenCalled();
-    Vitest.expect(currentGameState.getDtkVillain()).not.toBeNull();
     Vitest.expect(currentGameState.getParty()).not.toBeNull();
 });
 
@@ -128,18 +127,6 @@ function mockScenario(challengeMock: ChallengeMock | null = null) {
         }
         currentGameState.setParty(players);
         return players;
-    });
-
-    Vitest.vi.spyOn(playerService, 'createVillain').mockImplementation(() => {
-        // const villain = playerService.createVillain();
-        const villain = Player.getVillainPlayer();
-        villain.mp = 50;
-        villain.str = 50;
-        villain.spd = 50;
-        villain.luk = 50;
-
-        currentGameState.setDtkVillain(villain);
-        return villain;
     });
 }
 
@@ -243,3 +230,17 @@ Vitest.test('Tie scenario user can try their luk 3 times', async () => {
         }
     }
 });
+
+function setupVillainMock() {
+    Vitest.vi.spyOn(playerService, 'createVillain').mockImplementation(() => {
+        // const villain = playerService.createVillain();
+        const villain = Player.getVillainPlayer();
+        villain.mp = 50;
+        villain.str = 50;
+        villain.spd = 50;
+        villain.luk = 50;
+
+        // currentGameState.setDtkVillain(villain);
+        return villain;
+    });
+}

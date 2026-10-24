@@ -11,12 +11,3 @@ Vitest.test('GameState get and set methods', () => {
     gameState.setParty(newParty);
     Vitest.expect(gameState.getParty()).toBe(newParty);
 });
-
-Vitest.test('GameState get and set villain methods', () => {
-    const villain = gameState.getDtkVillain();
-    Vitest.expect(villain).toBeNull();
-
-    const newVillain = new Player();
-    gameState.setDtkVillain(newVillain);
-    Vitest.expect(gameState.getDtkVillain()).toBe(newVillain);
-});

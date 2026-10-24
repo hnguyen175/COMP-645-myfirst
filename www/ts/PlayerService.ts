@@ -62,7 +62,6 @@ export default class PlayerService {
 
     createVillain(): Player {
         const villain = Player.getVillainPlayer();
-        currentGameState.setDtkVillain(villain);
         return villain;
     }
 

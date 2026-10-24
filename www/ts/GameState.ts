@@ -11,12 +11,6 @@ class GameState {
     setParty(players: Party) {
         this.players = players;
     }
-    getDtkVillain(): Player | null {
-        return this.dktVillain;
-    }
-    setDtkVillain(villain: Player) {
-        this.dktVillain = villain;
-    }
 }
 
 export default new GameState();

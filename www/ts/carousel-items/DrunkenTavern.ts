@@ -35,14 +35,16 @@ export default class DrunkenTavern extends CarouselItem {
         private readonly navController: NavController,
         private readonly playerService: PlayerService,
         carouselItem: HTMLElement,
+        private villain: Player,
         private readonly playerView: PlayerView = new PlayerView()
     ) {
         super(carouselItem);
     }
 
-    static async create(navController: NavController, playerService: PlayerService, template: TemplateGameTasks): Promise<DrunkenTavern> {
+    static async create(navController: NavController, playerService: PlayerService, template: TemplateGameTasks, villain: Player = playerService.createVillain()
+    ): Promise<DrunkenTavern> {
         const element = must(await this.loadElement("../views/drunken-tavern.html"));
-        const drunkadTavern = loggingProxy(new DrunkenTavern(navController, playerService, element));
+        const drunkadTavern = loggingProxy(new DrunkenTavern(navController, playerService, element, villain));
 
         const divDurnkenTavern = must(drunkadTavern.carouselItem.querySelector<HTMLElement>("#divDrunkenTavernChallenge"));
 
@@ -71,7 +73,7 @@ export default class DrunkenTavern extends CarouselItem {
 
     initializePage(): void {
         this.playerView.renderPlayerCards(this.carouselItem, must(currentGameState.getParty()?.players));
-        this.playerView.renderPlayerCardsByName(this.carouselItem, "divDrunkenTavernVillain", [this.playerService.createVillain()], ['wep', 'cls']);
+        this.playerView.renderPlayerCardsByName(this.carouselItem, "divDrunkenTavernVillain", [this.villain], ['wep', 'cls']);
 
         const divDrunken = must(this.carouselItem.querySelector("#divDrunken"));
         divDrunken.innerHTML = `Welcome, ${currentGameState.getParty()?.players[0]?.name}! Grab some refreshments and chat with the various patrons of our fine establishement.
@@ -120,15 +122,14 @@ export default class DrunkenTavern extends CarouselItem {
     private resolveChallenge(challenge: ChallengeStat): ChallengeResult {
         const pickedPlayer = must(currentGameState.getParty()?.draw());
 
-        const villain = must(currentGameState.getDtkVillain());
-        const villainChallengeValue = villain[challenge] as number;
+        const villainChallengeValue = this.villain[challenge] as number;
         const playerChallengeValue = pickedPlayer[challenge] as number;
         const playerChallengeName = pickedPlayer.name;
-        const villainChallengeName = villain.name;
+        const villainChallengeName = this.villain.name;
         const challengeName = challenge.toUpperCase();
         const playerLuk = pickedPlayer.luk;
-        const villainLuk = villain.luk;
-        const villainCls = villain.cls;
+        const villainLuk = this.villain.luk;
+        const villainCls = this.villain.cls;
 
         if (playerChallengeValue > villainChallengeValue) {
             const goldEarned = Math.floor(Math.random() * 50) + 50;
