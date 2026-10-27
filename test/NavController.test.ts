@@ -20,7 +20,6 @@ import DrunkenTavern from '../www/ts/carousel-items/DrunkenTavern';
 import lakeHtml from '../www//views/lake.html?raw';
 import bridgeHtml from '../www/views/bridge.html?raw';
 import mountainHtml from '../www/views/mountain.html?raw';
-import must from '../www/ts/utilities/RequiredField';
 
 const toastMock = Vitest.vi.fn().mockResolvedValue(undefined);
 
@@ -562,15 +561,15 @@ Vitest.test.each([
         party.players = [Player.getDefaultPlayer()];
         return party;
     });
-    Vitest.vi.spyOn(navController, 'addCarouselItem').mockImplementation((carouselItem) => {
+    Vitest.vi.spyOn(navController, 'addCarouselItem').mockImplementation(async (carouselItem) => {
         Vitest.expect(carouselItem.constructor.name).toBe(screenName);
         const element = document.createElement('div'); // Simulate adding the carousel item to the DOM
-        return element as HTMLElement;
+        // return element as HTMLElement;
     });
 
     await navController.onGameStart();
 
-    // Vitest.expect(navController.addCarouselItem).toHaveBeenCalledWith(expectedCarouselItem);
+    Vitest.expect(navController.addCarouselItem).toHaveBeenCalledWith(Vitest.expect.objectContaining({ constructor: Vitest.expect.objectContaining({ name: screenName }) }));
     Vitest.expect(carousel.next).toHaveBeenCalledOnce();
 });
 
