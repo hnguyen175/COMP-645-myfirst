@@ -35,14 +35,16 @@ export default class DrunkenTavern extends CarouselItem {
         private readonly navController: NavController,
         private readonly playerService: PlayerService,
         carouselItem: HTMLElement,
+        private villain: Player,
         private readonly playerView: PlayerView = new PlayerView()
     ) {
         super(carouselItem);
     }
 
-    static async create(navController: NavController, playerService: PlayerService, template: TemplateGameTasks): Promise<DrunkenTavern> {
+    static async create(navController: NavController, playerService: PlayerService, template: TemplateGameTasks, villain: Player = playerService.createVillain()
+    ): Promise<DrunkenTavern> {
         const element = must(await this.loadElement("../views/drunken-tavern.html"));
-        const drunkadTavern = loggingProxy(new DrunkenTavern(navController, playerService, element));
+        const drunkadTavern = loggingProxy(new DrunkenTavern(navController, playerService, element, villain));
 
         const divDurnkenTavern = must(drunkadTavern.carouselItem.querySelector<HTMLElement>("#divDrunkenTavernChallenge"));
 
@@ -64,36 +66,27 @@ export default class DrunkenTavern extends CarouselItem {
                 event.preventDefault();
                 const btnTxt = must(clickedElement.textContent);
                 fireAndForget(this.drunkenTavernChallenge(btnTxt.trim().toLowerCase() as ChallengeStat));
-                // await this.drunkenTavernChallenge(btnTxt.trim().toLowerCase() as ChallengeStat);
                 return;
             }
         });
     }
 
     initializePage(): void {
-        this.playerView.renderPlayerCards(this.carouselItem, must(currentGameState.getPlayers()?.players));
-        this.playerView.renderPlayerCardsByName(this.carouselItem, "divDrunkenTavernVillain", [this.playerService.createVillain()], ['wep', 'cls']);
+        this.playerView.renderPlayerCards(this.carouselItem, must(currentGameState.getParty()?.players));
+        this.playerView.renderPlayerCardsByName(this.carouselItem, "divDrunkenTavernVillain", [this.villain], ['wep', 'cls']);
 
         const divDrunken = must(this.carouselItem.querySelector("#divDrunken"));
-        divDrunken.innerHTML = `Welcome, ${currentGameState.getPlayers()?.players[0]?.name}! Grab some refreshments and chat with the various patrons of our fine establishement.
+        divDrunken.innerHTML = `Welcome, ${currentGameState.getParty()?.players[0]?.name}! Grab some refreshments and chat with the various patrons of our fine establishement.
         <p>In this level, challenge an opponent to who has better STATS. </p> 
         `;
     }
 
-    toggleAllChallengeButtons(enable: boolean): void {
-        this.toggleChallengeButtons(["str", "spd", "mp"], enable);
-    }
-
     // grey out a particular challenge button
-    toggleChallengeButtons(challenges: string[], enable: boolean): void {
+    disableChallengeButtons(challenges: string[]): void {
         const carouselItem = must(this.carouselItem);
         challenges.forEach((challenge) => {
             const challengeButton = must(carouselItem.querySelector<HTMLElement>(`#btn${challenge.toUpperCase()}`));
-            if (enable) {
-                challengeButton.removeAttribute("disabled");
-            } else {
-                challengeButton.setAttribute("disabled", "true");
-            }
+            challengeButton.setAttribute("disabled", "true");
         });
     };
 
@@ -103,14 +96,13 @@ export default class DrunkenTavern extends CarouselItem {
         const divDrunkenTavernChallenge = must(this.carouselItem.querySelector<HTMLElement>("#divDrunkenTavernChallenge"));
 
         divDrunkenTavernChallenge.innerHTML = challengeResult.message;
-        this.toggleChallengeButtons(challengeResult.disableChallengeButtons, false);
+        this.disableChallengeButtons(challengeResult.disableChallengeButtons);
 
         if (challengeResult.outcome === "win") {
-            this.nextChallenge();
-            PlayerService.saveActivePlayers();
             this.updatePlayerCards(challengeResult.pickedPlayer.name, challenge, challengeResult.pickedPlayer[challenge]);
 
             await this.ShowNextChallengeButton();
+            PlayerService.saveActiveParty();
         }
     }
 
@@ -118,7 +110,7 @@ export default class DrunkenTavern extends CarouselItem {
         const query = `ons-list-header div.right[data-property="name"]`;
         const all = [...this.carouselItem?.querySelectorAll<HTMLElement>(query)];
 
-        const column = all.find((el) => el.textContent.trim().toUpperCase() === playerName.trim().toUpperCase());
+        const column = must(all.find((el) => el.textContent.trim().toUpperCase() === playerName.trim().toUpperCase()));
 
         const challengeQuery = `ons-list-item[data-property="${challenge}"]`;
         const row = column?.closest("ons-list")?.querySelector<HTMLElement>(challengeQuery);
@@ -128,22 +120,21 @@ export default class DrunkenTavern extends CarouselItem {
 
     // private challengeResult: ChallengeResult = null as unknown as ChallengeResult;
     private resolveChallenge(challenge: ChallengeStat): ChallengeResult {
-        const pickedPlayer = must(currentGameState.getPlayers()?.draw());
+        const pickedPlayer = must(currentGameState.getParty()?.draw());
 
-        const villain = must(currentGameState.getDtkVillain());
-        const villainChallengeValue = villain[challenge] as number;
+        const villainChallengeValue = this.villain[challenge] as number;
         const playerChallengeValue = pickedPlayer[challenge] as number;
         const playerChallengeName = pickedPlayer.name;
-        const villainChallengeName = villain.name;
+        const villainChallengeName = this.villain.name;
         const challengeName = challenge.toUpperCase();
         const playerLuk = pickedPlayer.luk;
-        const villainLuk = villain.luk;
-        const villainCls = villain.cls;
+        const villainLuk = this.villain.luk;
+        const villainCls = this.villain.cls;
 
         if (playerChallengeValue > villainChallengeValue) {
             const goldEarned = Math.floor(Math.random() * 50) + 50;
             pickedPlayer[challenge] += 5;
-            currentGameState.getPlayers()?.addGold(goldEarned);
+            currentGameState.getParty()?.addGold(goldEarned);
             return {
                 outcome: "win",
                 message: `${playerChallengeName} stepped forward to battle the ${villainCls} and <b>WON</b>! Their stat went up 5 more and earned ${goldEarned} gold! Now, continue your quest!`,
@@ -169,7 +160,7 @@ export default class DrunkenTavern extends CarouselItem {
         if (challengeData.playerLuk > challengeData.villainLuk) {
             const goldEarned = Math.floor(Math.random() * 50) + 50;
             challengeData.pickedPlayer[challengeData.challengeName.toLowerCase() as ChallengeStat] += 5;
-            currentGameState.getPlayers()?.addGold(goldEarned);
+            currentGameState.getParty()?.addGold(goldEarned);
 
             return {
                 outcome: "win",
@@ -200,19 +191,19 @@ export default class DrunkenTavern extends CarouselItem {
         } as ChallengeResult;
     }
 
-    private nextChallenge(): void {
-        const players = must(currentGameState.getPlayers());
-        players.currentScreen = "FangornForest";
+    private nextChallenge(nextChallenge: string): void {
+        const players = must(currentGameState.getParty());
+        players.currentScreen = nextChallenge;
     }
 
     private async ShowNextChallengeButton() {
-
+        // set the next screen name
         const nextChallenge = await this.navController.createNextChallenge(this);
+        this.nextChallenge(nextChallenge.constructor.name);
 
-        const btnGoToForest = ons.createElement(`<ons-button class="challenge-button">${nextChallenge.constructor.name}</ons-button>`) as HTMLElement;
+        const btnGoToForest = await ons.createElement(`<ons-button class="challenge-button">${nextChallenge.constructor.name}</ons-button>`) as HTMLElement;
 
         btnGoToForest.addEventListener("click", () => {
-            // fireAndForget(this.navController.replaceTavernWithForest());
             this.carouselItem.replaceWith(nextChallenge.carouselItem);
         });
 

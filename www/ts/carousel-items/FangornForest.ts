@@ -15,16 +15,18 @@ type FangornForestCharacter = {
     attribute: string;
 };
 
+export type NavCtrlPicker = Pick<NavController, "createNextChallenge">;
+
 export default class FangornForest extends CarouselItem {
     private fangornForestCharacter: FangornForestCharacter = FangornForest.fangornForestStats();
 
-    constructor(private navControl: NavController, private playerService: PlayerService, carouselItem: HTMLElement, private playerView: PlayerView = new PlayerView()) {
+    private constructor(private navController: NavCtrlPicker, private playerService: PlayerService, carouselItem: HTMLElement, private playerView: PlayerView = new PlayerView()) {
         super(carouselItem);
     }
 
-    static async create(navControl: NavController, playerService: PlayerService, template: TemplateGameTasks): Promise<FangornForest> {
+    static async create(navController: NavCtrlPicker, playerService: PlayerService, template: TemplateGameTasks): Promise<FangornForest> {
         const element = await this.loadElement("../views/forest.html");
-        const forest = loggingProxy(new FangornForest(navControl, playerService, element));
+        const forest = loggingProxy(new FangornForest(navController, playerService, element));
         await forest.registerEvents();
 
         const footer = must(forest.carouselItem.querySelector("footer"));
@@ -48,9 +50,7 @@ export default class FangornForest extends CarouselItem {
                 this.updatePlayerCards(whichHealth);
 
                 // ask navController for where to go next
-                fireAndForget(
-                    this.setupNextChallenge()
-                );
+                fireAndForget(this.setupNextChallenge());
             });
         });
 
@@ -58,19 +58,19 @@ export default class FangornForest extends CarouselItem {
 
     private async setupNextChallenge() {
         // could be Lake, Bridge, or Mountain
-        const nextChallenge = await this.navControl.createNextChallenge(this);
+        const nextChallenge = await this.navController.createNextChallenge(this);
         const nextChallengeName = must(nextChallenge.constructor.name);
 
         const goToNextButton = ons.createElement(/*html*/ `<ons-button id="btnGoToNextChallenge">${nextChallengeName}</ons-button>`) as HTMLElement;
         this.carouselItem.querySelector("#pForestResult")?.append(document.createElement('div'), goToNextButton);
 
-        must(currentGameState.getPlayers()).currentScreen = nextChallengeName;
+        must(currentGameState.getParty()).currentScreen = nextChallengeName;
 
         goToNextButton.addEventListener("click", () => {
-            void this.carouselItem.replaceWith(nextChallenge.carouselItem);
+            this.carouselItem.replaceWith(nextChallenge.carouselItem);
         });
 
-        PlayerService.saveActivePlayers();
+        PlayerService.saveActiveParty();
     }
 
     private updatePlayerCards(whichHealth: "hp" | "mp"): void {
@@ -79,7 +79,7 @@ export default class FangornForest extends CarouselItem {
         for (let i = 0; i < row.length; i++) {
             const column = row[i];
             must(column.querySelector(".clsValue")).textContent =
-                (must(currentGameState?.getPlayers()?.players[i])[whichHealth]).toString();
+                (must(currentGameState?.getParty()?.players[i])[whichHealth]).toString();
             row[i].classList.add("row-flash");
         }
     }
@@ -93,19 +93,14 @@ export default class FangornForest extends CarouselItem {
         this.carouselItem.querySelector('#pForestResult')?.appendChild(must(template.content.firstElementChild));
     }
 
-    private setActionButtonsState(btnAskForHP: Element | null = null, btnAskForMP: Element | null = null): void {
-        if (!btnAskForHP || !btnAskForMP) {
-            btnAskForHP = must(this.carouselItem.querySelector("#btnAskForHP"));
-            btnAskForMP = must(this.carouselItem.querySelector("#btnAskForMP"));
-        }
-
+    private setActionButtonsState(btnAskForHP: Element, btnAskForMP: Element): void {
         btnAskForHP.setAttribute("disabled", "true");
         btnAskForMP.setAttribute("disabled", "true");
     }
 
     private grantGold(): number {
         const tmpGold = Math.floor(Math.random() * 235) + 999;
-        const party = must(currentGameState?.getPlayers());
+        const party = must(currentGameState?.getParty());
         party.addGold(tmpGold);
         return tmpGold;
     }
@@ -115,7 +110,7 @@ export default class FangornForest extends CarouselItem {
         const hpBonus = Math.floor(((Math.random() * 10) + 10) * rndFrac);
         const mpBonus = Math.floor(((Math.random() * 10) + 20) * rndFrac);
 
-        const players = must(currentGameState?.getPlayers()?.players);
+        const players = must(currentGameState?.getParty()?.players);
         players.forEach(player => {
             if (whichHealth === "hp") {
                 player.hp += hpBonus;
@@ -132,10 +127,10 @@ export default class FangornForest extends CarouselItem {
     }
 
     renderWelcomeMessage(): void {
-        this.playerView.renderPlayerCards(this.carouselItem, must(currentGameState?.getPlayers()?.players), ['hp', 'mp']);
+        this.playerView.renderPlayerCards(this.carouselItem, must(currentGameState?.getParty()?.players), ['hp', 'mp']);
 
         const playerNameElement = must(this.carouselItem.querySelector("#forestWelcoming"));
-        const name = must(currentGameState?.getPlayers()?.players[0]).name;
+        const name = must(currentGameState?.getParty()?.players[0]).name;
 
         playerNameElement.innerHTML = /*html*/`Welcome, ${name}! You have reached the Fangorn forest. What's that ahead?. <p>You meet ${this.fangornForestCharacter.name} and their ${this.fangornForestCharacter.item} of ${this.fangornForestCharacter.attribute}. </p>`;
 

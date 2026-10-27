@@ -10,7 +10,7 @@ Vitest.afterEach(() => {
 });
 
 Vitest.test("0 strength", () => {
-    const player = Player.createRandomPlayer("John Doe", "a@b.c");
+    const player = new Player("John Doe", "a@b.c");
     Vitest.expect(player.email).toBe("a@b.c");
     Vitest.expect(player.name).toBe("John Doe");
 
@@ -24,8 +24,8 @@ Vitest.test("0 strength", () => {
     Vitest.expect(player.mp).toBeLessThanOrEqual(100);
     Vitest.expect(player.luk).toBeGreaterThan(0);
     Vitest.expect(player.luk).toBeLessThanOrEqual(10);
-    Vitest.expect(Player.arrWeapons).contains(player.wep);
-    Vitest.expect(Player.arrClasses).contains(player.cls);
+    Vitest.expect(Player.arrWeapons.contains(player.wep)).toBe(true);
+    Vitest.expect(Player.arrClasses.contains(player.cls)).toBe(true);
 });
 
 Vitest.test("randomizeStrength returns a number between 25 and 100", () => {
@@ -35,7 +35,7 @@ Vitest.test("randomizeStrength returns a number between 25 and 100", () => {
     let hundredStrengths = 0;
 
     for (let i = 0; i < 100; i++) {
-        const player = Player.createRandomPlayer("John Doe", "a@b.c");
+        const player = new Player("John Doe", "a@b.c");
         const strength = player.str;
 
         Vitest.expect(strength).toBeGreaterThanOrEqual(25);
@@ -65,12 +65,12 @@ Vitest.describe.each(["str", "hp", "spd"] as const)("Player.%s", (property) => {
         [0.751, 100],
     ] as const)("randomizeStrength returns %i when Math.random() returns %f", (mockReturnValue, expectedStrength) => {
         Vitest.vi.spyOn(Math, 'random').mockReturnValue(mockReturnValue);
-        const player = Player.getDefaultPlayer();
+        const player = new Player();
         Vitest.expect(player[property]).toBe(expectedStrength);
         Vitest.expect(player.email).toBeDefined();
-        Vitest.expect(Player.arrNames).toContain(player.name);
-        Vitest.expect(Player.arrWeapons).toContain(player.wep);
-        Vitest.expect(Player.arrClasses).toContain(player.cls);
+        Vitest.expect(Player.arrNames.contains(player.name)).toBe(true);
+        Vitest.expect(Player.arrWeapons.contains(player.wep)).toBe(true);
+        Vitest.expect(Player.arrClasses.contains(player.cls)).toBe(true);
     });
 });
 
@@ -82,22 +82,9 @@ Vitest.test.each([
     [0.71, 80],
 ] as const)("randomizeMp returns %i when Math.random() returns %f", (mockReturnValue, expectedMp) => {
     Vitest.vi.spyOn(Math, 'random').mockReturnValue(mockReturnValue);
-    const player = Player.createRandomPlayer("John Doe", "a@b.c");
+    const player = new Player("John Doe", "a@b.c");
     Vitest.expect(player.mp).toBe(expectedMp);
 });
-
-// Vitest.test("save and load player", () => {
-//     const player = Player.getDefaultPlayer();
-
-//     player.save(player.email);
-//     const loadedPlayer = Player.load();
-//     Vitest.expect(loadedPlayer).toEqual(player);
-// });
-
-// Vitest.test("load returns null when no player is saved", () => {
-//     const loadedPlayer = Player.load();
-//     Vitest.expect(loadedPlayer).toBeNull();
-// });
 
 Vitest.test.each([
     [0, 10],
