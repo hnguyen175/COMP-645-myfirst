@@ -4,9 +4,10 @@ import PlayerService from "../PlayerService.ts";
 import TemplateGameTasks from "../templates/TemplateGameTasks.ts";
 import loggingProxy from "../utilities/LoggingProxy.ts";
 import must from "../utilities/RequiredField.ts";
+import Player from "../Player.ts";
 
 export default class Lake extends CarouselItem {
-    constructor(carouselItem: HTMLElement, private readonly navController: NavController, private readonly playerService: PlayerService) {
+    constructor(carouselItem: HTMLElement, private readonly navController: NavController, private readonly playerService: PlayerService, private readonly miniBoss: Player | null = null) {
         super(carouselItem);
     }
 

@@ -1,6 +1,6 @@
 import ShuffleBag from "./utilities/ShuffleBag.ts";
 
-type PlayerStats = {
+export type PlayerStats = {
     hp: number;
     str: number;
     spd: number;
@@ -45,8 +45,8 @@ export default class Player {
         return (Math.floor(Math.random() * 4) + 1) * 25;
     };
 
-    static randomMp(): number {
-        return (Math.floor(Math.random() * 10) + 1) * 10;
+    static randomMp(min: number = 0, max: number = 100): number {
+        return (Math.floor(Math.random() * (max - min) / 10 + 1) * 10) + min;
     }
 
     static randomLuk(): number {
