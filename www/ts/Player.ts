@@ -102,7 +102,7 @@ export default class Player {
     }
 
     static fromJSON(data: Partial<Player> & { _name?: string; _email?: string; _id?: string }): Player {
-        const player = new Player(data._name ?? null, data._email ?? null, data._id ?? null, {
+        const player = new Player(data._name! ?? null, data._email ?? null, data._id ?? null, {
             hp: data.hp ?? 0,
             str: data.str ?? 0,
             spd: data.spd ?? 0,

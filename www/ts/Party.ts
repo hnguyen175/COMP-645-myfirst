@@ -50,7 +50,7 @@ export default class Party {
         const party = Object.assign(new Party(), data);
 
         party.players = data.players?.map(
-            playerData => Player.fromJSON(playerData)) || [];
+            playerData => Player.fromJSON(JSON.parse(JSON.stringify(playerData)))) || [];
         return party;
     }
 
