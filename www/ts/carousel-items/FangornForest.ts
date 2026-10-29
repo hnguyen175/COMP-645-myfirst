@@ -53,7 +53,6 @@ export default class FangornForest extends CarouselItem {
                 fireAndForget(this.setupNextChallenge());
             });
         });
-
     }
 
     private async setupNextChallenge() {

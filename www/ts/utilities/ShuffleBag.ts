@@ -40,7 +40,7 @@ export default class ShuffleBag<T> {
         return pickedItem;
     }
 
-    public contains(item: T): boolean {
-        return this.originalItems.includes(item);
+    public contains(item: unknown): boolean {
+        return this.originalItems.includes(item as T);
     }
 }

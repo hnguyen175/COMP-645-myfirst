@@ -20,7 +20,7 @@ export default class Player {
     luk: number = 0;
     wep: string = "";
     cls: string = "";
-    private _id: string = crypto.randomUUID();
+    private _id: string;
 
     get name(): string {
         return this._name;
@@ -40,10 +40,17 @@ export default class Player {
     static arrClasses = new ShuffleBag(["Healer", "Warrior", "Thief", "Knight", "Damsel", "Warlock", "Farmer"] as const);
     static arrLukProbability = [.02, .1, .2, 1] as const;
 
+    static randomStat(min: number = 0, max: number = 100): number {
+        const increment = 25;
+        const lower = Math.max(1, Math.ceil(min / increment));
+        const upper = Math.floor(max / increment);
 
-    static randomStat(): number {
-        return (Math.floor(Math.random() * 4) + 1) * 25;
-    };
+        if (lower > upper) {
+            throw new RangeError("No valid multiple of 25 in range");
+        }
+
+        return (Math.floor(Math.random() * (upper - lower + 1)) + lower) * increment;
+    }
 
     static randomMp(min: number = 0, max: number = 100): number {
         return (Math.floor(Math.random() * (max - min) / 10 + 1) * 10) + min;
@@ -64,11 +71,6 @@ export default class Player {
         }
     }
 
-    static randomString(arr: readonly string[]): string {
-        const randomIndex = Math.floor(Math.random() * arr.length);
-        return arr[randomIndex];
-    }
-
     static randomWeapon(): string {
         return Player.arrWeapons.draw();
     }
@@ -77,22 +79,21 @@ export default class Player {
         return Player.arrClasses.draw();
     }
 
-    constructor(name: string = "", email: string = "") {
-        this._name = (name || Player.arrNames.draw());
-        this._email = (email || this._name.toLowerCase() + "@comp645.com");
-        Object.assign(this, Player.randomStats());
-    }
-
-    private static randomStats(): PlayerStats {
-        return {
-            hp: Player.randomStat(),
-            spd: Player.randomStat(),
-            str: Player.randomStat(),
-            mp: Player.randomMp(),
-            luk: Player.randomLuk(),
-            wep: Player.randomWeapon(),
-            cls: Player.randomClass(),
-        };
+    constructor(name: string | null = null, email: string | null = null, id: string | null = null, playerStats: PlayerStats | null = null) {
+        this._name = (name ?? Player.arrNames.draw());
+        this._email = (email ?? this._name.toLowerCase() + "@comp645.com");
+        this._id = (id ?? crypto.randomUUID());
+        if (playerStats) {
+            Object.assign(this, playerStats);
+        } else {
+            this.hp = Player.randomStat();
+            this.spd = Player.randomStat();
+            this.str = Player.randomStat();
+            this.mp = Player.randomMp();
+            this.luk = Player.randomLuk();
+            this.wep = Player.randomWeapon();
+            this.cls = Player.randomClass();
+        }
     }
 
     public static getVillainPlayer(): Player {
@@ -100,11 +101,20 @@ export default class Player {
         return new Player(randomVillainName, `${randomVillainName.toLowerCase()}@comp645.com`);
     }
 
-    static fromJSON(data: Partial<Player>): Player {
-        return Object.assign(new Player(), data);
+    static fromJSON(data: Partial<Player> & { _name?: string; _email?: string; _id?: string }): Player {
+        const player = new Player(data._name ?? null, data._email ?? null, data._id ?? null, {
+            hp: data.hp ?? 0,
+            str: data.str ?? 0,
+            spd: data.spd ?? 0,
+            mp: data.mp ?? 0,
+            luk: data.luk ?? 0,
+            wep: data.wep ?? "",
+            cls: data.cls ?? ""
+        });
+        return player;
     }
 
     toString(): string {
-        return `Player: ${this._name}, Email: ${this._email}, HP: ${this.hp}, STR: ${this.str}, SPD: ${this.spd}, MP: ${this.mp}, LUK: ${this.luk}, WEP: ${this.wep}, CLS: ${this.cls}`;
+        return JSON.stringify(this);
     }
 }

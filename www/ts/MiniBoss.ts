@@ -2,19 +2,15 @@ import Player, { PlayerStats } from "./Player.ts";
 
 export default class MiniBoss extends Player {
     constructor() {
-        super();
-        Object.assign(this, MiniBoss.miniBossRandomStats());
-    }
-
-    private static miniBossRandomStats(): PlayerStats {
-        return {
-            hp: Player.randomStat(),
-            spd: Player.randomStat(),
+        const playerStats: PlayerStats = {
+            hp: Player.randomStat(50, 75),
             str: Player.randomStat(),
-            mp: Player.randomMp(50, 100),
+            spd: Player.randomStat(),
+            mp: Player.randomMp(),
             luk: Player.randomLuk(),
-            wep: Player.randomWeapon(),
-            cls: Player.randomClass(),
+            wep: "Evil " + Player.randomWeapon(),
+            cls: "Dark " + Player.randomClass()
         };
+        super(null, null, null, playerStats);
     }
 }

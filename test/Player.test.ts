@@ -106,3 +106,60 @@ Vitest.test.each([
     const luk = Player.randomLuk();
     Vitest.expect(luk).toBe(expectedLuk);
 });
+
+Vitest.test.each([
+    [0, 100],
+    [10, 30],
+    [50, 75],
+] as const)("randomStat returns a number between %i and %i", (min, max) => {
+    for (let i = 0; i < 1000; i++) {
+        const stat = Player.randomStat(min, max);
+
+        Vitest.expect(stat).toBeGreaterThanOrEqual(min);
+        Vitest.expect(stat).toBeLessThanOrEqual(max);
+        Vitest.expect(stat).toBeGreaterThan(0);
+        Vitest.expect(stat % 25).toBe(0);
+    }
+});
+
+Vitest.test("randomStat with max less than min throws an error", () => {
+    Vitest.expect(() => Player.randomStat(100, 50)).toThrow("No valid multiple of 25 in range");
+});
+
+Vitest.test("getVillainPlayer returns a Player with a name from arrVillainNames", () => {
+    const villainPlayer = Player.getVillainPlayer();
+    Vitest.expect(Player.arrVillainNames.contains(villainPlayer.name)).toBe(true);
+    Vitest.expect(villainPlayer.email).toBe(`${villainPlayer.name.toLowerCase()}@comp645.com`);
+});
+
+Vitest.test("fromJSON creates player from its toString representation", () => {
+    const player = new Player();
+    const playerString = player.toString();
+    const playerFromString = Player.fromJSON(JSON.parse(playerString));
+    Vitest.expect(playerFromString.name).toBe(player.name);
+    Vitest.expect(playerFromString.email).toBe(player.email);
+    Vitest.expect(playerFromString.id).toBe(player.id);
+    Vitest.expect(playerFromString.hp).toBe(player.hp);
+    Vitest.expect(playerFromString.str).toBe(player.str);
+    Vitest.expect(playerFromString.spd).toBe(player.spd);
+    Vitest.expect(playerFromString.mp).toBe(player.mp);
+    Vitest.expect(playerFromString.luk).toBe(player.luk);
+    Vitest.expect(playerFromString.wep).toBe(player.wep);
+    Vitest.expect(playerFromString.cls).toBe(player.cls);
+});
+
+Vitest.test("fromJSON creates a Player instance with default values when properties are missing", () => {
+    const json = {
+    };
+    const player = Player.fromJSON(json);
+    Vitest.expect(player.name).toBeDefined();
+    Vitest.expect(player.email).toBeDefined();
+    Vitest.expect(player.id).toBeDefined();
+    Vitest.expect(player.hp).toBe(0);
+    Vitest.expect(player.str).toBe(0);
+    Vitest.expect(player.spd).toBe(0);
+    Vitest.expect(player.mp).toBe(0);
+    Vitest.expect(player.luk).toBe(0);
+    Vitest.expect(player.wep).toBe("");
+    Vitest.expect(player.cls).toBe("");
+});
