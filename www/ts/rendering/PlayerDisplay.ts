@@ -1,6 +1,17 @@
 import Player from "../Player.ts";
 
+export const playerStatsIconMap = new Map<string, string>([
+    ["hp", "❤️"],
+    ["str", "💪"],
+    ["spd", "🏃"],
+    ["mp", "🔮"],
+    ["luk", "🍀"],
+    ["wep", "⚔️"],
+    ["cls", "🎭"]
+]);
+
 class PlayerDisplay {
+
     static createPlayerCard(player: Player, columns: string[]): string {
         let playerHtml = /*html*/`
         <ons-card class="player-card" data-player-id="${player.id}">
@@ -18,7 +29,13 @@ class PlayerDisplay {
                 return;
             }
 
-            playerHtml += /*html*/`<ons-list-item class="player-stat" data-property="${property}">${property.toUpperCase()}: <span class="clsValue">${value}</span></ons-list-item>`;
+            let displayValue: string = /*html*/`<span class="clsValue">${value}</span>`;
+            const icon = playerStatsIconMap.get(property);
+            if (icon) {
+                displayValue = `${icon}${displayValue}`;
+            }
+
+            playerHtml += /*html*/`<ons-list-item class="player-stat" data-property="${property}">${displayValue}</ons-list-item>`;
         });
 
         playerHtml += `</ons-list></ons-card>`;

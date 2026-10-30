@@ -2,6 +2,7 @@ import * as Vitest from 'vitest';
 import PlayerView from '../../www/ts/rendering/PlayerView';
 import Players from '../../www/ts/Party';
 import Player from '../../www/ts/Player';
+import { playerStatsIconMap } from '../../www/ts/rendering/PlayerDisplay';
 
 let playerView: PlayerView = null as unknown as PlayerView;
 Vitest.beforeEach(() => {
@@ -33,7 +34,7 @@ Vitest.test('renderPlayerCards should render player cards correctly', () => {
         if (property.startsWith("_")) {
             return;
         }
-        Vitest.expect(playerCards.querySelector(`ons-list-item.player-stat[data-property='${property}']`)?.textContent.trim()).toBe(`${property.toUpperCase()}: ${value}`);
+        Vitest.expect(playerCards.querySelector(`ons-list-item.player-stat[data-property='${property}']`)?.textContent.trim()).toBe(`${playerStatsIconMap.get(property)}${value}`);
     });
 });
 
