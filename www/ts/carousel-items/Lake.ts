@@ -2,11 +2,11 @@ import CarouselItem from "./CarouselItem.ts";
 import NavController from "../NavController.ts";
 import PlayerService from "../PlayerService.ts";
 import TemplateGameTasks from "../templates/TemplateGameTasks.ts";
-import loggingProxy from "../utilities/LoggingProxy.ts";
 import must from "../utilities/RequiredField.ts";
 import PlayerView from "../rendering/PlayerView.ts";
 import currentGameState from "../GameState.ts";
 import Player from "../Player.ts";
+import loggingProxy from "../utilities/LoggingProxy.ts";
 
 export default class Lake extends CarouselItem {
     private readonly miniBoss: Player = new Player(null, null, null, {
@@ -53,7 +53,7 @@ export default class Lake extends CarouselItem {
             // set the attribute data-player-id to the button
             attackButton.setAttribute('data-player-id', playerId);
 
-            attackButton.textContent = `Attack ${name}`;
+            attackButton.textContent = `Attack`;
             attackButton.addEventListener('click', () => {
                 // Handle the attack logic here
                 void this.executeAttack(name, playerId, attackButton);
@@ -64,20 +64,23 @@ export default class Lake extends CarouselItem {
 
     private async executeAttack(name: string | undefined, playerId: string, attackButton: HTMLElement) {
         // You can add more logic here to handle the attack, such as updating the game state, etc.
-        const statValue = must(this.carouselItem.querySelector(`[data-player-id="${playerId}"] .clsValue`)?.textContent);
-        console.log(`Player ${name} (ID: ${playerId}) - stat: ${statValue} is attacking the mini-boss!`);
+        const hpValue = must(this.carouselItem.querySelector(`[data-player-id="${playerId}"] .clsValue`)?.textContent);
+        const strValue = must(currentGameState.getParty()?.players.find(player => player.id === playerId)?.str);
+        console.log(`Player ${name} (ID: ${playerId}) - hp: ${hpValue}, str: ${strValue}  is attacking the mini-boss!`);
 
         // disable the button after click
         attackButton.setAttribute('disabled', 'true');
 
-        this.applyDamageToPlayer(playerId);
-
         // reduce miniboss by the player's stat value
-        const damage = this.applyDamageToBoss(statValue);
+        const bossHp = this.applyDamageToBoss(strValue);
 
-        console.log(`Mini-boss HP reduced by ${damage}. New HP: ${this.miniBoss.hp}`);
+        console.log(`Mini-boss HP reduced by ${strValue}. New HP: ${bossHp}`);
 
-        await this.updateBattleResult(name, damage);
+        if (bossHp > 0) {
+            this.applyDamageToPlayer(playerId);
+        }
+
+        await this.updateBattleResult(name, strValue);
     }
 
     private async updateBattleResult(name: string | undefined, damage: number) {
@@ -112,9 +115,8 @@ export default class Lake extends CarouselItem {
         await this.navController.createNextChallenge(this);
     }
 
-    private applyDamageToBoss(statValue: string) {
-        const damage = parseInt(statValue);
-        this.miniBoss.hp = Math.max(this.miniBoss.hp - damage, 0); // Ensure HP doesn't go below 0
+    private applyDamageToBoss(statValue: number) {
+        this.miniBoss.hp = Math.max(this.miniBoss.hp - statValue, 0); // Ensure HP doesn't go below 0
 
         const bossStatCell = must(this.carouselItem.querySelector('#divLakeVillain .clsValue'));
         bossStatCell.textContent = this.miniBoss.hp.toString();
@@ -123,19 +125,20 @@ export default class Lake extends CarouselItem {
         listItem.classList.remove('row-flash');
         void listItem.offsetWidth; // Trigger reflow to restart the animation
         listItem.classList.add('row-flash');
-        return damage;
+
+        return this.miniBoss.hp;
     }
 
     private applyDamageToPlayer(playerId: string) {
-        currentGameState.getParty()?.players.forEach(player => {
-            if (player.id === playerId) {
-                player.hp -= Math.floor(player.hp * 0.5); // reduce the player's HP by 50%
+        const attackingPlayer = must(currentGameState.getParty()?.players.find(player => player.id === playerId));
 
-                const playerStatCell = must(this.carouselItem.querySelector(`[data-player-id="${playerId}"] .clsValue`));
-                playerStatCell.textContent = player.hp.toString();
-                const listItem = must(playerStatCell.closest('ons-list-item'));
-                listItem.classList.add('row-flash');
-            }
-        });
+        attackingPlayer.hp -= Math.floor(attackingPlayer.hp * 0.1); // reduce the player's HP by 10%
+
+        const playerStatCell = must(this.carouselItem.querySelector(`[data-player-id="${playerId}"] .clsValue`));
+        playerStatCell.textContent = attackingPlayer.hp.toString();
+        const listItem = must(playerStatCell.closest('ons-list-item'));
+        listItem.classList.add('row-flash');
+
+        return attackingPlayer.hp;
     }
 }
