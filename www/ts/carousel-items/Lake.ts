@@ -4,19 +4,28 @@ import PlayerService from "../PlayerService.ts";
 import TemplateGameTasks from "../templates/TemplateGameTasks.ts";
 import loggingProxy from "../utilities/LoggingProxy.ts";
 import must from "../utilities/RequiredField.ts";
-import MiniBoss from "../MiniBoss.ts";
 import PlayerView from "../rendering/PlayerView.ts";
 import currentGameState from "../GameState.ts";
+import Player from "../Player.ts";
 
 export default class Lake extends CarouselItem {
-    constructor(carouselItem: HTMLElement, private readonly navController: NavController, private readonly playerService: PlayerService, private readonly playerView: PlayerView = new PlayerView(), private readonly miniBoss: MiniBoss = new MiniBoss()) {
+    private readonly miniBoss: Player = new Player(null, null, null, {
+        hp: Player.randomStat(50, 100),
+        str: Player.randomStat(),
+        spd: Player.randomStat(),
+        mp: Player.randomMp(),
+        luk: Player.randomLuk(),
+        wep: "Evil " + Player.randomWeapon(),
+        cls: "Dark " + Player.randomClass()
+    });
+
+    constructor(carouselItem: HTMLElement, private readonly navController: NavController, private readonly playerService: PlayerService, private readonly playerView: PlayerView = new PlayerView()) {
         super(carouselItem);
     }
 
     static async create(navController: NavController, playerService: PlayerService, template: TemplateGameTasks): Promise<Lake> {
         const element = must(await this.loadElement("../views/lake.html") as HTMLElement);
-        // const lake = loggingProxy(new Lake(element, navController, playerService));
-        const lake = (new Lake(element, navController, playerService));
+        const lake = loggingProxy(new Lake(element, navController, playerService));
 
         const footer = must(lake.carouselItem.querySelector("footer"));
         footer.after(template.templateFragment);
@@ -34,8 +43,6 @@ export default class Lake extends CarouselItem {
     }
 
     private addAttackButtons(): void {
-        const players = this.carouselItem.querySelectorAll('ons-carousel-item ons-card');
-
         this.carouselItem.querySelectorAll('.player-card').forEach(card => {
             const name = card.querySelector('[data-property="name"]')?.textContent; // Get the player's name from the card
 
@@ -49,13 +56,13 @@ export default class Lake extends CarouselItem {
             attackButton.textContent = `Attack ${name}`;
             attackButton.addEventListener('click', () => {
                 // Handle the attack logic here
-                this.executeAttack(name, playerId, attackButton);
+                void this.executeAttack(name, playerId, attackButton);
             });
             card.appendChild(attackButton);
         });
     }
 
-    private executeAttack(name: string | undefined, playerId: string, attackButton: HTMLElement) {
+    private async executeAttack(name: string | undefined, playerId: string, attackButton: HTMLElement) {
         // You can add more logic here to handle the attack, such as updating the game state, etc.
         const statValue = must(this.carouselItem.querySelector(`[data-player-id="${playerId}"] .clsValue`)?.textContent);
         console.log(`Player ${name} (ID: ${playerId}) - stat: ${statValue} is attacking the mini-boss!`);
@@ -70,14 +77,14 @@ export default class Lake extends CarouselItem {
 
         console.log(`Mini-boss HP reduced by ${damage}. New HP: ${this.miniBoss.hp}`);
 
-        this.updateBattleResult(name, damage);
+        await this.updateBattleResult(name, damage);
     }
 
-    private updateBattleResult(name: string | undefined, damage: number) {
+    private async updateBattleResult(name: string | undefined, damage: number) {
         const lakeResult = must(this.carouselItem.querySelector('#pLakeResult'));
         if (this.miniBoss.hp <= 0) {
 
-            this.handleVictoryResult(lakeResult);
+            await this.handleVictoryResult(lakeResult);
         } else {
             // any player left?
             this.updateBattleMessage(lakeResult, name, damage);
@@ -92,8 +99,8 @@ export default class Lake extends CarouselItem {
         }
     }
 
-    private handleVictoryResult(lakeResult: Element) {
-        let tmpGold = Math.floor(Math.random() * (1234 - 999 + 1)) + 999;
+    private async handleVictoryResult(lakeResult: Element) {
+        const tmpGold = Math.floor(Math.random() * (1234 - 999 + 1)) + 999;
         currentGameState.getParty()?.addGold(tmpGold);
 
         lakeResult.textContent = `You defeated the ${this.miniBoss.name}! and earned ${tmpGold.toLocaleString()} Gold!`;
@@ -102,7 +109,7 @@ export default class Lake extends CarouselItem {
             button.setAttribute('disabled', 'true');
         });
 
-        this.navController.createNextChallenge(this);
+        await this.navController.createNextChallenge(this);
     }
 
     private applyDamageToBoss(statValue: string) {

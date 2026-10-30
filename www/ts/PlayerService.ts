@@ -1,4 +1,4 @@
-import Player from './Player.ts';
+import Player from "./Player.ts";
 import Party from './Party.ts';
 import playerRegistry from './PlayerRegistry.ts';
 import currentGameState from "./GameState.ts";
