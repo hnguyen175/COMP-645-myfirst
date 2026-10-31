@@ -9,7 +9,11 @@ import Player from "../Player.ts";
 import loggingProxy from "../utilities/LoggingProxy.ts";
 
 export default class Lake extends CarouselItem {
-    private readonly miniBoss: Player = new Player(null, null, null, {
+    constructor(carouselItem: HTMLElement, private readonly navController: NavController, private readonly playerService: PlayerService, private readonly playerView: PlayerView, private miniBoss: Player) {
+        super(carouselItem);
+    }
+
+    static async create(navController: NavController, playerService: PlayerService, template: TemplateGameTasks, miniBoss: Player = new Player(null, null, null, {
         hp: Player.randomStat(50, 100),
         str: Player.randomStat(),
         spd: Player.randomStat(),
@@ -17,15 +21,9 @@ export default class Lake extends CarouselItem {
         luk: Player.randomLuk(),
         wep: "Evil " + Player.randomWeapon(),
         cls: "Dark " + Player.randomClass()
-    });
-
-    constructor(carouselItem: HTMLElement, private readonly navController: NavController, private readonly playerService: PlayerService, private readonly playerView: PlayerView = new PlayerView()) {
-        super(carouselItem);
-    }
-
-    static async create(navController: NavController, playerService: PlayerService, template: TemplateGameTasks): Promise<Lake> {
+    })): Promise<Lake> {
         const element = must(await this.loadElement("../views/lake.html") as HTMLElement);
-        const lake = loggingProxy(new Lake(element, navController, playerService));
+        const lake = loggingProxy(new Lake(element, navController, playerService, new PlayerView(), miniBoss));
 
         const footer = must(lake.carouselItem.querySelector("footer"));
         footer.after(template.templateFragment);
@@ -56,13 +54,13 @@ export default class Lake extends CarouselItem {
             attackButton.textContent = `Attack`;
             attackButton.addEventListener('click', () => {
                 // Handle the attack logic here
-                void this.executeAttack(name, playerId, attackButton);
+                void this.processPlayerAttack(name, playerId, attackButton);
             });
             card.appendChild(attackButton);
         });
     }
 
-    private async executeAttack(name: string | undefined, playerId: string, attackButton: HTMLElement) {
+    private async processPlayerAttack(name: string | undefined, playerId: string, attackButton: HTMLElement) {
         // You can add more logic here to handle the attack, such as updating the game state, etc.
         const hpValue = must(this.carouselItem.querySelector(`[data-player-id="${playerId}"] .clsValue`)?.textContent);
         const strValue = must(currentGameState.getParty()?.players.find(player => player.id === playerId)?.str);
@@ -112,7 +110,7 @@ export default class Lake extends CarouselItem {
             button.setAttribute('disabled', 'true');
         });
 
-        await this.navController.createNextChallenge(this);
+        // await this.navController.createNextChallenge(this);
     }
 
     private applyDamageToBoss(statValue: number) {
