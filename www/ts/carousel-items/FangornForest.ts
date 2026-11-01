@@ -1,4 +1,4 @@
-import TemplateGameTasks from "../templates/TemplateGameTasks.ts";
+import GameTasks from "../templates/GameTasks.ts";
 import CarouselItem from "./CarouselItem.ts";
 import must from "../utilities/RequiredField.ts";
 import currentGameState from "../GameState.ts";
@@ -24,7 +24,7 @@ export default class FangornForest extends CarouselItem {
         super(carouselItem);
     }
 
-    static async create(navController: NavCtrlPicker, playerService: PlayerService, template: TemplateGameTasks): Promise<FangornForest> {
+    static async create(navController: NavCtrlPicker, playerService: PlayerService, template: GameTasks): Promise<FangornForest> {
         const element = await this.loadElement("../views/forest.html");
         const forest = loggingProxy(new FangornForest(navController, playerService, element));
         await forest.registerEvents();

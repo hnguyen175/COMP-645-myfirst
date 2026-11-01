@@ -36,7 +36,7 @@ async function mockNavController() {
     document.body.innerHTML = `
         <ons-carousel id="carouselNewGame" swipeable auto-scroll>
         </ons-carousel>
-        <template id="templ8GameTasks">
+        <template id="templGameTasks">
             <h4 style="text-align: center;" class="game-tasks">
                 Game Tasks
             </h4>
@@ -296,7 +296,7 @@ Vitest.test("onRollButtonClick with invalid player info shows toast notification
         <ons-button class="btn js-roll" id="btnRoll">Roll</ons-button>
         <input id="inputPlayerName">
         <input id="inputPlayerEmail" value="john.doe.example.com">
-        <template id="templ8GameTasks">
+        <template id="templGameTasks">
             <h4 style="text-align: center;" class="game-tasks">
                 Game Tasks
             </h4>
@@ -359,7 +359,7 @@ Vitest.test.each([
         <ons-button class="btn js-roll" id="btnRoll">Roll</ons-button>
         <input id="inputPlayerName" value="${name}">
         <input id="inputPlayerEmail" value="${email}">
-        <template id="templ8GameTasks">
+        <template id="templGameTasks">
             <h4 style="text-align: center;" class="game-tasks">
                 Game Tasks
             </h4>
@@ -405,7 +405,7 @@ Vitest.test("onRollButtonClick with valid name and valid email shows no toast", 
         <ons-button class="btn js-roll" id="btnRoll">Roll</ons-button>
         <input id="inputPlayerName" value="John Doe">
         <input id="inputPlayerEmail" value="a@b.c">
-        <template id="templ8GameTasks">
+        <template id="templGameTasks">
             <h4 style="text-align: center;" class="game-tasks">
                 Game Tasks
             </h4>

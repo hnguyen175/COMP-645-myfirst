@@ -3,7 +3,7 @@ import must from "../utilities/RequiredField.ts";
 import currentGameState from "../GameState.ts";
 import Player from "../Player.ts";
 import loggingProxy from "../utilities/LoggingProxy.ts";
-import TemplateGameTasks from "../templates/TemplateGameTasks.ts";
+import GameTasks from "../templates/GameTasks.ts";
 import PlayerService from "../PlayerService.ts";
 import NavController from "../NavController.ts";
 import { fireAndForget } from "../utilities/AsyncUtils.ts";
@@ -41,7 +41,7 @@ export default class DrunkenTavern extends CarouselItem {
         super(carouselItem);
     }
 
-    static async create(navController: NavController, playerService: PlayerService, template: TemplateGameTasks, villain: Player = playerService.createVillain()
+    static async create(navController: NavController, playerService: PlayerService, template: GameTasks, villain: Player = playerService.createVillain()
     ): Promise<DrunkenTavern> {
         const element = must(await this.loadElement("../views/drunken-tavern.html"));
         const drunkadTavern = loggingProxy(new DrunkenTavern(navController, playerService, element, villain));

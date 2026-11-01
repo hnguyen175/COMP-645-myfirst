@@ -1,7 +1,7 @@
 import CarouselItem from "./CarouselItem.ts";
 import NavController from "../NavController.ts";
 import PlayerService from "../PlayerService.ts";
-import TemplateGameTasks from "../templates/TemplateGameTasks.ts";
+import GameTasks from "../templates/GameTasks.ts";
 import must from "../utilities/RequiredField.ts";
 import PlayerView from "../rendering/PlayerView.ts";
 import currentGameState from "../GameState.ts";
@@ -15,7 +15,7 @@ export default class Lake extends CarouselItem {
         super(carouselItem);
     }
 
-    static async create(navController: NavController, playerService: PlayerService, template: TemplateGameTasks, goToNextChallengeTemplate: GoToNextChallenge, miniBoss: Player = new Player(null, null, null, {
+    static async create(navController: NavController, playerService: PlayerService, template: GameTasks, goToNextChallengeTemplate: GoToNextChallenge, miniBoss: Player = new Player(null, null, null, {
         hp: Player.randomStat(50, 100),
         str: Player.randomStat(),
         spd: Player.randomStat(),

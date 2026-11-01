@@ -1,7 +1,7 @@
 import CarouselItem from "./CarouselItem.ts";
 import NavController from "../NavController.ts";
 import PlayerService from "../PlayerService.ts";
-import TemplateGameTasks from "../templates/TemplateGameTasks.ts";
+import GameTasks from "../templates/GameTasks.ts";
 import loggingProxy from "../utilities/LoggingProxy.ts";
 import must from "../utilities/RequiredField.ts";
 
@@ -10,7 +10,7 @@ export default class Mountain extends CarouselItem {
         super(carouselItem);
     }
 
-    static async create(navController: NavController, playerService: PlayerService, template: TemplateGameTasks): Promise<Mountain> {
+    static async create(navController: NavController, playerService: PlayerService, template: GameTasks): Promise<Mountain> {
         const element = must(await this.loadElement("../views/mountain.html") as HTMLElement);
         const mountain = loggingProxy(new Mountain(element, navController, playerService));
 

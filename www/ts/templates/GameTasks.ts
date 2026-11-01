@@ -2,7 +2,7 @@ import must from "../utilities/RequiredField.ts";
 import NavController from "../NavController.ts";
 import { fireAndForget } from "../utilities/AsyncUtils.ts";
 
-export default class TemplateGameTasks {
+export default class GameTasks {
     private _template: HTMLTemplateElement | null = null;
 
     constructor(private _navController: NavController) {
@@ -10,7 +10,7 @@ export default class TemplateGameTasks {
     }
 
     initializePage(): void {
-        this._template = must(document.querySelector<HTMLTemplateElement>("#templ8GameTasks"));
+        this._template = must(document.querySelector<HTMLTemplateElement>("#templGameTasks"));
     }
 
     get templateFragment(): DocumentFragment {

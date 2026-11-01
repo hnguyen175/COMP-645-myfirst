@@ -12,7 +12,7 @@ import must from './utilities/RequiredField.ts';
 
 import currentGameState from './GameState.ts';
 import loggingProxy from './utilities/LoggingProxy.ts';
-import TemplateGameTasks from './templates/TemplateGameTasks.ts';
+import GameTasks from './templates/GameTasks.ts';
 import FangornForest from './carousel-items/FangornForest.ts';
 import ShuffleBag from './utilities/ShuffleBag.ts';
 import Mountain from './carousel-items/Mountain.ts';
@@ -32,7 +32,7 @@ export default class NavController {
     welcome!: Welcome;
     comrades!: Comrades;
     drunkenTavern!: DrunkenTavern;
-    templateGameTask!: TemplateGameTasks;
+    templateGameTask!: GameTasks;
     forest!: FangornForest;
 
     constructor(private playerService: PlayerService = loggingProxy(new PlayerService()),
@@ -47,7 +47,7 @@ export default class NavController {
 
         this.carousel = carousel;
 
-        this.templateGameTask = new TemplateGameTasks(this);
+        this.templateGameTask = new GameTasks(this);
 
         this.newGame = await NewGame.create(this);
         this.welcome = await Welcome.create(this, this.playerService);
