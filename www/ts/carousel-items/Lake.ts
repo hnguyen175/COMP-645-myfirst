@@ -8,6 +8,7 @@ import currentGameState from "../GameState.ts";
 import Player from "../Player.ts";
 import loggingProxy from "../utilities/LoggingProxy.ts";
 import GoToNextChallenge from "../templates/GoToNextChalllenge.ts";
+import { fireAndForget } from "../utilities/AsyncUtils.ts";
 
 export default class Lake extends CarouselItem {
     constructor(carouselItem: HTMLElement, private readonly navController: NavController, private readonly playerService: PlayerService, private readonly goToNextChallengeTemplate: GoToNextChallenge, private readonly playerView: PlayerView, private miniBoss: Player) {
@@ -53,9 +54,9 @@ export default class Lake extends CarouselItem {
             attackButton.setAttribute('data-player-id', playerId);
 
             attackButton.textContent = `Attack`;
-            attackButton.addEventListener('click', async () => {
+            attackButton.addEventListener('click', () => {
                 // Handle the attack logic here
-                void await this.processPlayerAttack(name, playerId, attackButton);
+                fireAndForget(this.processPlayerAttack(name, playerId, attackButton));
             });
             card.appendChild(attackButton);
         });
@@ -116,7 +117,7 @@ export default class Lake extends CarouselItem {
         const nextChallenge = await this.navController.createNextChallenge(this);
         gotoNextButton.textContent = nextChallenge.constructor.name;
 
-        gotoNextButton.addEventListener("click", async () => {
+        gotoNextButton.addEventListener("click", () => {
             this.carouselItem.replaceWith(nextChallenge.carouselItem);
         });
 
