@@ -7,16 +7,17 @@ import must from "../utilities/RequiredField.ts";
 import MiniBoss from "../MiniBoss.ts";
 import PlayerView from "../rendering/PlayerView.ts";
 import currentGameState from "../GameState.ts";
+import GoToNextChallenge from "../templates/GoToNextChalllenge.ts";
 
 export default class Lake extends CarouselItem {
-    constructor(carouselItem: HTMLElement, private readonly navController: NavController, private readonly playerService: PlayerService, private readonly playerView: PlayerView = new PlayerView(), private readonly miniBoss: MiniBoss = new MiniBoss()) {
+    constructor(carouselItem: HTMLElement, private readonly navController: NavController, private readonly playerService: PlayerService, private readonly goToNextChallengeTemplate: GoToNextChallenge, private readonly playerView: PlayerView = new PlayerView(), private readonly miniBoss: MiniBoss = new MiniBoss()) {
         super(carouselItem);
     }
 
-    static async create(navController: NavController, playerService: PlayerService, template: TemplateGameTasks): Promise<Lake> {
+    static async create(navController: NavController, playerService: PlayerService, template: TemplateGameTasks, goToNextChallengeTemplate: GoToNextChallenge): Promise<Lake> {
         const element = must(await this.loadElement("../views/lake.html") as HTMLElement);
         // const lake = loggingProxy(new Lake(element, navController, playerService));
-        const lake = (new Lake(element, navController, playerService));
+        const lake = (new Lake(element, navController, playerService, goToNextChallengeTemplate));
 
         const footer = must(lake.carouselItem.querySelector("footer"));
         footer.after(template.templateFragment);
@@ -47,15 +48,15 @@ export default class Lake extends CarouselItem {
             attackButton.setAttribute('data-player-id', playerId);
 
             attackButton.textContent = `Attack ${name}`;
-            attackButton.addEventListener('click', () => {
+            attackButton.addEventListener('click', async () => {
                 // Handle the attack logic here
-                this.executeAttack(name, playerId, attackButton);
+                await this.executeAttack(name, playerId, attackButton);
             });
             card.appendChild(attackButton);
         });
     }
 
-    private executeAttack(name: string | undefined, playerId: string, attackButton: HTMLElement) {
+    private async executeAttack(name: string | undefined, playerId: string, attackButton: HTMLElement) {
         // You can add more logic here to handle the attack, such as updating the game state, etc.
         const statValue = must(this.carouselItem.querySelector(`[data-player-id="${playerId}"] .clsValue`)?.textContent);
         console.log(`Player ${name} (ID: ${playerId}) - stat: ${statValue} is attacking the mini-boss!`);
@@ -70,14 +71,14 @@ export default class Lake extends CarouselItem {
 
         console.log(`Mini-boss HP reduced by ${damage}. New HP: ${this.miniBoss.hp}`);
 
-        this.updateBattleResult(name, damage);
+        await this.updateBattleResult(name, damage);
     }
 
-    private updateBattleResult(name: string | undefined, damage: number) {
+    private async updateBattleResult(name: string | undefined, damage: number) {
         const lakeResult = must(this.carouselItem.querySelector('#pLakeResult'));
         if (this.miniBoss.hp <= 0) {
 
-            this.handleVictoryResult(lakeResult);
+            await this.handleVictoryResult(lakeResult);
         } else {
             // any player left?
             this.updateBattleMessage(lakeResult, name, damage);
@@ -92,7 +93,7 @@ export default class Lake extends CarouselItem {
         }
     }
 
-    private handleVictoryResult(lakeResult: Element) {
+    private async handleVictoryResult(lakeResult: Element) {
         let tmpGold = Math.floor(Math.random() * (1234 - 999 + 1)) + 999;
         currentGameState.getParty()?.addGold(tmpGold);
 
@@ -102,7 +103,17 @@ export default class Lake extends CarouselItem {
             button.setAttribute('disabled', 'true');
         });
 
-        this.navController.createNextChallenge(this);
+        const templateFragment = must(this.goToNextChallengeTemplate.templateFragment);
+        const gotoNextButton = templateFragment.querySelector('.next-challenge-button')!;
+        const nextChallenge = await this.navController.createNextChallenge(this);
+        gotoNextButton.textContent = nextChallenge.constructor.name;
+
+        gotoNextButton.addEventListener("click", async () => {
+            this.carouselItem.replaceWith(nextChallenge.carouselItem);
+        });
+
+        const footer = must(this.carouselItem.querySelector("footer"));
+        footer.before(templateFragment);
     }
 
     private applyDamageToBoss(statValue: string) {

@@ -18,6 +18,7 @@ import ShuffleBag from './utilities/ShuffleBag.ts';
 import Mountain from './carousel-items/Mountain.ts';
 import Lake from './carousel-items/Lake.ts';
 import Bridge from './carousel-items/Bridge.ts';
+import GoToNextChallenge from './templates/GoToNextChalllenge.ts';
 
 interface CarouselChangeEvent extends Event {
     carousel: ons.OnsCarouselElement;
@@ -209,7 +210,9 @@ export default class NavController {
                 await this.addCarouselItem(this.forest);
                 break;
             case "Lake":
-                const lake = await Lake.create(this, this.playerService, this.templateGameTask);
+                // create GoToNextChallenge template
+                const goToNextChallengeTemplate = new GoToNextChallenge(this, "Bridge");
+                const lake = await Lake.create(this, this.playerService, this.templateGameTask, goToNextChallengeTemplate);
                 await this.addCarouselItem(lake);
                 break;
             case "Bridge":
@@ -295,9 +298,19 @@ export default class NavController {
         switch (carouselItem.constructor.name) {
             case FangornForest.name:
                 const challengeType = NavController.lbmChallenges.draw();
-                return await challengeType.create(this, this.playerService, this.templateGameTask);
+                // return await challengeType.create(this, this.playerService, this.templateGameTask);
+                // must(currentGameState.getParty())!.currentScreen = challengeType.name;
+                // await this.onGameStart();
+                // return this.findCarouselItemByName(challengeType.name) as CarouselItem;
+
+                const goToNextChallengeTemplate = new GoToNextChallenge(this, "Bridge");
+                return await challengeType.create(this, this.playerService, this.templateGameTask, goToNextChallengeTemplate);
+
+                break;
             case DrunkenTavern.name:
                 return await FangornForest.create(this, this.playerService, this.templateGameTask);
+            case Lake.name:
+                return await Mountain.create(this, this.playerService, this.templateGameTask);
             default:
                 throw new Error(`Unknown carousel item type: ${carouselItem.constructor.name}`);
         }
