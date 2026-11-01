@@ -122,6 +122,29 @@ Vitest.test.each([
     }
 });
 
+Vitest.test.each([
+    [0, 100, 10, [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]],
+    [10, 30, 10, [10, 20, 30]],
+    [50, 75, 10, [50, 60, 70]],
+    [1, 21, 10, [10, 20]],
+    [21, 25, 10, []],
+] as const)("randomStat with increment returns a number between %i and %i", (min, max, increment, expectedValues) => {
+    for (let i = 0; i < 1000; i++) {
+        if (expectedValues.length === 0) {
+            Vitest.expect(() => Player.randomStat(min, max, increment)).toThrow(RangeError);
+            return;
+        }
+
+        const stat = Player.randomStat(min, max, increment);
+        Vitest.expect(expectedValues).toContain(stat);
+
+        Vitest.expect(stat).toBeGreaterThanOrEqual(min);
+        Vitest.expect(stat).toBeLessThanOrEqual(max);
+        Vitest.expect(stat).toBeGreaterThan(0);
+        Vitest.expect(stat % increment).toBe(0);
+    }
+});
+
 Vitest.test("randomStat with max less than min throws an error", () => {
     Vitest.expect(() => Player.randomStat(100, 50)).toThrow("No valid multiple of 25 in range");
 });
