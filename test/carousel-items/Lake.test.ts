@@ -123,8 +123,8 @@ Vitest.test.each([
     const bossStatCell = [...lake.carouselItem.querySelectorAll('ons-list-item[data-property="hp"]')].at(-1);
     Vitest.expect(bossStatCell?.classList.contains('row-flash')).toBe(true);
 
-    // verify #pLakeResult has the correct text content
-    const resultElement = lake.carouselItem.querySelector('#pLakeResult');
+    // verify #pChallengeResult has the correct text content
+    const resultElement = lake.carouselItem.querySelector('#pChallengeResult');
     Vitest.expect(resultElement?.textContent).toContain('Keep fighting');
 });
 
@@ -174,15 +174,15 @@ Vitest.test.each([
         Vitest.expect(buttons[1].hasAttribute('disabled')).toBe(true);
     });
 
-    const resultElement = lake.carouselItem.querySelector('#pLakeResult');
+    const resultElement = lake.carouselItem.querySelector('#pChallengeResult');
 
     // players' strengths win out
     if (miniBossHp < 100) {
         Vitest.expect(miniBoss.hp).toBe(0);
-        // verify #pLakeResult has the correct text content
+        // verify #pChallengeResult has the correct text content
         Vitest.expect(resultElement?.textContent).toContain('You defeated the');
     } else { // mini-boss' HP is still above 0
-        // verify #pLakeResult has the correct text content
+        // verify #pChallengeResult has the correct text content
         Vitest.expect(resultElement?.textContent).toContain('All your party members have attacked!');
         Vitest.expect(gameParty.players[0].hp).toBe(initialPlayerHP - Math.floor(initialPlayerHP * 0.1));
         Vitest.expect(gameParty.players[1].hp).toBe(initialPlayerHP - Math.floor(initialPlayerHP * 0.1));

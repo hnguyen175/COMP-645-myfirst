@@ -211,16 +211,17 @@ export default class NavController {
                 break;
             case "Lake":
                 // create GoToNextChallenge template
-                const goToNextChallengeTemplate = new GoToNextChallenge(this, "Bridge");
+                const goToNextChallengeTemplate = new GoToNextChallenge(this, "Mountain");
                 const lake = await Lake.create(this, this.playerService, this.templateGameTask, goToNextChallengeTemplate);
                 await this.addCarouselItem(lake);
                 break;
             case "Bridge":
-                const bridge = await Bridge.create(this, this.playerService, this.templateGameTask);
+                const bridge = await Bridge.create(this, this.playerService, this.templateGameTask, new GoToNextChallenge(this, "Mountain"));
                 await this.addCarouselItem(bridge);
                 break;
             case "Mountain":
-                const mountain = await Mountain.create(this, this.playerService, this.templateGameTask);
+                const mountain = await Mountain.create(this, this.playerService, this.templateGameTask, new GoToNextChallenge(this, "Bridge"));
+                // const mountain = await Mountain.create(this, this.playerService, this.templateGameTask);
                 await this.addCarouselItem(mountain);
                 break;
             default:
@@ -310,7 +311,10 @@ export default class NavController {
             case DrunkenTavern.name:
                 return await FangornForest.create(this, this.playerService, this.templateGameTask);
             case Lake.name:
-                return await Mountain.create(this, this.playerService, this.templateGameTask);
+                // return await Mountain.create(this, this.playerService, this.templateGameTask);
+                return await Mountain.create(this, this.playerService, this.templateGameTask, new GoToNextChallenge(this, "Mountain"));
+            case Mountain.name:
+                return await Bridge.create(this, this.playerService, this.templateGameTask, new GoToNextChallenge(this, "Bridge"));
             default:
                 throw new Error(`Unknown carousel item type: ${carouselItem.constructor.name}`);
         }
