@@ -29,41 +29,53 @@ Vitest.test("0 strength", () => {
     Vitest.expect(RandomGenerator.arrClasses.contains(player.cls)).toBe(true);
 });
 
-Vitest.test("randomizeStrength returns a number between 25 and 100", () => {
+Vitest.test("randomizeStrength returns a number between 10 and 100", () => {
     let twentyFiveStrengths = 0;
     let fiftyStrengths = 0;
     let seventyFiveStrengths = 0;
     let hundredStrengths = 0;
+    let tenStrengths = 0;
 
     for (let i = 0; i < 100; i++) {
         const player = new Player("John Doe", "a@b.c");
         const strength = player.str;
 
-        Vitest.expect(strength).toBeGreaterThanOrEqual(25);
-        Vitest.expect(strength).toBeLessThanOrEqual(100);
-        if (strength === 25) {
-            twentyFiveStrengths++;
-        } else if (strength === 50) {
-            fiftyStrengths++;
-        } else if (strength === 75) {
-            seventyFiveStrengths++;
-        } else if (strength === 100) {
-            hundredStrengths++;
+        Vitest.expect(RandomGenerator.arrStats.find(stat => stat === strength)).toBeDefined();
+        switch (strength) {
+            case 10:
+                tenStrengths++;
+                break;
+            case 25:
+                twentyFiveStrengths++;
+                break;
+            case 50:
+                fiftyStrengths++;
+                break;
+            case 75:
+                seventyFiveStrengths++;
+                break;
+            case 100:
+                hundredStrengths++;
+                break;
+            default:
+                throw new Error(`Unexpected strength value: ${strength}`);
         }
     }
 
+    Vitest.expect(tenStrengths).toBeGreaterThan(0);
     Vitest.expect(twentyFiveStrengths).toBeGreaterThan(0);
     Vitest.expect(fiftyStrengths).toBeGreaterThan(0);
     Vitest.expect(seventyFiveStrengths).toBeGreaterThan(0);
     Vitest.expect(hundredStrengths).toBeGreaterThan(0);
 });
 
-Vitest.describe.each(["str", "hp", "spd"] as const)("Player.%s", (property) => {
+Vitest.describe.each(["str", "hp", "spd", "mp"] as const)("Player.%s", (property) => {
     Vitest.test.each([
-        [0.11, 25],
-        [0.251, 50],
-        [0.51, 75],
-        [0.751, 100],
+        [0.11, 10],
+        [0.251, 25],
+        [0.45, 50],
+        [0.61, 75],
+        [0.851, 100],
     ] as const)("randomizeStrength returns %i when Math.random() returns %f", (mockReturnValue, expectedStrength) => {
         Vitest.vi.spyOn(Math, 'random').mockReturnValue(mockReturnValue);
         const player = new Player();
@@ -73,18 +85,6 @@ Vitest.describe.each(["str", "hp", "spd"] as const)("Player.%s", (property) => {
         Vitest.expect(RandomGenerator.arrWeapons.contains(player.wep)).toBe(true);
         Vitest.expect(RandomGenerator.arrClasses.contains(player.cls)).toBe(true);
     });
-});
-
-Vitest.test.each([
-    [0.01, 10],
-    [0.11, 20],
-    [0.21, 30],
-    [0.51, 60],
-    [0.71, 80],
-] as const)("randomizeMp returns %i when Math.random() returns %f", (mockReturnValue, expectedMp) => {
-    Vitest.vi.spyOn(Math, 'random').mockReturnValue(mockReturnValue);
-    const player = new Player("John Doe", "a@b.c");
-    Vitest.expect(player.mp).toBe(expectedMp);
 });
 
 Vitest.test.each([

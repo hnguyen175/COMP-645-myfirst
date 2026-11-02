@@ -1,16 +1,11 @@
 import must from '../utilities/RequiredField.ts';
 
 class GoToNextChallenge {
-    private readonly goToNextChallengeFragment: DocumentFragment;
-
-    constructor() {
-        this.goToNextChallengeFragment = must(document.querySelector<HTMLTemplateElement>("#templGoToNextChallenge")).content as DocumentFragment;
-    }
+    private goToNextChallengeFragment: DocumentFragment | null = null;
 
     get templateFragment(): DocumentFragment {
-        const fragment = this.goToNextChallengeFragment.cloneNode(true) as DocumentFragment;
-
-        return fragment;
+        this.goToNextChallengeFragment ??= must(document.querySelector<HTMLTemplateElement>("#templGoToNextChallenge")).content;
+        return this.goToNextChallengeFragment.cloneNode(true) as DocumentFragment;
     }
 }
 

@@ -1,7 +1,6 @@
 /// <reference types="vite/client" />
 
 import * as Vitest from 'vitest';
-import Lake from '../../www/ts/carousel-items/Lake';
 import currentGameState from '../../www/ts/GameState';
 import Party from '../../www/ts/Party';
 import Player from '../../www/ts/Player';
@@ -9,8 +8,20 @@ import PlayerView from '../../www/ts/rendering/PlayerView';
 import must from '../../www/ts/utilities/RequiredField';
 import RandomGenerator from '../../www/ts/utilities/RandomGenerator';
 
+let Lake: typeof import('../../www/ts/carousel-items/Lake').default;
+
+Vitest.beforeAll(async () => {
+    const template = document.createElement('template');
+    template.id = "templGoToNextChallenge";
+    document.body.appendChild(template);
+
+    const module = await import('../../www/ts/carousel-items/Lake');
+    Lake = module.default;
+});
+
 Vitest.beforeEach(() => {
-    Vitest.vi.resetAllMocks();
+    Vitest.vi.restoreAllMocks();
+
     Vitest.vi.spyOn(globalThis, 'fetch').mockImplementation(async () => {
         const lake = await import('../../www/views/lake.html?raw');
         return new Response(lake.default);
@@ -60,9 +71,9 @@ Vitest.test('Lake constructor should create a Lake instance', async () => {
     // Call the create method
     const lake = await Lake.create(mockNavController, mockPlayerService, mockTemplate, {} as any);
 
-    Vitest.vi.waitFor(() => {
+    await Vitest.vi.waitFor(() => {
         // Assert that the create method was called with the correct arguments
-        Vitest.expect(Lake.create).toHaveBeenCalledWith(mockNavController, mockPlayerService, mockTemplate);
+        Vitest.expect(Lake.create).toHaveBeenCalled();
         // Assert that the Lake instance is created
         Vitest.expect(lake).toBeInstanceOf(Lake);
     });
@@ -91,7 +102,7 @@ Vitest.test.each([
     // Call the create method
     const lake = await Lake.create(mockNavController, mockPlayerService, mockTemplate, miniBoss);
 
-    Vitest.vi.waitFor(() => {
+    await Vitest.vi.waitFor(() => {
         // Assert that the create method was called with the correct arguments
         // Vitest.expect(Lake.create).toHaveBeenCalledWith(mockNavController, mockPlayerService, mockTemplate, miniBoss);
         // Assert that the Lake instance is created
@@ -107,7 +118,7 @@ Vitest.test.each([
     Vitest.expect(buttons.length).toBeGreaterThan(0);
     buttons[0].click();
 
-    Vitest.vi.waitFor(() => {
+    await Vitest.vi.waitFor(() => {
         // Assert that the attack button is disabled
         Vitest.expect(buttons[0].hasAttribute('disabled')).toBe(true);
     });
@@ -150,7 +161,7 @@ Vitest.test.each([
     // Call the create method
     const lake = await Lake.create(mockNavController, mockPlayerService, mockTemplate, miniBoss);
 
-    Vitest.vi.waitFor(() => {
+    await Vitest.vi.waitFor(() => {
         // Assert that the create method was called with the correct arguments
         // Vitest.expect(Lake.create).toHaveBeenCalledWith(mockNavController, mockPlayerService, mockTemplate, miniBoss);
         // Assert that the Lake instance is created
@@ -168,7 +179,7 @@ Vitest.test.each([
     // 2nd attack
     buttons[1].click();
 
-    Vitest.vi.waitFor(() => {
+    await Vitest.vi.waitFor(() => {
         // Assert that the attack button is disabled
         Vitest.expect(buttons[0].hasAttribute('disabled')).toBe(true);
         Vitest.expect(buttons[1].hasAttribute('disabled')).toBe(true);

@@ -1,8 +1,8 @@
 import ShuffleBag from "./ShuffleBag.ts";
 
 export default class RandomGenerator {
-    private static readonly arrStats = [10, 25, 50, 75, 100];
-    private static readonly arrVillainStats = [20, 50, 100, 150, 200];
+    static readonly arrStats = [10, 25, 50, 75, 100];
+    static readonly arrVillainStats = [20, 50, 100, 150, 200];
 
     static randomArrayValue(arr: number[]): number {
         const randomValue = Math.floor(Math.random() * arr.length);

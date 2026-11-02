@@ -41,6 +41,14 @@ async function mockNavController() {
                 Game Tasks
             </h4>
         </template>
+        <template id="templGoToNextChallenge">
+            <div style="text-align: center; margin-top: 20px;" class="next-challenge">
+            <p>Congratulations! You have completed the current challenge.</p>
+            <p>Prepare for the next adventure!</p>
+            <ons-button class="button next-challenge-button">Next Challenge</ons-button>
+            <p></p>
+            </div>
+        </template>
     `;
     carousel = document.getElementById("carouselNewGame") as unknown as CarouselElement;
     Object.defineProperties(carousel, {
@@ -301,6 +309,14 @@ Vitest.test("onRollButtonClick with invalid player info shows toast notification
                 Game Tasks
             </h4>
         </template>
+        <template id="templGoToNextChallenge">
+            <div style="text-align: center; margin-top: 20px;" class="next-challenge">
+            <p>Congratulations! You have completed the current challenge.</p>
+            <p>Prepare for the next adventure!</p>
+            <ons-button class="button next-challenge-button">Next Challenge</ons-button>
+            <p></p>
+            </div>
+        </template>
     `;
 
     await navController.init();
@@ -364,6 +380,14 @@ Vitest.test.each([
                 Game Tasks
             </h4>
         </template>
+        <template id="templGoToNextChallenge">
+            <div style="text-align: center; margin-top: 20px;" class="next-challenge">
+            <p>Congratulations! You have completed the current challenge.</p>
+            <p>Prepare for the next adventure!</p>
+            <ons-button class="button next-challenge-button">Next Challenge</ons-button>
+            <p></p>
+            </div>
+        </template>
     `;
 
     await navController.init();
@@ -409,6 +433,14 @@ Vitest.test("onRollButtonClick with valid name and valid email shows no toast", 
             <h4 style="text-align: center;" class="game-tasks">
                 Game Tasks
             </h4>
+        </template>
+        <template id="templGoToNextChallenge">
+            <div style="text-align: center; margin-top: 20px;" class="next-challenge">
+            <p>Congratulations! You have completed the current challenge.</p>
+            <p>Prepare for the next adventure!</p>
+            <ons-button class="button next-challenge-button">Next Challenge</ons-button>
+            <p></p>
+            </div>
         </template>
     `;
 
