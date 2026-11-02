@@ -1,5 +1,6 @@
 import * as Vitest from 'vitest';
 import Player from '../www/ts/Player';
+import RandomGenerator from '../www/ts/utilities/RandomGenerator';
 
 Vitest.beforeEach(() => {
     localStorage.clear();
@@ -24,8 +25,8 @@ Vitest.test("0 strength", () => {
     Vitest.expect(player.mp).toBeLessThanOrEqual(100);
     Vitest.expect(player.luk).toBeGreaterThan(0);
     Vitest.expect(player.luk).toBeLessThanOrEqual(10);
-    Vitest.expect(Player.arrWeapons.contains(player.wep)).toBe(true);
-    Vitest.expect(Player.arrClasses.contains(player.cls)).toBe(true);
+    Vitest.expect(RandomGenerator.arrWeapons.contains(player.wep)).toBe(true);
+    Vitest.expect(RandomGenerator.arrClasses.contains(player.cls)).toBe(true);
 });
 
 Vitest.test("randomizeStrength returns a number between 25 and 100", () => {
@@ -68,9 +69,9 @@ Vitest.describe.each(["str", "hp", "spd"] as const)("Player.%s", (property) => {
         const player = new Player();
         Vitest.expect(player[property]).toBe(expectedStrength);
         Vitest.expect(player.email).toBeDefined();
-        Vitest.expect(Player.arrNames.contains(player.name)).toBe(true);
-        Vitest.expect(Player.arrWeapons.contains(player.wep)).toBe(true);
-        Vitest.expect(Player.arrClasses.contains(player.cls)).toBe(true);
+        Vitest.expect(RandomGenerator.arrNames.contains(player.name)).toBe(true);
+        Vitest.expect(RandomGenerator.arrWeapons.contains(player.wep)).toBe(true);
+        Vitest.expect(RandomGenerator.arrClasses.contains(player.cls)).toBe(true);
     });
 });
 
@@ -103,7 +104,7 @@ Vitest.test.each([
     [1, 1],
 ])("randomizeLuk returns %d when Math.random() returns %f", (mockReturnValue, expectedLuk) => {
     Vitest.vi.spyOn(Math, 'random').mockReturnValue(mockReturnValue);
-    const luk = Player.randomLuk();
+    const luk = RandomGenerator.randomLuk();
     Vitest.expect(luk).toBe(expectedLuk);
 });
 
@@ -113,7 +114,7 @@ Vitest.test.each([
     [50, 75],
 ] as const)("randomStat returns a number between %i and %i", (min, max) => {
     for (let i = 0; i < 1000; i++) {
-        const stat = Player.randomStat(min, max);
+        const stat = RandomGenerator.randomStat(min, max);
 
         Vitest.expect(stat).toBeGreaterThanOrEqual(min);
         Vitest.expect(stat).toBeLessThanOrEqual(max);
@@ -131,11 +132,11 @@ Vitest.test.each([
 ] as const)("randomStat with increment returns a number between %i and %i", (min, max, increment, expectedValues) => {
     for (let i = 0; i < 1000; i++) {
         if (expectedValues.length === 0) {
-            Vitest.expect(() => Player.randomStat(min, max, increment)).toThrow(RangeError);
+            Vitest.expect(() => RandomGenerator.randomStat(min, max, increment)).toThrow(RangeError);
             return;
         }
 
-        const stat = Player.randomStat(min, max, increment);
+        const stat = RandomGenerator.randomStat(min, max, increment);
         Vitest.expect(expectedValues).toContain(stat);
 
         Vitest.expect(stat).toBeGreaterThanOrEqual(min);
@@ -146,12 +147,12 @@ Vitest.test.each([
 });
 
 Vitest.test("randomStat with max less than min throws an error", () => {
-    Vitest.expect(() => Player.randomStat(100, 50)).toThrow("No valid multiple of 25 in range");
+    Vitest.expect(() => RandomGenerator.randomStat(100, 50)).toThrow("No valid multiple of 25 in range");
 });
 
 Vitest.test("getVillainPlayer returns a Player with a name from arrVillainNames", () => {
     const villainPlayer = Player.getVillainPlayer();
-    Vitest.expect(Player.arrVillainNames.contains(villainPlayer.name)).toBe(true);
+    Vitest.expect(RandomGenerator.arrVillainNames.contains(villainPlayer.name)).toBe(true);
     Vitest.expect(villainPlayer.email).toBe(`${villainPlayer.name.toLowerCase()}@comp645.com`);
 });
 

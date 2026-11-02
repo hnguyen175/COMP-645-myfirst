@@ -1,3 +1,4 @@
+import RandomGenerator from "./utilities/RandomGenerator.ts";
 import ShuffleBag from "./utilities/ShuffleBag.ts";
 
 export type PlayerStats = {
@@ -34,69 +35,25 @@ export default class Player {
         return this._id;
     }
 
-    static arrNames = new ShuffleBag(["Abakor", "Bandala", "Cartin", "Darianne", "Fezzor", "Gizleeni", "Halor", "Ia", "Jeepenn", "Kalindaa", "Lineuss", "Mordana", "Nazzor", "Ortery", "Parto", "Quey", "Rato", "Salana", "Torqq", "Uvala", "Vixtor", "Wylia", "Xex", "Yala", "Zetch"] as const);
-    static arrVillainNames = new ShuffleBag(["Azrath", "Belnox", "Craven", "Dravora", "Ezrakk", "Grizmor", "Hexar", "Ivara", "Jorvex", "Kharza", "Maldrin", "Nyxara", "Ozrak", "Raveth", "Skarro", "Thyra", "Vorren", "Xandrak", "Zerith", "Morvane", "Drexil", "Valgora", "Krynn", "Noctra", "Zalthor"] as const);
-    static arrWeapons = new ShuffleBag(["Rocks", "Staff", "Dagger", "Mace", "Warhammer", "Sword", "Battle Axe"] as const);
-    static arrClasses = new ShuffleBag(["Healer", "Warrior", "Thief", "Knight", "Damsel", "Warlock", "Farmer"] as const);
-    static arrLukProbability = [.02, .1, .2, 1] as const;
-
-    static randomStat(min: number = 0, max: number = 100, increment: number = 25): number {
-        const lower = Math.max(1, Math.ceil(min / increment));
-        const upper = Math.floor(max / increment);
-
-        if (lower > upper) {
-            throw new RangeError(`No valid multiple of ${increment} in range`);
-        }
-
-        return (Math.floor(Math.random() * (upper - lower + 1)) + lower) * increment;
-    }
-
-    static randomLuk(): number {
-        const randomValue = Math.random();
-        const lukIndex = this.arrLukProbability.findIndex(probability => randomValue <= probability);
-        switch (lukIndex) {
-            case 0:
-                return 10;
-            case 1:
-                return 3;
-            case 2:
-                return 2;
-            default:
-                return 1;
-        }
-    }
-
-    static randomMp(): number {
-        return Player.randomStat(0, 100, 10);
-    }
-
-    static randomWeapon(): string {
-        return Player.arrWeapons.draw();
-    }
-
-    static randomClass(): string {
-        return Player.arrClasses.draw();
-    }
-
     constructor(name: string | null = null, email: string | null = null, id: string | null = null, playerStats: PlayerStats | null = null) {
-        this._name = (name ?? Player.arrNames.draw());
+        this._name = (name ?? RandomGenerator.randomName());
         this._email = (email ?? this._name.toLowerCase() + "@comp645.com");
         this._id = (id ?? crypto.randomUUID());
         if (playerStats) {
             Object.assign(this, playerStats);
         } else {
-            this.hp = Player.randomStat();
-            this.spd = Player.randomStat();
-            this.str = Player.randomStat();
-            this.mp = Player.randomStat(0, 100, 10);
-            this.luk = Player.randomLuk();
-            this.wep = Player.randomWeapon();
-            this.cls = Player.randomClass();
+            this.hp = RandomGenerator.playerRandomStat();
+            this.spd = RandomGenerator.playerRandomStat();
+            this.str = RandomGenerator.playerRandomStat();
+            this.mp = RandomGenerator.playerRandomStat();
+            this.luk = RandomGenerator.randomLuk();
+            this.wep = RandomGenerator.randomWeapon();
+            this.cls = RandomGenerator.randomClass();
         }
     }
 
     public static getVillainPlayer(): Player {
-        const randomVillainName = Player.arrVillainNames.draw();
+        const randomVillainName = RandomGenerator.randomVillainName();
         return new Player(randomVillainName, `${randomVillainName.toLowerCase()}@comp645.com`);
     }
 

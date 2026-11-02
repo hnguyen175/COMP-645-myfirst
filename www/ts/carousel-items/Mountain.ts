@@ -5,32 +5,42 @@ import GameTasks from "../templates/GameTasks.ts";
 import loggingProxy from "../utilities/LoggingProxy.ts";
 import must from "../utilities/RequiredField.ts";
 import BaseBattleChallenge from "./BaseBattleChallenge.ts";
-import GoToNextChallenge from "../templates/GoToNextChalllenge.ts";
 import PlayerView from "../rendering/PlayerView.ts";
 import Player from "../Player.ts";
+import RandomGenerator from "../utilities/RandomGenerator.ts";
+import currentGameState from "../GameState.ts";
 
 export default class Mountain extends BaseBattleChallenge {
-    constructor(carouselItem: HTMLElement, navController: NavController, playerService: PlayerService, goToNextChallengeTemplate: GoToNextChallenge, playerView: PlayerView, miniBoss: Player) {
+    constructor(carouselItem: HTMLElement, navController: NavController, playerService: PlayerService, playerView: PlayerView, miniBoss: Player) {
 
-        super(carouselItem, navController, playerService, goToNextChallengeTemplate, playerView, miniBoss);
+        super(carouselItem, navController, playerService, playerView, miniBoss);
     }
 
-    static async create(navController: NavController, playerService: PlayerService, template: GameTasks, goToNextChallengeTemplate: GoToNextChallenge, miniBoss: Player = new Player(null, null, null, {
-        hp: Player.randomStat(50, 100),
-        str: Player.randomStat(),
-        spd: Player.randomStat(),
-        mp: Player.randomMp(),
-        luk: Player.randomLuk(),
-        wep: "Evil " + Player.randomWeapon(),
-        cls: "Dark " + Player.randomClass()
+    static async create(navController: NavController, playerService: PlayerService, template: GameTasks, miniBoss: Player = new Player(null, null, null, {
+        hp: RandomGenerator.randomStat(11, 101, 1),
+        spd: RandomGenerator.villainRandomStat(),
+        str: RandomGenerator.villainRandomStat(),
+        mp: RandomGenerator.villainRandomStat(),
+        luk: RandomGenerator.randomLuk(),
+        wep: "Evil " + RandomGenerator.randomWeapon(),
+        cls: "Dark " + RandomGenerator.randomClass()
     })): Promise<Mountain> {
         const element = must(await this.loadElement("../views/mountain.html") as HTMLElement);
-        const mountain = loggingProxy(new Mountain(element, navController, playerService, goToNextChallengeTemplate, new PlayerView(), miniBoss));
+        const mountain = loggingProxy(new Mountain(element, navController, playerService, new PlayerView(), miniBoss));
 
         // const footer = must(mountain.carouselItem.querySelector("footer"));
         // footer.after(template.templateFragment);
         mountain.setupControls(mountain, template);
 
         return mountain;
+    }
+
+    protected awardStatsToPlayers(): void {
+        const party = must(currentGameState.getParty());
+        party.players.forEach(player => {
+            player.luk += (RandomGenerator.randomStat(50, 60, 1) / 100);
+            player.spd += RandomGenerator.randomStat(10, 25, 1);
+        });
+        party.addGold(RandomGenerator.randomStat(111, 222, 1));
     }
 }

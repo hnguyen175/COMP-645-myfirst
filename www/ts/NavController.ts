@@ -210,17 +210,15 @@ export default class NavController {
                 await this.addCarouselItem(this.forest);
                 break;
             case "Lake":
-                // create GoToNextChallenge template
-                const goToNextChallengeTemplate = new GoToNextChallenge(this, "Mountain");
-                const lake = await Lake.create(this, this.playerService, this.templateGameTask, goToNextChallengeTemplate);
+                const lake = await Lake.create(this, this.playerService, this.templateGameTask);
                 await this.addCarouselItem(lake);
                 break;
             case "Bridge":
-                const bridge = await Bridge.create(this, this.playerService, this.templateGameTask, new GoToNextChallenge(this, "Mountain"));
+                const bridge = await Bridge.create(this, this.playerService, this.templateGameTask);
                 await this.addCarouselItem(bridge);
                 break;
             case "Mountain":
-                const mountain = await Mountain.create(this, this.playerService, this.templateGameTask, new GoToNextChallenge(this, "Bridge"));
+                const mountain = await Mountain.create(this, this.playerService, this.templateGameTask);
                 // const mountain = await Mountain.create(this, this.playerService, this.templateGameTask);
                 await this.addCarouselItem(mountain);
                 break;
@@ -304,17 +302,16 @@ export default class NavController {
                 // await this.onGameStart();
                 // return this.findCarouselItemByName(challengeType.name) as CarouselItem;
 
-                const goToNextChallengeTemplate = new GoToNextChallenge(this, "Bridge");
-                return await challengeType.create(this, this.playerService, this.templateGameTask, goToNextChallengeTemplate);
+                return await challengeType.create(this, this.playerService, this.templateGameTask);
 
                 break;
             case DrunkenTavern.name:
                 return await FangornForest.create(this, this.playerService, this.templateGameTask);
             case Lake.name:
                 // return await Mountain.create(this, this.playerService, this.templateGameTask);
-                return await Mountain.create(this, this.playerService, this.templateGameTask, new GoToNextChallenge(this, "Mountain"));
+                return await Mountain.create(this, this.playerService, this.templateGameTask);
             case Mountain.name:
-                return await Bridge.create(this, this.playerService, this.templateGameTask, new GoToNextChallenge(this, "Bridge"));
+                return await Bridge.create(this, this.playerService, this.templateGameTask);
             default:
                 throw new Error(`Unknown carousel item type: ${carouselItem.constructor.name}`);
         }

@@ -5,31 +5,41 @@ import GameTasks from "../templates/GameTasks.ts";
 import loggingProxy from "../utilities/LoggingProxy.ts";
 import must from "../utilities/RequiredField.ts";
 import BaseBattleChallenge from "./BaseBattleChallenge.ts";
-import GoToNextChallenge from "../templates/GoToNextChalllenge.ts";
 import Player from "../Player.ts";
 import PlayerView from "../rendering/PlayerView.ts";
+import RandomGenerator from "../utilities/RandomGenerator.ts";
+import currentGameState from "../GameState.ts";
 
 export default class Bridge extends BaseBattleChallenge {
-    constructor(carouselItem: HTMLElement, navController: NavController, playerService: PlayerService, goToNextChallengeTemplate: GoToNextChallenge, playerView: PlayerView, miniBoss: Player) {
-        super(carouselItem, navController, playerService, new GoToNextChallenge(navController, ""), playerView, miniBoss);
+    constructor(carouselItem: HTMLElement, navController: NavController, playerService: PlayerService, playerView: PlayerView, miniBoss: Player) {
+        super(carouselItem, navController, playerService, playerView, miniBoss);
     }
 
-    static async create(navController: NavController, playerService: PlayerService, template: GameTasks, goToNextChallenge: GoToNextChallenge, miniBoss: Player = new Player(null, null, null, {
-        hp: Player.randomStat(50, 100),
-        str: Player.randomStat(),
-        spd: Player.randomStat(),
-        mp: Player.randomMp(),
-        luk: Player.randomLuk(),
-        wep: "Evil " + Player.randomWeapon(),
-        cls: "Dark " + Player.randomClass()
+    static async create(navController: NavController, playerService: PlayerService, template: GameTasks, miniBoss: Player = new Player(null, null, null, {
+        hp: RandomGenerator.randomStat(11, 101, 1),
+        spd: RandomGenerator.villainRandomStat(),
+        str: RandomGenerator.villainRandomStat(),
+        mp: RandomGenerator.villainRandomStat(),
+        luk: RandomGenerator.randomLuk(),
+        wep: "Evil " + RandomGenerator.randomWeapon(),
+        cls: "Dark " + RandomGenerator.randomClass()
     })): Promise<Bridge> {
         const element = must(await this.loadElement("../views/bridge.html") as HTMLElement);
-        const bridge = loggingProxy(new Bridge(element, navController, playerService, goToNextChallenge, new PlayerView(), miniBoss));
+        const bridge = loggingProxy(new Bridge(element, navController, playerService, new PlayerView(), miniBoss));
 
         // const footer = must(bridge.carouselItem.querySelector("footer"));
         // footer.after(template.templateFragment);
         bridge.setupControls(bridge, template);
 
         return bridge;
+    }
+
+    protected awardStatsToPlayers(): void {
+        const party = must(currentGameState.getParty());
+        party.players.forEach(player => {
+            player.luk += (RandomGenerator.randomStat(50, 60, 1) / 100);
+            player.mp += RandomGenerator.randomStat(10, 25, 1);
+        });
+        party.addGold(RandomGenerator.randomStat(55, 1234, 1));
     }
 }

@@ -7,11 +7,11 @@ import PlayerView from "../rendering/PlayerView.ts";
 import currentGameState from "../GameState.ts";
 import Player from "../Player.ts";
 import loggingProxy from "../utilities/LoggingProxy.ts";
-import GoToNextChallenge from "../templates/GoToNextChalllenge.ts";
+import tmplGotoNextChallenge from "../templates/GoToNextChalllenge.ts";
 import { fireAndForget } from "../utilities/AsyncUtils.ts";
 
 export default abstract class BaseBattleChallenge extends CarouselItem {
-    constructor(carouselItem: HTMLElement, private readonly navController: NavController, private readonly playerService: PlayerService, private readonly goToNextChallengeTemplate: GoToNextChallenge, private readonly playerView: PlayerView, private miniBoss: Player) {
+    constructor(carouselItem: HTMLElement, private readonly navController: NavController, private readonly playerService: PlayerService, private readonly playerView: PlayerView, private miniBoss: Player) {
         super(carouselItem);
     }
 
@@ -114,8 +114,10 @@ export default abstract class BaseBattleChallenge extends CarouselItem {
     }
 
     private async handleVictoryResult(lakeResult: Element) {
-        const tmpGold = Math.floor(Math.random() * (1234 - 999 + 1)) + 999;
-        currentGameState.getParty()?.addGold(tmpGold);
+        // const tmpGold = Math.ceil(Math.random() * (1234 - 999 + 1)) + 999;
+        // currentGameState.getParty()?.addGold(tmpGold);
+        this.awardStatsToPlayers();
+        const tmpGold = must(currentGameState.getParty()?.earnedGold);
 
         lakeResult.textContent = `You defeated the ${this.miniBoss.name}! and earned ${tmpGold.toLocaleString()} Gold!`;
 
@@ -123,10 +125,10 @@ export default abstract class BaseBattleChallenge extends CarouselItem {
             button.setAttribute('disabled', 'true');
         });
 
-        const templateFragment = must(this.goToNextChallengeTemplate.templateFragment);
+        const templateFragment = must(tmplGotoNextChallenge.templateFragment);
         const gotoNextButton = templateFragment.querySelector('.next-challenge-button')!;
         const nextChallenge = await this.navController.createNextChallenge(this);
-        // gotoNextButton.textContent = nextChallenge.constructor.name;
+        gotoNextButton.textContent = nextChallenge.constructor.name;
 
         gotoNextButton.addEventListener("click", () => {
             this.carouselItem.replaceWith(nextChallenge.carouselItem);
@@ -153,7 +155,7 @@ export default abstract class BaseBattleChallenge extends CarouselItem {
     private applyDamageToPlayer(playerId: string) {
         const attackingPlayer = must(currentGameState.getParty()?.players.find(player => player.id === playerId));
 
-        attackingPlayer.hp -= Math.floor(attackingPlayer.hp * 0.1); // reduce the player's HP by 10%
+        attackingPlayer.hp -= Math.ceil(attackingPlayer.hp * 0.1); // reduce the player's HP by 10%
 
         const playerStatCell = must(this.carouselItem.querySelector(`[data-player-id="${playerId}"] .clsValue`));
         playerStatCell.textContent = attackingPlayer.hp.toString();
@@ -162,4 +164,6 @@ export default abstract class BaseBattleChallenge extends CarouselItem {
 
         return attackingPlayer.hp;
     }
+
+    protected abstract awardStatsToPlayers(): void;
 }

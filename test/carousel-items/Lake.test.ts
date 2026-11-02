@@ -7,7 +7,7 @@ import Party from '../../www/ts/Party';
 import Player from '../../www/ts/Player';
 import PlayerView from '../../www/ts/rendering/PlayerView';
 import must from '../../www/ts/utilities/RequiredField';
-import GoToNextChallenge from '../../www/ts/templates/GoToNextChalllenge';
+import RandomGenerator from '../../www/ts/utilities/RandomGenerator';
 
 Vitest.beforeEach(() => {
     Vitest.vi.resetAllMocks();
@@ -30,8 +30,8 @@ Vitest.beforeEach(() => {
         spd: 50,
         mp: 50,
         luk: 50,
-        wep: Player.randomWeapon(),
-        cls: Player.randomClass()
+        wep: RandomGenerator.randomWeapon(),
+        cls: RandomGenerator.randomClass()
     });
     const player2 = new Player(null, null, null, {
         hp: 50,
@@ -39,8 +39,8 @@ Vitest.beforeEach(() => {
         spd: 50,
         mp: 50,
         luk: 50,
-        wep: Player.randomWeapon(),
-        cls: Player.randomClass()
+        wep: RandomGenerator.randomWeapon(),
+        cls: RandomGenerator.randomClass()
     });
     const party = new Party();
     party.addPlayer(player1);
@@ -55,7 +55,7 @@ Vitest.test('Lake constructor should create a Lake instance', async () => {
     const mockTemplate = {} as any;
 
     // Mock the static create method
-    Vitest.vi.spyOn(Lake, 'create').mockResolvedValue(new Lake({} as any, mockNavController, mockPlayerService, new GoToNextChallenge({} as any, {} as any), new PlayerView(), new Player()));
+    Vitest.vi.spyOn(Lake, 'create').mockResolvedValue(new Lake(mockNavController, mockPlayerService, {} as any, new PlayerView(), new Player()));
 
     // Call the create method
     const lake = await Lake.create(mockNavController, mockPlayerService, mockTemplate, {} as any);
@@ -80,16 +80,16 @@ Vitest.test.each([
     const mockGoToNextChallengeTemplate = {} as any;
     const miniBoss = new Player(null, null, null, {
         hp: miniBossHp,
-        str: Player.randomStat(),
-        spd: Player.randomStat(),
-        mp: Player.randomMp(),
-        luk: Player.randomLuk(),
-        wep: "Evil " + Player.randomWeapon(),
-        cls: "Dark " + Player.randomClass()
+        str: RandomGenerator.randomStat(),
+        spd: RandomGenerator.randomStat(),
+        mp: RandomGenerator.randomStat(),
+        luk: RandomGenerator.randomLuk(),
+        wep: "Evil " + RandomGenerator.randomWeapon(),
+        cls: "Dark " + RandomGenerator.randomClass()
     });
 
     // Call the create method
-    const lake = await Lake.create(mockNavController, mockPlayerService, mockTemplate, mockGoToNextChallengeTemplate, miniBoss);
+    const lake = await Lake.create(mockNavController, mockPlayerService, mockTemplate, miniBoss);
 
     Vitest.vi.waitFor(() => {
         // Assert that the create method was called with the correct arguments
@@ -139,16 +139,16 @@ Vitest.test.each([
     const mockGoToNextChallengeTemplate = {} as any;
     const miniBoss = new Player(null, null, null, {
         hp: miniBossHp,
-        str: Player.randomStat(),
-        spd: Player.randomStat(),
-        mp: Player.randomMp(),
-        luk: Player.randomLuk(),
-        wep: "Evil " + Player.randomWeapon(),
-        cls: "Dark " + Player.randomClass()
+        str: RandomGenerator.randomStat(),
+        spd: RandomGenerator.randomStat(),
+        mp: RandomGenerator.randomStat(),
+        luk: RandomGenerator.randomLuk(),
+        wep: "Evil " + RandomGenerator.randomWeapon(),
+        cls: "Dark " + RandomGenerator.randomClass()
     });
 
     // Call the create method
-    const lake = await Lake.create(mockNavController, mockPlayerService, mockTemplate, mockGoToNextChallengeTemplate, miniBoss);
+    const lake = await Lake.create(mockNavController, mockPlayerService, mockTemplate, miniBoss);
 
     Vitest.vi.waitFor(() => {
         // Assert that the create method was called with the correct arguments

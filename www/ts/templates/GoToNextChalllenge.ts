@@ -1,20 +1,17 @@
-import NavController from '../NavController.ts';
 import must from '../utilities/RequiredField.ts';
 
-export default class GoToNextChallenge {
-    private _template: HTMLTemplateElement | null = null;
+class GoToNextChallenge {
+    private readonly goToNextChallengeFragment: DocumentFragment;
 
-    constructor(private readonly navController: NavController, private readonly nextChallengeName: string) {
+    constructor() {
+        this.goToNextChallengeFragment = must(document.querySelector<HTMLTemplateElement>("#templGoToNextChallenge")).content as DocumentFragment;
     }
 
     get templateFragment(): DocumentFragment {
-        const fragment = must(document.querySelector<HTMLTemplateElement>("#templGoToNextChallenge")).content.cloneNode(true) as DocumentFragment;
-        const button = must(fragment.querySelector('.next-challenge-button'));
-        button.textContent = `Go to ${this.nextChallengeName}`;
-
-        button.addEventListener('click', () => {
-        });
+        const fragment = this.goToNextChallengeFragment.cloneNode(true) as DocumentFragment;
 
         return fragment;
     }
 }
+
+export default new GoToNextChallenge();
