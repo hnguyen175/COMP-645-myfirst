@@ -18,7 +18,6 @@ import ShuffleBag from './utilities/ShuffleBag.ts';
 import Mountain from './carousel-items/Mountain.ts';
 import Lake from './carousel-items/Lake.ts';
 import Bridge from './carousel-items/Bridge.ts';
-import GoToNextChallenge from './templates/GoToNextChalllenge.ts';
 
 interface CarouselChangeEvent extends Event {
     carousel: ons.OnsCarouselElement;

@@ -6,7 +6,6 @@ import must from "../utilities/RequiredField.ts";
 import PlayerView from "../rendering/PlayerView.ts";
 import currentGameState from "../GameState.ts";
 import Player from "../Player.ts";
-import loggingProxy from "../utilities/LoggingProxy.ts";
 import tmplGotoNextChallenge from "../templates/GoToNextChalllenge.ts";
 import { fireAndForget } from "../utilities/AsyncUtils.ts";
 
@@ -14,29 +13,6 @@ export default abstract class BaseBattleChallenge extends CarouselItem {
     constructor(carouselItem: HTMLElement, private readonly navController: NavController, private readonly playerService: PlayerService, private readonly playerView: PlayerView, private miniBoss: Player) {
         super(carouselItem);
     }
-
-    // static async create(navController: NavController, playerService: PlayerService, template: GameTasks, goToNextChallengeTemplate: GoToNextChallenge, miniBoss: Player = new Player(null, null, null, {
-    //     hp: Player.randomStat(50, 100),
-    //     str: Player.randomStat(),
-    //     spd: Player.randomStat(),
-    //     mp: Player.randomMp(),
-    //     luk: Player.randomLuk(),
-    //     wep: "Evil " + Player.randomWeapon(),
-    //     cls: "Dark " + Player.randomClass()
-    // })): Promise<BaseBattleChallenge> {
-    //     const element = must(await this.loadElement("../views/lake.html") as HTMLElement);
-    //     const lake = loggingProxy(new Lake(element, navController, playerService, goToNextChallengeTemplate, new PlayerView(), miniBoss));
-
-    //     const footer = must(lake.carouselItem.querySelector("footer"));
-    //     footer.after(template.templateFragment);
-
-    //     lake.renderPlayers();
-    //     lake.addAttackButtons();
-
-    //     lake.playerView.renderPlayerCardsByName(lake.carouselItem, "divChallengeVillain", [lake.miniBoss], ['hp', 'wep', 'cls']);
-
-    //     return lake;
-    // }
 
     protected setupControls(battleChallenge: BaseBattleChallenge, gameTasks: GameTasks): void {
         const footer = must(battleChallenge.carouselItem.querySelector("footer"));

@@ -1,5 +1,4 @@
 import RandomGenerator from "./utilities/RandomGenerator.ts";
-import ShuffleBag from "./utilities/ShuffleBag.ts";
 
 export type PlayerStats = {
     hp: number;

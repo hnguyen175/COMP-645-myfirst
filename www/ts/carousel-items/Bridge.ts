@@ -1,4 +1,3 @@
-import CarouselItem from "./CarouselItem.ts";
 import NavController from "../NavController.ts";
 import PlayerService from "../PlayerService.ts";
 import GameTasks from "../templates/GameTasks.ts";
@@ -27,8 +26,6 @@ export default class Bridge extends BaseBattleChallenge {
         const element = must(await this.loadElement("../views/bridge.html") as HTMLElement);
         const bridge = loggingProxy(new Bridge(element, navController, playerService, new PlayerView(), miniBoss));
 
-        // const footer = must(bridge.carouselItem.querySelector("footer"));
-        // footer.after(template.templateFragment);
         bridge.setupControls(bridge, template);
 
         return bridge;

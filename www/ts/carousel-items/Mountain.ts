@@ -1,4 +1,3 @@
-import CarouselItem from "./CarouselItem.ts";
 import NavController from "../NavController.ts";
 import PlayerService from "../PlayerService.ts";
 import GameTasks from "../templates/GameTasks.ts";
@@ -28,8 +27,6 @@ export default class Mountain extends BaseBattleChallenge {
         const element = must(await this.loadElement("../views/mountain.html") as HTMLElement);
         const mountain = loggingProxy(new Mountain(element, navController, playerService, new PlayerView(), miniBoss));
 
-        // const footer = must(mountain.carouselItem.querySelector("footer"));
-        // footer.after(template.templateFragment);
         mountain.setupControls(mountain, template);
 
         return mountain;
