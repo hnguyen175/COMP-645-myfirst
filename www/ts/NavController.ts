@@ -329,14 +329,7 @@ export default class NavController {
     switch (carouselItem.constructor.name) {
       case FangornForest.name:
         const challengeType = NavController.lbmChallenges.draw();
-        // return await challengeType.create(this, this.playerService, this.templateGameTask);
-        // must(currentGameState.getParty())!.currentScreen = challengeType.name;
-        // await this.onGameStart();
-        // return this.findCarouselItemByName(challengeType.name) as CarouselItem;
-
         return await challengeType.create(this, this.playerService);
-
-        break;
       case DrunkenTavern.name:
         return await FangornForest.create(this, this.playerService);
       case Lake.name:

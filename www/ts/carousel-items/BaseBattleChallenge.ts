@@ -124,8 +124,6 @@ export default abstract class BaseBattleChallenge extends CarouselItem {
   }
 
   private async handleVictoryResult(lakeResult: Element) {
-    // const tmpGold = Math.ceil(Math.random() * (1234 - 999 + 1)) + 999;
-    // currentGameState.getParty()?.addGold(tmpGold);
     this.awardStatsToPlayers();
     const tmpGold = must(currentGameState.getParty()?.earnedGold);
 

@@ -50,7 +50,7 @@ export default class Mountain extends BaseBattleChallenge {
     return mountain;
   }
 
-  protected awardStatsToPlayers(): void {
+  public override awardStatsToPlayers(): void {
     const party = must(currentGameState.getParty());
     party.players.forEach((player) => {
       player.luk += RandomGenerator.randomStat(50, 60, 1) / 100;
