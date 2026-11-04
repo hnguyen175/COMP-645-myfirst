@@ -37,7 +37,7 @@ export default class NavController {
   constructor(
     private playerService: PlayerService = loggingProxy(new PlayerService()),
     private playerView: PlayerView = new PlayerView(),
-  ) {}
+  ) { }
 
   async init(): Promise<void> {
     const carousel = document.getElementById(
@@ -251,10 +251,9 @@ export default class NavController {
         await this.addCarouselItem(dungeon);
         break;
       default:
-        console.error(
+        throw new Error(
           `Unknown currentScreen: ${must(currentGameState.getParty())?.currentScreen}`,
         );
-        return;
     }
     await this.carousel.next();
   }
