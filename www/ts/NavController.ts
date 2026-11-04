@@ -18,6 +18,7 @@ import ShuffleBag from "./utilities/ShuffleBag.ts";
 import Mountain from "./carousel-items/Mountain.ts";
 import Lake from "./carousel-items/Lake.ts";
 import Bridge from "./carousel-items/Bridge.ts";
+import Dungeon from "./carousel-items/Dungeon.ts";
 
 interface CarouselChangeEvent extends Event {
   carousel: ons.OnsCarouselElement;
@@ -243,8 +244,11 @@ export default class NavController {
         break;
       case "Mountain":
         const mountain = await Mountain.create(this, this.playerService);
-        // const mountain = await Mountain.create(this, this.playerService);
         await this.addCarouselItem(mountain);
+        break;
+      case "Dungeon":
+        const dungeon = await Dungeon.create(this, this.playerService);
+        await this.addCarouselItem(dungeon);
         break;
       default:
         console.error(
@@ -333,10 +337,11 @@ export default class NavController {
       case DrunkenTavern.name:
         return await FangornForest.create(this, this.playerService);
       case Lake.name:
-        // return await Mountain.create(this, this.playerService);
         return await Mountain.create(this, this.playerService);
       case Mountain.name:
         return await Bridge.create(this, this.playerService);
+      case Bridge.name:
+        return await Dungeon.create(this, this.playerService);
       default:
         throw new Error(
           `Unknown carousel item type: ${carouselItem.constructor.name}`,
