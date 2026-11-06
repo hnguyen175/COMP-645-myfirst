@@ -60,8 +60,8 @@ export default class Lake extends BaseBattleChallenge {
   }
 
   protected attackMessage(
-    playerDamage: DamageResult | undefined,
-    villainDamage: DamageResult | undefined,
+    playerDamage: DamageResult,
+    villainDamage: DamageResult,
   ): string {
     return /*html*/ `SPLAT! A mighty blow took ${villainDamage.damage} damage from the slime! Unfortunately, that only made it ${villainDamage.hp} angrier! Keep attacking until it is defeated!
     <p>
