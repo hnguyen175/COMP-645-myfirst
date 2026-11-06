@@ -5,7 +5,7 @@ import PlayerView from "../rendering/PlayerView.ts";
 import loggingProxy from "../utilities/LoggingProxy.ts";
 import RandomGenerator from "../utilities/RandomGenerator.ts";
 import must from "../utilities/RequiredField.ts";
-import BaseBattleChallenge from "./BaseBattleChallenge.ts";
+import BaseBattleChallenge, { DamageResult } from "./BaseBattleChallenge.ts";
 import currentGameState from "../GameState.ts";
 
 export default class Lake extends BaseBattleChallenge {
@@ -57,5 +57,20 @@ export default class Lake extends BaseBattleChallenge {
       player.str += RandomGenerator.randomStat(10, 25, 1);
     });
     party.addGold(RandomGenerator.randomStat(999, 1234, 1));
+  }
+
+  protected attackMessage(
+    playerDamage: DamageResult | undefined,
+    villainDamage: DamageResult | undefined,
+  ): string {
+    return /*html*/ `SPLAT! A mighty blow took ${villainDamage?.damage || 0} damage from the slime! Unfortunately, that only made it ${villainDamage?.hp || 0} angrier! Keep attacking until it is defeated!
+    <p>
+      You've been slimed! ${playerDamage?.name} loses ${playerDamage?.damage} HP. That stain is never coming out!
+    </p>
+    `;
+  }
+
+  protected defeatMessage(villainName: string): string {
+    return /*html*/ `You've been thoroughly washed! The ${villainName} wins. Retreat before you're turned into soap!`;
   }
 }
