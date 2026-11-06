@@ -60,27 +60,23 @@ export default class Bridge extends BaseBattleChallenge {
   }
 
   protected attackMessage(
-    playerDamage: DamageResult | undefined,
-    villainDamage: DamageResult | undefined,
+    playerDamage: DamageResult,
+    villainDamage: DamageResult,
   ): string {
     return /*html*/ `
     WHACK! Your party delivers
-    ${villainDamage?.damage ?? 0} damage to the troll!
-    He has ${villainDamage?.hp ?? 0} HP left,
+    ${villainDamage.damage} damage to the troll!
+    He has ${villainDamage.hp} HP left,
     and he's threatening to charge extra
     for assaulting tollbooth employees!
 
-    ${
-      playerDamage
-        ? `<p>
+    ${`<p>
       CLONK! ${playerDamage.name} takes
       ${playerDamage.damage} damage and has
       ${playerDamage.hp} HP remaining.
       Apparently, that's the bridge toll!
       No refunds!
-    </p>`
-        : ""
-    }
+    `}
   `;
   }
 

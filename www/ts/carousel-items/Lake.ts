@@ -50,7 +50,7 @@ export default class Lake extends BaseBattleChallenge {
     return lake;
   }
 
-  protected awardStatsToPlayers(): void {
+  public override awardStatsToPlayers(): void {
     const party = must(currentGameState.getParty());
     party.players.forEach((player) => {
       player.luk += RandomGenerator.playerRandomStat() / 100;
@@ -63,7 +63,7 @@ export default class Lake extends BaseBattleChallenge {
     playerDamage: DamageResult | undefined,
     villainDamage: DamageResult | undefined,
   ): string {
-    return /*html*/ `SPLAT! A mighty blow took ${villainDamage?.damage || 0} damage from the slime! Unfortunately, that only made it ${villainDamage?.hp || 0} angrier! Keep attacking until it is defeated!
+    return /*html*/ `SPLAT! A mighty blow took ${villainDamage.damage} damage from the slime! Unfortunately, that only made it ${villainDamage.hp} angrier! Keep attacking until it is defeated!
     <p>
       You've been slimed! ${playerDamage?.name} loses ${playerDamage?.damage} HP. That stain is never coming out!
     </p>

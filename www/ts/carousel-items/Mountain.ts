@@ -60,26 +60,22 @@ export default class Mountain extends BaseBattleChallenge {
   }
 
   protected attackMessage(
-    playerDamage: DamageResult | undefined,
-    villainDamage: DamageResult | undefined,
+    playerDamage: DamageResult,
+    villainDamage: DamageResult,
   ): string {
     return /*html*/ `
     CRACK! A thunderous strike deals
-    ${villainDamage?.damage ?? 0} damage to the brute!
-    With ${villainDamage?.hp ?? 0} HP remaining,
+    ${villainDamage.damage} damage to the brute!
+    With ${villainDamage.hp} HP remaining,
     he's still standing. Apparently, his skull
     is thicker than the mountain!
 
-    ${
-      playerDamage
-        ? `<p>
+    ${`<p>
       BOULDER DASH! ${playerDamage.name} takes
       ${playerDamage.damage} damage and has
       ${playerDamage.hp} HP left.
       Who knew rocks could be so unfriendly?
-    </p>`
-        : ""
-    }
+    </p>`}
   `;
   }
 
