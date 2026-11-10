@@ -9,6 +9,7 @@ export default class Party {
     players: Player[];
     private _earnedGold: number = 0;
     private _shuffleBag: ShuffleBag<number> | null = null;
+    private _inventory: string = "";
 
     constructor() {
         this.players = [];
@@ -81,5 +82,19 @@ export default class Party {
     addGold(value: number): number {
         this._earnedGold += value;
         return this._earnedGold;
+    }
+
+    averageLuk(): number {
+        if (this.players.length === 0) return 0;
+        const totalLuk = this.players.reduce((sum, player) => sum + player.luk, 0);
+        return Math.round(totalLuk / this.players.length);
+    }
+
+    get inventory(): string {
+        return this._inventory;
+    }
+
+    set inventory(value: string) {
+        this._inventory = value;
     }
 };
