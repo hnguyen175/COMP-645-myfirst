@@ -3,12 +3,15 @@ import NavController from "../NavController.ts";
 import PlayerService from "../PlayerService.ts";
 import must from "../utilities/RequiredField.ts";
 import GameTasks from "../templates/GameTasks.ts";
+import PlayerView from "../rendering/PlayerView.ts";
+import currentGameState from "../GameState.ts";
 
 export default class Dungeon extends CarouselItem {
   private constructor(
     carouselItem: HTMLElement,
     private readonly navController: NavController,
     private readonly playerService: PlayerService,
+    private readonly playerView: PlayerView = new PlayerView(),
   ) {
     super(carouselItem);
   }
@@ -19,6 +22,12 @@ export default class Dungeon extends CarouselItem {
   ): Promise<Dungeon> {
     const element = must(await this.loadElement("../views/dungeon.html"));
     const dungeon = new Dungeon(element, navController, playerService);
+
+    dungeon.playerView.renderPlayerCards(
+      dungeon.carouselItem,
+      must(currentGameState?.getParty()?.players),
+      ["hp", "mp"],
+    );
 
     const footer = must(dungeon.carouselItem.querySelector("footer"));
     footer.after(GameTasks.instance.templateFragment);
