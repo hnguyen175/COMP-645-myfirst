@@ -38,7 +38,7 @@ export default class NavController {
   constructor(
     private playerService: PlayerService = loggingProxy(new PlayerService()),
     private playerView: PlayerView = new PlayerView(),
-  ) {}
+  ) { }
 
   async init(): Promise<void> {
     const carousel = document.getElementById(
@@ -250,6 +250,10 @@ export default class NavController {
       case "Dungeon":
         const dungeon = await Dungeon.create(this, this.playerService);
         await this.addCarouselItem(dungeon);
+        break;
+      case "Final":
+        const final = await Final.create();
+        await this.addCarouselItem(final);
         break;
       default:
         throw new Error(

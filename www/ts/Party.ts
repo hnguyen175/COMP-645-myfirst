@@ -2,6 +2,8 @@ import Player from "./Player.ts";
 import must from "./utilities/RequiredField.ts";
 import ShuffleBag from "./utilities/ShuffleBag.ts";
 
+export type Grade = "A" | "B" | "C" | "F";
+
 export default class Party {
     // private key: string;
     currentScreen: string = "DrunkenTavern";
@@ -10,6 +12,7 @@ export default class Party {
     private _earnedGold: number = 0;
     private _shuffleBag: ShuffleBag<number> | null = null;
     private _inventory: string = "";
+    private _escapeTimer: number = 0;
 
     constructor() {
         this.players = [];
@@ -37,6 +40,7 @@ export default class Party {
             players: this.players,
             earnedGold: this._earnedGold,
             inventory: this._inventory,
+            escapeTimer: this._escapeTimer,
         };
     }
 
@@ -97,5 +101,27 @@ export default class Party {
 
     set inventory(value: string) {
         this._inventory = value;
+    }
+
+    get escapeTimer(): number {
+        return this._escapeTimer;
+    }
+
+    set escapeTimer(value: number) {
+        this._escapeTimer = value;
+    }
+
+    calculateFinalScore(): Grade {
+
+        // Determine the grade based on the final score
+        if (this.escapeTimer >= 9) {
+            return "A";
+        } else if (this.escapeTimer >= 3) {
+            return "B";
+        } else if (this._escapeTimer > 0) {
+            return "C";
+        } else {
+            return "F";
+        }
     }
 };
