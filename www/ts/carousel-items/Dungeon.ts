@@ -39,9 +39,10 @@ export default class Dungeon extends CarouselItem {
     const footer = must(dungeon.carouselItem.querySelector("footer"));
     footer.after(GameTasks.instance.templateFragment);
 
-    const timer = dungeon.timerSetup();
+    // const timer = dungeon.timerSetup();
 
-    dungeon.registerEvents(timer);
+    // dungeon.registerEvents(timer);
+    // dungeon.onPostDisplayingItem();
 
     return dungeon;
   }
@@ -73,12 +74,18 @@ export default class Dungeon extends CarouselItem {
     );
   }
 
+  public onPostDisplayingItem(): void {
+    const timer = this.timerSetup();
+    this.registerEvents(timer);
+  }
+
   private async transitionToNextChallenge(): Promise<void> {
     window.setTimeout(async () => {
-      const nextChallenge = await this.navController.createNextChallenge(this);
-
       const party = must(currentGameState.getParty());
       party.escapeTimer = this.timer;
+
+      const nextChallenge = await this.navController.createNextChallenge(this);
+
       party.currentScreen = nextChallenge.constructor.name;
       PlayerService.saveActiveParty();
 

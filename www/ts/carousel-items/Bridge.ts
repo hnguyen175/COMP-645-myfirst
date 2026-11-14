@@ -85,4 +85,8 @@ export default class Bridge extends BaseBattleChallenge {
     PAYMENT DECLINED! ${villainName} has beaten your party senseless! Sorry, ${villainName}, the toll has already been collected—in bruises!
   `;
   }
+
+  override onPreShow(): void {
+    this.navController.dungeon.onPostDisplayingItem();
+  }
 }
