@@ -39,7 +39,7 @@ export default class NavController {
   constructor(
     private playerService: PlayerService = loggingProxy(new PlayerService()),
     private playerView: PlayerView = new PlayerView(),
-  ) { }
+  ) {}
 
   async init(): Promise<void> {
     const carousel = document.getElementById(
@@ -96,7 +96,7 @@ export default class NavController {
         this.priorLoadGame();
         break;
       case "caiDungeon":
-        this.dungeon?.onPostDisplayingItem();
+        must(this.dungeon)?.onPostDisplayingItem();
         break;
     }
   }

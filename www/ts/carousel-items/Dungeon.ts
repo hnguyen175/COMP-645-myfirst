@@ -39,11 +39,6 @@ export default class Dungeon extends CarouselItem {
     const footer = must(dungeon.carouselItem.querySelector("footer"));
     footer.after(GameTasks.instance.templateFragment);
 
-    // const timer = dungeon.timerSetup();
-
-    // dungeon.registerEvents(timer);
-    // dungeon.onPostDisplayingItem();
-
     return dungeon;
   }
 
@@ -60,14 +55,11 @@ export default class Dungeon extends CarouselItem {
 
         const pDunEnemy = must(this.carouselItem.querySelector("#pDunEnemy"));
         if (this.timer >= 9) {
-          pDunEnemy.innerHTML =
-            "You have successfully escaped the dungeon!";
+          pDunEnemy.innerHTML = "You have successfully escaped the dungeon!";
         } else if (this.timer >= 3) {
-          pDunEnemy.innerHTML =
-            "You have escaped the dungeon!";
+          pDunEnemy.innerHTML = "You have escaped the dungeon!";
         } else {
-          pDunEnemy.innerHTML =
-            "You have barely escaped the dungeon!";
+          pDunEnemy.innerHTML = "You have barely escaped the dungeon!";
         }
       },
       { once: true },

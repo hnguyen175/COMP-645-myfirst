@@ -87,6 +87,7 @@ export default class Bridge extends BaseBattleChallenge {
   }
 
   override onPreShow(): void {
-    this.navController.dungeon.onPostDisplayingItem();
+    // this assumming that dungeon has been created and set to the navController.dungeon property
+    must(this.navController.dungeon)?.onPostDisplayingItem();
   }
 }

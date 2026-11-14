@@ -263,5 +263,5 @@ export default abstract class BaseBattleChallenge extends CarouselItem {
     villainDamage: DamageResult | undefined,
   ): string;
   protected abstract defeatMessage(villainName: string): string;
-  protected abstract onPreShow?(): void;
+  protected onPreShow(): void {}
 }
