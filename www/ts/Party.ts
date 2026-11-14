@@ -35,7 +35,8 @@ export default class Party {
             currentScreen: this.currentScreen,
             questCompleted: this.questCompleted,
             players: this.players,
-            earnedGold: this._earnedGold
+            earnedGold: this._earnedGold,
+            inventory: this._inventory,
         };
     }
 

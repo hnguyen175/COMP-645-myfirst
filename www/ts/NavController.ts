@@ -341,6 +341,8 @@ export default class NavController {
         return await Bridge.create(this, this.playerService);
       case Bridge.name:
         return await Dungeon.create(this, this.playerService);
+      case Dungeon.name:
+        return await DrunkenTavern.create(this, this.playerService);
       default:
         throw new Error(
           `Unknown carousel item type: ${carouselItem.constructor.name}`,
