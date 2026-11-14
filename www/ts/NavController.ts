@@ -19,6 +19,7 @@ import Mountain from "./carousel-items/Mountain.ts";
 import Lake from "./carousel-items/Lake.ts";
 import Bridge from "./carousel-items/Bridge.ts";
 import Dungeon from "./carousel-items/Dungeon.ts";
+import Final from "./carousel-items/Final.ts";
 
 interface CarouselChangeEvent extends Event {
   carousel: ons.OnsCarouselElement;
@@ -37,7 +38,7 @@ export default class NavController {
   constructor(
     private playerService: PlayerService = loggingProxy(new PlayerService()),
     private playerView: PlayerView = new PlayerView(),
-  ) { }
+  ) {}
 
   async init(): Promise<void> {
     const carousel = document.getElementById(
@@ -342,7 +343,7 @@ export default class NavController {
       case Bridge.name:
         return await Dungeon.create(this, this.playerService);
       case Dungeon.name:
-        return await DrunkenTavern.create(this, this.playerService);
+        return await Final.create();
       default:
         throw new Error(
           `Unknown carousel item type: ${carouselItem.constructor.name}`,

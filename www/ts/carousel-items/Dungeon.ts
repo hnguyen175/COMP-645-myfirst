@@ -13,7 +13,7 @@ export default class Dungeon extends CarouselItem {
     private readonly navController: NavController,
     private readonly playerService: PlayerService,
     private readonly playerView: PlayerView = new PlayerView(),
-    private timer: number = 10
+    private timer: number = 10,
   ) {
     super(carouselItem);
   }
@@ -27,10 +27,12 @@ export default class Dungeon extends CarouselItem {
 
     dungeon.playerView.renderPlayerCards(
       dungeon.carouselItem,
-      must(currentGameState?.getParty()?.players)
+      must(currentGameState?.getParty()?.players),
     );
 
-    const divDunChallenge = must(dungeon.carouselItem.querySelector("#divDungeonChallenge"));
+    const divDunChallenge = must(
+      dungeon.carouselItem.querySelector("#divDungeonChallenge"),
+    );
     divDunChallenge.innerHTML = `Use your "<strong>${currentGameState.getParty()?.inventory}</strong>" in the nick of time before the roof collapses upon your party and escape with your ${currentGameState.getParty()?.earnedGold} Gold. Let us hope your ${currentGameState.getParty()?.averageLuk()} Luk holds out!`;
 
     const footer = must(dungeon.carouselItem.querySelector("footer"));
@@ -44,12 +46,25 @@ export default class Dungeon extends CarouselItem {
   }
 
   private registerEvents(timer: number): void {
-    const actionButton = must(this.carouselItem.querySelector<HTMLButtonElement>("#btnDunAction"));
-    actionButton.addEventListener("click", () => {
-      window.clearInterval(timer);
-      actionButton.disabled = true;
-      fireAndForget(this.navController.createNextChallenge(this));
-    }, { once: true });
+    const actionButton = must(
+      this.carouselItem.querySelector<HTMLButtonElement>("#btnDunAction"),
+    );
+    actionButton.addEventListener(
+      "click",
+      () => {
+        window.clearInterval(timer);
+        this.disableActionButton();
+        fireAndForget(this.swapToNextChallenge());
+      },
+      { once: true },
+    );
+  }
+
+  private async swapToNextChallenge(): Promise<void> {
+    window.setTimeout(async () => {
+      const nextChallenge = await this.navController.createNextChallenge(this);
+      this.carouselItem.replaceWith(nextChallenge.carouselItem);
+    }, 3000);
   }
 
   private timerSetup(): number {
@@ -60,11 +75,18 @@ export default class Dungeon extends CarouselItem {
       spDunTimer.innerHTML = this.timer.toString();
       if (this.timer <= 0) {
         window.clearInterval(timer);
-        const actionButton = must(this.carouselItem.querySelector<HTMLButtonElement>("#btnDunAction"));
-        actionButton.disabled = true;
-        must(this.carouselItem.querySelector("#pDunEnemy")).innerHTML = "The roof has collapsed! You have failed to escape in time.";
+        this.disableActionButton();
+        must(this.carouselItem.querySelector("#pDunEnemy")).innerHTML =
+          "The roof has collapsed! You have failed to escape in time.";
       }
     }, 1000);
     return timer;
+  }
+
+  private disableActionButton() {
+    const actionButton = must(
+      this.carouselItem.querySelector<HTMLButtonElement>("#btnDunAction"),
+    );
+    actionButton.disabled = true;
   }
 }
