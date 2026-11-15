@@ -6,6 +6,7 @@ import GameTasks from "../templates/GameTasks.ts";
 import PlayerView from "../rendering/PlayerView.ts";
 import currentGameState from "../GameState.ts";
 import { fireAndForget } from "../utilities/AsyncUtils.ts";
+import loggingProxy from "../utilities/LoggingProxy.ts";
 
 export default class Dungeon extends CarouselItem {
   private constructor(
@@ -23,7 +24,9 @@ export default class Dungeon extends CarouselItem {
     playerService: PlayerService,
   ): Promise<Dungeon> {
     const element = must(await this.loadElement("../views/dungeon.html"));
-    const dungeon = new Dungeon(element, navController, playerService);
+    const dungeon = loggingProxy(
+      new Dungeon(element, navController, playerService),
+    );
     const party = must(currentGameState.getParty());
 
     dungeon.playerView.renderPlayerCards(
