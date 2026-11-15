@@ -185,7 +185,7 @@ export default abstract class BaseBattleChallenge extends CarouselItem {
         `Navigating to the next challenge: ${nextChallenge.carouselItem.id}`,
       );
       this.carouselItem.replaceWith(nextChallenge.carouselItem);
-      this.onPreShow?.();
+      this.initializeDisplay?.();
     });
 
     gotoNextButton.removeAttribute("disabled");
@@ -263,5 +263,5 @@ export default abstract class BaseBattleChallenge extends CarouselItem {
     villainDamage: DamageResult | undefined,
   ): string;
   protected abstract defeatMessage(villainName: string): string;
-  protected onPreShow(): void {}
+  protected initializeDisplay(): void {}
 }

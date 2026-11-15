@@ -96,7 +96,7 @@ export default class Dungeon extends CarouselItem {
         this.disableActionButton();
 
         must(this.carouselItem.querySelector("#pDunEnemy")).innerHTML =
-          "The roof has collapsed! You have failed to escape in time.";
+          "The roof has collapsed! You have failed to escape the dungeon.";
 
         must(this.carouselItem.querySelector("#pDunResult")).innerHTML =
           "You have lost the game. Please start a new game.";
